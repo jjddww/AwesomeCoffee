@@ -10,9 +10,11 @@ import androidx.compose.ui.unit.sp
 import com.jjddww.awesomecoffee.R
 
 // Set of Material typography styles to start with
-val notosanskr = FontFamily(
-    Font(R.font.notosanskr_regular, FontWeight.Normal, FontStyle.Normal),
-    Font(R.font.notosanskr_semibold, FontWeight.SemiBold, FontStyle.Normal)
+
+val spoqahansansneo = FontFamily(
+    Font(R.font.spoqahansansneo_regular, FontWeight.Normal, FontStyle.Normal),
+    Font(R.font.spoqahansansneo_medium, FontWeight.Medium, FontStyle.Normal),
+    Font(R.font.spoqahansansneo_bold, FontWeight.Bold, FontStyle.Normal)
 )
 
 val notosans = FontFamily(
@@ -27,15 +29,15 @@ val Typography = Typography(
     ),
 
     labelMedium = TextStyle(
-        fontFamily = notosanskr,
-        fontWeight = FontWeight.SemiBold,
+        fontFamily = spoqahansansneo,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp
     ),
 
     labelSmall = TextStyle(
-        fontFamily = notosanskr,
+        fontFamily = spoqahansansneo,
         fontWeight = FontWeight.Normal,
-        fontSize = 15.sp
+        fontSize = 15.sp,
     ),
 
     bodyLarge = TextStyle(

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">AwesomeCoffee</string>
     <string name="login_app_name">AWESOME COFFEE</string>
+    <string name="id_placeholder">아이디</string>
+    <string name="password_placeholder">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="join">회원가입</string>
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_password">비밀번호 찾기</string>
 </resources>
