@@ -2,12 +2,42 @@ package com.jjddww.awesomecoffee.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.jjddww.awesomecoffee.R
 
 // Set of Material typography styles to start with
+val notosanskr = FontFamily(
+    Font(R.font.notosanskr_regular, FontWeight.Normal, FontStyle.Normal),
+    Font(R.font.notosanskr_semibold, FontWeight.SemiBold, FontStyle.Normal)
+)
+
+val notosans = FontFamily(
+    Font(R.font.notosans_bold, FontWeight.Bold, FontStyle.Normal)
+)
+
 val Typography = Typography(
+    titleMedium = TextStyle(
+        fontFamily = notosans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp
+    ),
+
+    labelMedium = TextStyle(
+        fontFamily = notosanskr,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp
+    ),
+
+    labelSmall = TextStyle(
+        fontFamily = notosanskr,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp
+    ),
+
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -15,6 +45,7 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
+
     /* Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
