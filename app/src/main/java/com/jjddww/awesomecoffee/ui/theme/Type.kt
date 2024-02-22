@@ -28,6 +28,12 @@ val Typography = Typography(
         fontSize = 20.sp
     ),
 
+    titleSmall = TextStyle(
+        fontFamily = spoqahansansneo,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp
+    ),
+
     labelMedium = TextStyle(
         fontFamily = spoqahansansneo,
         fontWeight = FontWeight.Medium,
@@ -38,6 +44,12 @@ val Typography = Typography(
         fontFamily = spoqahansansneo,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp,
+    ),
+
+    bodySmall = TextStyle(
+        fontFamily = spoqahansansneo,
+        fontWeight = FontWeight.Normal,
+        fontSize = 13.sp
     ),
 
     bodyLarge = TextStyle(
