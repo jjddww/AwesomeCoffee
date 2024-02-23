@@ -9,4 +9,5 @@
     <string name="find_password">비밀번호 찾기</string>
     <string name="move_to_login">Awesome Coffee 앱</string>
     <string name="move_to_login2">회원가입 / 로그인하기</string>
+    <string name="empty_ads_image_url">https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&amp;w=1768&amp;auto=format&amp;fit=crop&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D</string>
 </resources>

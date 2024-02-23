@@ -1,12 +1,20 @@
 package com.jjddww.awesomecoffee.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.jjddww.awesomecoffee.data.Advertisement
+import androidx.lifecycle.asLiveData
+import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.repository.AdvertisementRepository
 
-class AdImageUrlListViewModel (
-    advertisementRepository: AdvertisementRepository) : ViewModel(){
+class AdImageUrlListViewModel (application: Application) : ViewModel(){
 
-//        val advertisementUrl : LiveData<List<Advertisement>> =
+        val advertisementUrl : LiveData<List<String>>
+        init {
+            val advertisementDb = AppDatabase.getInstance(application)
+            val advertisementDao = advertisementDb.advertisementDao()
+            val advertisementRepository = AdvertisementRepository(advertisementDao)
+            advertisementUrl = advertisementRepository.getAdvertisementUrl().asLiveData()
+        }
+
 }

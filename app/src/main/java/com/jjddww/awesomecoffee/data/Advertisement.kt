@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "advertisement")
 data class Advertisement(
-    @PrimaryKey @ColumnInfo(name = "id") val advertisement: Int,
+    @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name= "url") val url: String
 )
