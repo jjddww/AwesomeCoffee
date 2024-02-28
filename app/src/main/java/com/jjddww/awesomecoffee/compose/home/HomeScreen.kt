@@ -1,10 +1,6 @@
 package com.jjddww.awesomecoffee.compose.home
 
-import android.util.Log
 import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -19,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -34,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
@@ -42,11 +41,13 @@ import com.jjddww.awesomecoffee.ui.theme.backgroundLight
 import com.jjddww.awesomecoffee.ui.theme.scrimLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryContainerLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
+import com.jjddww.awesomecoffee.utilities.delayTime
+import com.jjddww.awesomecoffee.utilities.pointCount
+import com.jjddww.awesomecoffee.utilities.stampCount
 import com.jjddww.awesomecoffee.viewmodels.AdImageUrlListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-const val delayTime: Long = 3500
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -56,6 +57,7 @@ fun HomeScreen(
     val imageUrlList by viewModel.advertisementUrl.observeAsState(initial = emptyList())
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
+    val isLogin = true
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -79,7 +81,10 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        MoveToLogin()
+        if (!isLogin)
+            MoveToLogin()
+        else
+            CouponStampView(stampCount, pointCount)
 
     }
 
@@ -166,24 +171,63 @@ fun MoveToLogin(){
     }
 }
 
-//@Composable
-//@Preview(showSystemUi = true)
-//fun Preview() {
-//    AwesomeCoffeeTheme {
-//        Surface(color = surfaceVariantLight) {
-//            val owner = LocalViewModelStoreOwner.current
-//
-//            owner?.let {
-//                val viewModel: AdImageUrlListViewModel = viewModel(
-//                    it,
-//                    "AdImageUrlListViewModel",
-//                    HomeViewModelFactory(
-//                        LocalContext.current.applicationContext as Application
-//                    )
-//                )
-//                HomeScreen(viewModel)
-//            }
-//
-//        }
-//    }
-//}
+
+@Composable
+fun CouponStampView(
+    stampCount: Int,
+    pointCount: Int){
+
+    Column {
+        Text(text = "스탬프",
+            modifier = Modifier.padding(start = 20.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black)
+        
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row (Modifier
+            .fillMaxWidth()){
+
+            LazyVerticalGrid(modifier = Modifier
+                .width(300.dp)
+                .padding(start = 40.dp),
+                columns = GridCells.Fixed(5),
+                content= {
+
+                    items(stampCount){count ->
+                        Box(modifier = Modifier
+                            .width(40.dp)
+                            .height(60.dp),
+                            contentAlignment = Alignment.Center){
+
+                            Image(
+                                modifier = Modifier
+                                    .width(30.dp)
+                                    .height(42.dp),
+                                painter = painterResource(R.drawable.logo_login),
+                                contentDescription = null)
+
+
+                            if(count <= pointCount - 1){
+                                Image(
+                                    modifier = Modifier
+                                        .width(38.dp)
+                                        .height(50.dp)
+                                        .padding(top = 10.dp),
+                                    painter = painterResource(R.drawable.ic_stamp),
+                                    contentDescription = null)
+                            }
+
+                        }
+                    }
+                })
+
+            Spacer(Modifier.width(20.dp))
+
+            Text(text = "$pointCount / 10",
+                modifier = Modifier.align(Alignment.CenterVertically),
+                style = MaterialTheme.typography.titleSmall,
+                color = tertiaryLight)
+        }
+    }
+}

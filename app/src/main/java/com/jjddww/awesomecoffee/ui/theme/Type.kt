@@ -23,7 +23,7 @@ val notosans = FontFamily(
 
 val Typography = Typography(
     titleMedium = TextStyle(
-        fontFamily = notosans,
+        fontFamily = spoqahansansneo,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp
     ),

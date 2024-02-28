@@ -7,7 +7,7 @@ import androidx.lifecycle.asLiveData
 import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.repository.AdvertisementRepository
 
-class AdImageUrlListViewModel (application: Application) : ViewModel(){
+class AdImageUrlListViewModel (application: Application) : ViewModel(){ //삭제 예정
 
         val advertisementUrl : LiveData<List<String>>
         init {
