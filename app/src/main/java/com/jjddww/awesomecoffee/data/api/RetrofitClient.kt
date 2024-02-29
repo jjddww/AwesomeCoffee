@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.data
+package com.jjddww.awesomecoffee.data.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

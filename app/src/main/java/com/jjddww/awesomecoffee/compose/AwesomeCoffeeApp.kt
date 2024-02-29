@@ -12,23 +12,25 @@ import com.jjddww.awesomecoffee.compose.home.HomeScreen
 import com.jjddww.awesomecoffee.ui.theme.AwesomeCoffeeTheme
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.viewmodels.AdImageUrlListViewModel
+import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 
 @Composable
 fun AwesomeCoffeeApp(){
     AwesomeCoffeeTheme {
         Surface (color = surfaceVariantLight){
-            val owner = LocalViewModelStoreOwner.current
-
-            owner?.let {
-                val viewModel: AdImageUrlListViewModel = viewModel(
-                    it,
-                    "AdImageUrlListViewModel",
-                    HomeViewModelFactory(
-                        LocalContext.current.applicationContext as Application
-                    )
-                )
-                HomeScreen(viewModel)
-            }
+            HomeScreen(HomeViewModel())
+//            val owner = LocalViewModelStoreOwner.current
+//
+//            owner?.let {
+//                val viewModel: AdImageUrlListViewModel = viewModel(
+//                    it,
+//                    "AdImageUrlListViewModel",
+//                    HomeViewModelFactory(
+//                        LocalContext.current.applicationContext as Application
+//                    )
+//                )
+//                HomeScreen(viewModel)
+//            }
         }
     }
 }

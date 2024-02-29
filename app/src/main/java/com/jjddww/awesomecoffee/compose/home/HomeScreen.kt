@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.ui.theme.backgroundLight
 import com.jjddww.awesomecoffee.ui.theme.scrimLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryContainerLight
@@ -45,6 +46,7 @@ import com.jjddww.awesomecoffee.utilities.delayTime
 import com.jjddww.awesomecoffee.utilities.pointCount
 import com.jjddww.awesomecoffee.utilities.stampCount
 import com.jjddww.awesomecoffee.viewmodels.AdImageUrlListViewModel
+import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,9 +54,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: AdImageUrlListViewModel
+    viewModel: HomeViewModel
 ){
-    val imageUrlList by viewModel.advertisementUrl.observeAsState(initial = emptyList())
+    val imageUrlList by viewModel.advertisements.observeAsState(initial = emptyList())
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
     val isLogin = true
@@ -86,6 +88,18 @@ fun HomeScreen(
         else
             CouponStampView(stampCount, pointCount)
 
+
+        Spacer(modifier = Modifier.height(35.dp))
+
+
+        Text(text = stringResource(id = R.string.recommended_menu),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black)
+
+        Text(text = stringResource(id = R.string.recommended_menu),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black)
+
     }
 
     LaunchedEffect(key1 = pagerState.currentPage){
@@ -108,7 +122,7 @@ fun HomeScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AdsImageHorizontalPager(
-    imageUrlList: List<String>,
+    imageUrlList: List<BannerAd>,
     emptyImageUrl: String,
     modifier: Modifier,
     pagerState: PagerState
@@ -118,7 +132,7 @@ fun AdsImageHorizontalPager(
         HorizontalPager(state = pagerState, modifier = modifier) {
 
             Image(painter = rememberImagePainter
-                (data = if (imageUrlList.isNotEmpty()) imageUrlList[it]
+                (data = if (imageUrlList.isNotEmpty()) imageUrlList[it].url
             else emptyImageUrl),
                 contentDescription = "AdsImage",
                 Modifier.fillMaxSize())
@@ -178,7 +192,7 @@ fun CouponStampView(
     pointCount: Int){
 
     Column {
-        Text(text = "스탬프",
+        Text(text = stringResource(id = R.string.stamp),
             modifier = Modifier.padding(start = 20.dp),
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black)

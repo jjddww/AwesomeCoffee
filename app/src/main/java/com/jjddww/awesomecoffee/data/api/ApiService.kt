@@ -1,17 +1,12 @@
-package com.jjddww.awesomecoffee.data
+package com.jjddww.awesomecoffee.data.api
 
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.jjddww.awesomecoffee.data.model.BannerAd
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
     @GET("/api/advertisement/all")
-    suspend fun getAdvertisementList() : Response<ResponseBody>
+    suspend fun getAdvertisementList() : List<BannerAd>
 
 //    @GET("/api/menu/all")
 //    suspend fun getAllMenuList(): List <Menu>

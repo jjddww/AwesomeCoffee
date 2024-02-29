@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.data
+package com.jjddww.awesomecoffee.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

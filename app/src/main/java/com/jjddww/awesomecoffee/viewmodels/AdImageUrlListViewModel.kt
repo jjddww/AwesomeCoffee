@@ -9,12 +9,12 @@ import com.jjddww.awesomecoffee.data.repository.AdvertisementRepository
 
 class AdImageUrlListViewModel (application: Application) : ViewModel(){ //삭제 예정
 
-        val advertisementUrl : LiveData<List<String>>
-        init {
-            val advertisementDb = AppDatabase.getInstance(application)
-            val advertisementDao = advertisementDb.advertisementDao()
-            val advertisementRepository = AdvertisementRepository(advertisementDao)
-            advertisementUrl = advertisementRepository.getAdvertisementUrl().asLiveData()
-        }
+//        val advertisementUrl : LiveData<List<String>>
+//        init {
+//            val advertisementDb = AppDatabase.getInstance(application)
+//            val advertisementDao = advertisementDb.advertisementDao()
+//            val advertisementRepository = AdvertisementRepository(advertisementDao)
+//            advertisementUrl = advertisementRepository.getAdvertisementUrl().asLiveData()
+//        }
 
 }
