@@ -8,7 +8,17 @@ class HomeRepository (private val apiHelper: ApiServiceHelper){
     fun getAdvertisementData() =
         apiHelper.getAdvertisementList()
             .catch {e ->
-                Log.e("Api Error: ", e.toString())
+                Log.e("get Ads Api Error: ", e.toString())
             }
 
+    fun getRecommendMenuData() =
+        apiHelper.getRecommendedMenuList()
+            .catch { e ->
+                Log.e("get Recommended Menu Api Error:", e.toString())
+            }
+
+    fun getNewMenuData() = apiHelper.getNewMenuList()
+        .catch { e ->
+            Log.e("get New Menu Api Error", e.toString())
+        }
 }

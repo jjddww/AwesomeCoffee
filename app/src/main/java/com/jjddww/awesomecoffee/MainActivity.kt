@@ -3,22 +3,19 @@ package com.jjddww.awesomecoffee
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.jjddww.awesomecoffee.compose.AwesomeCoffeeApp
 import com.jjddww.awesomecoffee.ui.theme.AwesomeCoffeeTheme
+import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AwesomeCoffeeTheme {
-                AwesomeCoffeeApp()
+                Surface (color = surfaceVariantLight) {
+                    AwesomeCoffeeApp()
+                }
             }
         }
     }

@@ -52,10 +52,15 @@ android {
 
 dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     val room_version = "2.6.1"
     val work_version = "2.9.0"
     val lifecycle_version = "2.7.0"
     val compose_version = "1.6.2"
+    val nav_version = "2.7.7"
 
 
     implementation ("com.google.code.gson:gson:2.10.1")
@@ -68,6 +73,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation ("androidx.compose.runtime:runtime-livedata:$compose_version")
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

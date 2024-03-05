@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose.home
 
+import androidx.collection.intIntMapOf
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,10 +18,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.BannerAd
+import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.backgroundLight
 import com.jjddww.awesomecoffee.ui.theme.scrimLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryContainerLight
@@ -57,17 +63,22 @@ fun HomeScreen(
     viewModel: HomeViewModel
 ){
     val imageUrlList by viewModel.advertisements.observeAsState(initial = emptyList())
+    val recommendedMenuList by viewModel.recommendedMenuList.observeAsState(initial = emptyList())
+    val newMenuList by viewModel.newMenuList.observeAsState(initial = emptyList())
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
+    val scrollState = rememberScrollState()
     val isLogin = true
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxWidth()
     ) {
         Spacer(Modifier.height(35.dp))
 
         Text(text = stringResource(id = R.string.login_app_name),
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             style = MaterialTheme.typography.titleMedium,
             color = tertiaryLight)
 
@@ -78,7 +89,8 @@ fun HomeScreen(
             emptyImageUrl,
             Modifier
                 .fillMaxWidth()
-                .height(280.dp),
+                .height(220.dp)
+                .align(Alignment.CenterHorizontally),
             pagerState)
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -89,19 +101,13 @@ fun HomeScreen(
             CouponStampView(stampCount, pointCount)
 
 
+        Spacer(modifier = Modifier.height(39.dp))
+
+        MenuListView(title = stringResource(id = R.string.new_menu), menuList = newMenuList)
+
         Spacer(modifier = Modifier.height(35.dp))
-
-
-        Text(text = stringResource(id = R.string.recommended_menu),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black)
-
-        MenuListScreen(modifier =Modifier.fillMaxWidth().height(120.dp)
-            , onClick = {})
-
-        Text(text = stringResource(id = R.string.recommended_menu),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black)
+        
+        MenuListView(title = stringResource(id = R.string.recommended_menu), menuList = recommendedMenuList)
 
     }
 
@@ -137,8 +143,8 @@ fun AdsImageHorizontalPager(
             Image(painter = rememberImagePainter
                 (data = if (imageUrlList.isNotEmpty()) imageUrlList[it].url
             else emptyImageUrl),
-                contentDescription = "AdsImage",
-                Modifier.fillMaxSize())
+                contentScale = ContentScale.FillWidth,
+                contentDescription = "AdsImage")
         }
 
         Row(
@@ -150,7 +156,7 @@ fun AdsImageHorizontalPager(
         ){
             repeat(imageUrlList.size) {
                 val color =
-                    if(pagerState.currentPage == it) tertiaryContainerLight else Color.White
+                    if(pagerState.currentPage == it) tertiaryLight else Color.White
                 Box(
                     modifier = Modifier
                         .padding(start = 17.dp)
@@ -207,6 +213,7 @@ fun CouponStampView(
 
             LazyVerticalGrid(modifier = Modifier
                 .width(300.dp)
+                .height(120.dp)
                 .padding(start = 40.dp),
                 columns = GridCells.Fixed(5),
                 content= {
@@ -249,4 +256,17 @@ fun CouponStampView(
     }
 }
 
-fun Empty(){}
+@Composable
+fun MenuListView(title: String, menuList: List<Menu>){
+    Text(text = title,
+        modifier = Modifier.padding(start = 20.dp),
+        style = MaterialTheme.typography.titleMedium,
+        color = Color.Black)
+
+    Spacer(modifier = Modifier.height(22.dp))
+
+    MenuListScreen(modifier = Modifier
+        .height(150.dp)
+        .padding(start = 20.dp),
+        menuList = menuList)
+}
