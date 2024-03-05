@@ -14,7 +14,8 @@ import com.jjddww.awesomecoffee.R
 val spoqahansansneo = FontFamily(
     Font(R.font.spoqahansansneo_regular, FontWeight.Normal, FontStyle.Normal),
     Font(R.font.spoqahansansneo_medium, FontWeight.Medium, FontStyle.Normal),
-    Font(R.font.spoqahansansneo_bold, FontWeight.Bold, FontStyle.Normal)
+    Font(R.font.spoqahansansneo_bold, FontWeight.Bold, FontStyle.Normal),
+    Font(R.font.spoqahansansneo_light, FontWeight.Light, FontStyle.Normal)
 )
 
 val notosans = FontFamily(

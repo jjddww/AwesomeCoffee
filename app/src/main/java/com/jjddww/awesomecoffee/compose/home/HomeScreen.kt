@@ -96,6 +96,9 @@ fun HomeScreen(
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black)
 
+        MenuListScreen(modifier =Modifier.fillMaxWidth().height(120.dp)
+            , onClick = {})
+
         Text(text = stringResource(id = R.string.recommended_menu),
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black)
@@ -245,3 +248,5 @@ fun CouponStampView(
         }
     }
 }
+
+fun Empty(){}
