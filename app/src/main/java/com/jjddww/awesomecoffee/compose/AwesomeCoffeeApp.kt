@@ -15,6 +15,7 @@ import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.rememberAppNavController
+import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -47,6 +48,6 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     ){
         val arguments = requireNotNull(it.arguments)
         val menuId = arguments.getInt(MainDestinations.MENU_ID_KEY)
-        DetailScreen(menuId)
+        DetailScreen(DetailViewModel(menuId), navController.navController, onNavigateRoute)
     }
 }

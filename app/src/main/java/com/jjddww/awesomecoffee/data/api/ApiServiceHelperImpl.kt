@@ -17,4 +17,8 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getNewMenuList())
     }
 
+    override fun getMenuDescription(id: Int): Flow<List<Menu>> = flow{
+        emit(apiService.getMenuDescription(id))
+    }
+
 }

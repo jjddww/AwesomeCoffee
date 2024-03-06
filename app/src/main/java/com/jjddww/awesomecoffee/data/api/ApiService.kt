@@ -18,8 +18,8 @@ interface ApiService {
     @GET("/api/menu/new")
     suspend fun getNewMenuList(): List<Menu>
 
-//    @GET("/api/menu/desc")
-//    suspend fun getMenuDescription(@Query("id") id: Int): MenuDescription
+    @GET("/api/menu/desc")
+    suspend fun getMenuDescription(@Query("id") id: Int): List<Menu>
 
     @GET("/api/category/main")
     suspend fun getMainCategory(): List<String>

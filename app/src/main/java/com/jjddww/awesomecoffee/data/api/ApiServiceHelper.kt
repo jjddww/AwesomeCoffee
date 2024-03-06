@@ -11,4 +11,6 @@ interface ApiServiceHelper {
 
     fun getNewMenuList(): Flow<List<Menu>>
 
+    fun getMenuDescription(id: Int): Flow<List<Menu>>
+
 }
