@@ -1,6 +1,5 @@
 package com.jjddww.awesomecoffee.compose
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +11,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,14 +23,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
-import com.jjddww.awesomecoffee.compose.etc.EtcScreen
+import com.jjddww.awesomecoffee.compose.etc.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
@@ -43,40 +48,50 @@ enum class Sections(
     @DrawableRes val icon: Int,
     val route: String
 ){
-    CART(R.string.cart, R.drawable.baseline_shopping_cart_24, "cart"),
-    ORDER(R.string.order, R.drawable.baseline_coffee_24, "order"),
-    HOME(R.string.home, R.drawable.baseline_home_24, "home"),
-    COUPON(R.string.coupon, R.drawable.baseline_local_activity_24, "coupon"),
-    ETC(R.string.etc, R.drawable.baseline_more_horiz_24, "etc")
+    CART(R.string.cart, R.drawable.baseline_shopping_cart_24, "home/cart"),
+    ORDER(R.string.order, R.drawable.baseline_coffee_24, "home/order"),
+    HOME(R.string.home, R.drawable.baseline_home_24, "home/main"),
+    COUPON(R.string.coupon, R.drawable.baseline_local_activity_24, "home/coupon"),
+    OTHER(R.string.other, R.drawable.baseline_more_horiz_24, "home/other")
 
 }
 
-@Composable
-fun AppNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = Sections.HOME.route){
+object MainDestinations {
+    const val HOME_ROUTE = "home"
+    const val DETAIL_ROUTE = "detail"
+    const val MENU_ID_KEY = "menuId"
+}
+
+fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
+                                onMenuSelected: (Int, NavBackStackEntry) -> Unit,
+                                onNavigateRoute: (String) -> Unit)
+{
         composable(Sections.CART.route){
-            CartScreen()
+            CartScreen(appNavController.navController, onNavigateRoute)
         }
         composable(Sections.ORDER.route){
-            OrderScreen()
+            OrderScreen(appNavController.navController, onNavigateRoute)
         }
-        composable(Sections.HOME.route){
-            HomeScreen(HomeViewModel())
+        composable(Sections.HOME.route){navBackStackEntry ->
+            HomeScreen(HomeViewModel(), appNavController.navController, onNavigateRoute
+            ) { id -> onMenuSelected(id, navBackStackEntry) }
         }
         composable(Sections.COUPON.route){
-            CouponScreen()
+            CouponScreen(appNavController.navController, onNavigateRoute)
         }
-        composable(Sections.ETC.route){
-            EtcScreen()
+        composable(Sections.OTHER.route){
+            OtherScreen(appNavController.navController, onNavigateRoute)
         }
-    }
 }
+
 
 @Composable
 fun AppBottomBar(
-    items: Array<Sections>,
-    navController: NavHostController
+    navController: NavController,
+    onNavigateRoute: (String) -> Unit
 ){
+    val items = Sections.entries.toTypedArray()
+
     NavigationBar (modifier = Modifier
         .height(80.dp)
         .fillMaxWidth(),
@@ -95,13 +110,7 @@ fun AppBottomBar(
                     unselectedTextColor = Color.Gray
                 ),
                 onClick = {
-                          navController.navigate(item.route){
-                              popUpTo(navController.graph.findStartDestination().id){
-                                  saveState = true
-                              }
-                              launchSingleTop = true
-                              restoreState = true
-                          }
+                    onNavigateRoute(item.route)
 
                 },
                 icon = {
@@ -122,6 +131,6 @@ fun AppBottomBar(
 @Preview
 @Composable
 fun AppBarPreview(){
-    AppBottomBar(items = Sections.values(),
-        navController = NavHostController(LocalContext.current))
+    AppBottomBar(navController = NavHostController(LocalContext.current),
+        {})
 }

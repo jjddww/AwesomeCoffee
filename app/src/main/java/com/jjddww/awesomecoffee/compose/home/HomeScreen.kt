@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose.home
 
+import android.annotation.SuppressLint
 import androidx.collection.intIntMapOf
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
@@ -26,6 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,8 +42,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.backgroundLight
@@ -56,11 +61,14 @@ import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navController: NavController,
+    onNavigateRoute: (String) -> Unit,
+    onMenuSelected: (Int) -> Unit
 ){
     val imageUrlList by viewModel.advertisements.observeAsState(initial = emptyList())
     val recommendedMenuList by viewModel.recommendedMenuList.observeAsState(initial = emptyList())
@@ -70,58 +78,63 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val isLogin = true
 
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxWidth()
-    ) {
-        Spacer(Modifier.height(35.dp))
-
-        Text(text = stringResource(id = R.string.login_app_name),
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            style = MaterialTheme.typography.titleMedium,
-            color = tertiaryLight)
-
-        Spacer(modifier = Modifier.height(35.dp))
-
-        AdsImageHorizontalPager(
-            imageUrlList,
-            emptyImageUrl,
-            Modifier
+    Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) })
+    {
+        paddingValues ->
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
                 .fillMaxWidth()
-                .height(220.dp)
-                .align(Alignment.CenterHorizontally),
-            pagerState)
+        ) {
+            Spacer(Modifier.height(35.dp))
 
-        Spacer(modifier = Modifier.height(25.dp))
+            Text(text = stringResource(id = R.string.login_app_name),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                style = MaterialTheme.typography.titleMedium,
+                color = tertiaryLight)
 
-        if (!isLogin)
-            MoveToLogin()
-        else
-            CouponStampView(stampCount, pointCount)
+            Spacer(modifier = Modifier.height(35.dp))
+
+            AdsImageHorizontalPager(
+                imageUrlList,
+                emptyImageUrl,
+                Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .align(Alignment.CenterHorizontally),
+                pagerState)
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            if (!isLogin)
+                MoveToLogin()
+            else
+                CouponStampView(stampCount, pointCount)
 
 
-        Spacer(modifier = Modifier.height(39.dp))
+            Spacer(modifier = Modifier.height(39.dp))
 
-        MenuListView(title = stringResource(id = R.string.new_menu), menuList = newMenuList)
+            MenuListView(title = stringResource(id = R.string.new_menu), menuList = newMenuList, onMenuSelected = onMenuSelected)
 
-        Spacer(modifier = Modifier.height(35.dp))
-        
-        MenuListView(title = stringResource(id = R.string.recommended_menu), menuList = recommendedMenuList)
+            Spacer(modifier = Modifier.height(35.dp))
 
-    }
+            MenuListView(title = stringResource(id = R.string.recommended_menu), menuList = recommendedMenuList, onMenuSelected = onMenuSelected)
 
-    LaunchedEffect(key1 = pagerState.currentPage){
-        launch {
-            delay(delayTime)
-            with(pagerState){
-                val target = if(currentPage < imageUrlList.count() - 1) currentPage + 1 else 0
+            Spacer(modifier = Modifier.height(80.dp))
+        }
 
-                animateScrollToPage(
-                    page = target, animationSpec = tween(
-                        durationMillis = 0, easing = FastOutLinearInEasing
+        LaunchedEffect(key1 = pagerState.currentPage){
+            launch {
+                delay(delayTime)
+                with(pagerState){
+                    val target = if(currentPage < imageUrlList.count() - 1) currentPage + 1 else 0
+
+                    animateScrollToPage(
+                        page = target, animationSpec = tween(
+                            durationMillis = 0, easing = FastOutLinearInEasing
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -257,7 +270,7 @@ fun CouponStampView(
 }
 
 @Composable
-fun MenuListView(title: String, menuList: List<Menu>){
+fun MenuListView(title: String, menuList: List<Menu>, onMenuSelected: (Int) -> Unit){
     Text(text = title,
         modifier = Modifier.padding(start = 20.dp),
         style = MaterialTheme.typography.titleMedium,
@@ -266,7 +279,7 @@ fun MenuListView(title: String, menuList: List<Menu>){
     Spacer(modifier = Modifier.height(22.dp))
 
     MenuListScreen(modifier = Modifier
-        .height(150.dp)
-        .padding(start = 20.dp),
-        menuList = menuList)
+        .height(150.dp),
+        menuList = menuList,
+        onMenuSelected = onMenuSelected)
 }
