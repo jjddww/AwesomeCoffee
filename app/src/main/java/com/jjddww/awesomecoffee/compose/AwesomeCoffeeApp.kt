@@ -48,6 +48,6 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     ){
         val arguments = requireNotNull(it.arguments)
         val menuId = arguments.getInt(MainDestinations.MENU_ID_KEY)
-        DetailScreen(DetailViewModel(menuId), navController.navController, onNavigateRoute)
+        DetailScreen(DetailViewModel(menuId))
     }
 }

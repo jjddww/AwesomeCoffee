@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +40,9 @@ import com.jjddww.awesomecoffee.compose.etc.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
+import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onPrimaryDark
+import com.jjddww.awesomecoffee.ui.theme.surfaceLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
 import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 
@@ -114,11 +117,12 @@ fun AppBottomBar(
 
                 },
                 icon = {
-                    Icon(painter = painterResource(id = item.icon),contentDescription = null)
+                    Icon(modifier = Modifier.align(Alignment.CenterVertically),
+                        painter = painterResource(id = item.icon),
+                        contentDescription = null)
                 },
                 label = {
                     Text(text = stringResource(id = item.title),
-                        modifier = Modifier.padding(top = 12.dp),
                         fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                         fontSize = 12.sp
                     )

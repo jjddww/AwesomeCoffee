@@ -5,20 +5,25 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -45,6 +50,10 @@ import com.jjddww.awesomecoffee.ui.theme.black60
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.ui.graphics.Shape
+import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
+import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
 
 enum class Pages(
@@ -58,55 +67,63 @@ enum class Pages(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
-    viewModel: DetailViewModel,
-    navController: NavController,
-    onNavigateRoute: (String) -> Unit){
+    viewModel: DetailViewModel){
 
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = {Pages.values().size})
 
-    Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute)}) {
-
-
     Column(modifier = Modifier
         .verticalScroll(scrollState)
         .fillMaxWidth()){
 
-            Image(modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
-                painter = rememberImagePainter(data = desc.imgUrl),
-                contentDescription = "Menu Image",
-                contentScale = ContentScale.FillWidth)
+        Image(modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp),
+            painter = rememberImagePainter(data = desc.imgUrl),
+            contentDescription = "Menu Image",
+            contentScale = ContentScale.FillWidth)
 
-            Spacer(modifier = Modifier.height(33.dp))
+        Spacer(modifier = Modifier.height(33.dp))
 
-            Text(text = desc.menuName,
-                modifier= Modifier.padding(start = 20.dp),
-                style = MaterialTheme.typography.titleMedium,
-                color = tertiaryLight)
+        Text(text = desc.menuName,
+            modifier= Modifier.padding(start = 20.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = tertiaryLight)
 
-            Text(text = desc.englishMenuName,
-                 modifier = Modifier.padding(start = 20.dp, top = 2.dp),
-                fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
-                color = neutralVariant70,
-                fontSize = 18.sp)
+        Text(text = desc.englishMenuName,
+            modifier = Modifier.padding(start = 20.dp, top = 2.dp),
+            fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
+            color = neutralVariant70,
+            fontSize = 18.sp)
 
-            Text(text = "${desc.price}원",
-                modifier = Modifier.padding(start = 20.dp, top = 19.dp),
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.Black)
+        Text(text = "${desc.price}원",
+            modifier = Modifier.padding(start = 20.dp, top = 19.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Black)
 
-            Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-            DescPagerScreen(pagerState = pagerState,
-                modifier = Modifier.fillMaxWidth(),
-                menuDescription = desc)
+        DescPagerScreen(pagerState = pagerState,
+            modifier = Modifier.fillMaxWidth(),
+            menuDescription = desc)
 
+        Button(modifier = Modifier
+            .width(270.dp)
+            .height(40.dp)
+            .align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(20.dp),
+            colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
+            onClick = { /*TODO*/ }) {
+            Text(stringResource(id = R.string.order),
+                fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
+                color = Color.White,
+                fontSize = 14.sp)
         }
+
     }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -122,7 +139,14 @@ fun DescPagerScreen(
         val coroutineScope = rememberCoroutineScope() //코루틴 스코프 쓰는 이유?
 
         TabRow(
-            selectedTabIndex = pagerState.currentPage){
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = surfaceVariantLight,
+            indicator = { tabPositions ->
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = tertiaryLight
+                )
+            }){
             pages.forEachIndexed { index, page ->
                 val title = stringResource(id = page.titleId)
 

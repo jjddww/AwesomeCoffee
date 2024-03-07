@@ -51,6 +51,7 @@ import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.backgroundLight
 import com.jjddww.awesomecoffee.ui.theme.scrimLight
+import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryContainerLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.delayTime
@@ -78,7 +79,8 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val isLogin = true
 
-    Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) })
+    Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
+        containerColor = surfaceVariantLight)
     {
         paddingValues ->
         Column(
