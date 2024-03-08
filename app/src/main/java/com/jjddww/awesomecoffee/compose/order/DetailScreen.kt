@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -21,7 +22,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Tab
@@ -51,8 +54,14 @@ import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Shape
+import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
+import com.jjddww.awesomecoffee.ui.theme.secondaryLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
 
@@ -63,7 +72,7 @@ enum class Pages(
     NUTRITION_INFORMATION(R.string.nutrition_info)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
@@ -73,6 +82,10 @@ fun DetailScreen(
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = {Pages.values().size})
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
 
     Column(modifier = Modifier
         .verticalScroll(scrollState)
@@ -115,11 +128,24 @@ fun DetailScreen(
             .align(Alignment.CenterHorizontally),
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
-            onClick = { /*TODO*/ }) {
+            onClick = {
+                showBottomSheet = true
+            })
+        {
             Text(stringResource(id = R.string.order),
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                 color = Color.White,
                 fontSize = 14.sp)
+        }
+
+        if(showBottomSheet){
+            ModalBottomSheet(onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState,
+                containerColor = onSecondaryLight
+            )
+            {
+                BottomSheetContent()
+            }
         }
 
     }
@@ -194,6 +220,24 @@ fun PageScreen(menuDescription: String){
             modifier = Modifier.padding(start = 40.dp, end = 40.dp),
             style = MaterialTheme.typography.labelSmall,
             color = Color.Black)
+    }
+}
+
+@Composable
+fun BottomSheetContent(){
+    Column(Modifier.fillMaxSize()
+        .background(onSecondaryLight)){
+        Text(text = "옵션선택",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 10.dp))
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Text(text = "사이즈", modifier = Modifier.padding(start = 43.dp),
+            fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
+            fontSize = 15.sp)
     }
 }
 
