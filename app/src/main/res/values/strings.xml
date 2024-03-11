@@ -24,4 +24,10 @@
     <string name="regular">Regular</string>
     <string name="Large">Large</string>
     <string name="Extra">Extra</string>
+    <string name="milliliter">%d ml</string>
+    <string name="personal_cup">개인컵</string>
+    <string name="restaurant_use_cup">매장컵</string>
+    <string name="single_use_cup">일회용컵</string>
+    <string name="hot">HOT</string>
+    <string name="iced">ICED</string>
 </resources>

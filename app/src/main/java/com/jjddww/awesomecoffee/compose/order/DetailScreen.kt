@@ -1,12 +1,16 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.annotation.SuppressLint
+import android.widget.CheckBox
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,11 +26,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -55,14 +66,20 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.MutableLiveData
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.secondaryLight
+import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
+import com.jjddww.awesomecoffee.utilities.BEVERAGE
+import com.jjddww.awesomecoffee.utilities.COFFEE
 import kotlinx.coroutines.launch
 
 enum class Pages(
@@ -71,6 +88,7 @@ enum class Pages(
     MENU_DESC(R.string.desc_title),
     NUTRITION_INFORMATION(R.string.nutrition_info)
 }
+
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -82,8 +100,10 @@ fun DetailScreen(
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = {Pages.values().size})
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
+    val amount by viewModel.totalAmount.observeAsState(initial = 1)
+    viewModel.setAmount()
 
 
     Column(modifier = Modifier
@@ -129,6 +149,7 @@ fun DetailScreen(
             colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
             onClick = {
                 showBottomSheet = true
+                sheetState.currentValue
             })
         {
             Text(stringResource(id = R.string.order),
@@ -140,16 +161,20 @@ fun DetailScreen(
         if(showBottomSheet){
             ModalBottomSheet(onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
-                containerColor = onSecondaryLight
+                containerColor = onSecondaryLight,
+                modifier = Modifier.fillMaxHeight(0.9f)
             )
             {
-                BottomSheetContent()
+                if(desc.mainCategory == BEVERAGE)
+                    BeverageContent(desc.subCategory == COFFEE, desc.temperature, desc.price, viewModel, amount)
+
             }
         }
 
     }
 
 }
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -222,22 +247,5 @@ fun PageScreen(menuDescription: String){
     }
 }
 
-@Composable
-fun BottomSheetContent(){
-    Column(Modifier.fillMaxSize()
-        .background(onSecondaryLight)){
-        Text(text = "옵션선택",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 10.dp))
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Text(text = "사이즈", modifier = Modifier.padding(start = 43.dp),
-            fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
-            fontSize = 15.sp)
-    }
-}
 
 

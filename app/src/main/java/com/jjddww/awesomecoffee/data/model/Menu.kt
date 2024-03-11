@@ -20,4 +20,6 @@ data class Menu(
     @SerializedName("price")
     var price: Int = 0,
     @SerializedName("description")
-    var desc: String = "")
+    var desc: String = "",
+    @SerializedName("temperature")
+    var temperature: String = "none")
