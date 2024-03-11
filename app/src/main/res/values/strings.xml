@@ -21,4 +21,7 @@
     <string name="other">기타</string>
     <string name="desc_title">메뉴 정보</string>
     <string name="nutrition_info">제품 영양 정보</string>
+    <string name="regular">Regular</string>
+    <string name="Large">Large</string>
+    <string name="Extra">Extra</string>
 </resources>

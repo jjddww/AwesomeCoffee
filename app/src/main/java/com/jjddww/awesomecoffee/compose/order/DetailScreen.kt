@@ -83,7 +83,6 @@ fun DetailScreen(
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = {Pages.values().size})
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
 
