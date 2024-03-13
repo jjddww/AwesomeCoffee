@@ -82,6 +82,13 @@ enum class Temperature(
     ICED(R.string.iced)
 }
 
+enum class Takeout(
+    @StringRes val text: Int
+){
+    TOGO(R.string.to_go),
+    TAKEOUT(R.string.take_out)
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -252,6 +259,47 @@ fun FixedTempToggleButton(temperature: String){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TakeoutToggleButton(){
+    val items = Takeout.entries.toTypedArray()
+
+    var selectedOption by remember {
+        mutableStateOf(0)
+    }
+
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly){
+
+        SingleChoiceSegmentedButtonRow (modifier = Modifier
+            .fillMaxWidth()
+            .height(110.dp)
+            .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 40.dp)){
+            items.forEachIndexed{ index, item ->
+
+                SegmentedButton(
+                    modifier = Modifier
+                        .padding(start = 3.dp, end = 3.dp)
+                        .height(80.dp),
+                    selected = index == selectedOption,
+                    onClick = { selectedOption = index },
+                    colors = SegmentedButtonDefaults.colors(activeContainerColor = secondaryContainerLight,
+                        activeBorderColor = primaryContainerDarkMediumContrast, activeContentColor = primaryLight,
+                        inactiveContainerColor = Color.White, inactiveBorderColor = Color.Black),
+                    shape = RoundedCornerShape(percent = 15),
+                    icon = {}
+                ) {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally){
+                        Text(text = stringResource(id = item.text),
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -278,6 +326,12 @@ fun FixedButtonPreview(){
         FixedTempToggleButton(HOT)
         FixedTempToggleButton(ICED)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TakeoutButtonPreview(){
+    TakeoutToggleButton()
 }
 
 

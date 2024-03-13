@@ -80,6 +80,7 @@ import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
 import com.jjddww.awesomecoffee.utilities.COFFEE
+import com.jjddww.awesomecoffee.utilities.DESSERT
 import kotlinx.coroutines.launch
 
 enum class Pages(
@@ -99,11 +100,13 @@ fun DetailScreen(
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
-    val pagerState = rememberPagerState(pageCount = {Pages.values().size})
+    val pagerState = rememberPagerState(pageCount = { Pages.entries.size})
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val showBottomSheet by viewModel.showBottomSheet.observeAsState(initial = false)
     val amount by viewModel.totalAmount.observeAsState(initial = 1)
+    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
     viewModel.setAmount()
+    viewModel.setPrice(desc.price)
 
 
     Column(modifier = Modifier
@@ -148,7 +151,7 @@ fun DetailScreen(
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
             onClick = {
-                showBottomSheet = true
+                viewModel.changeBottomSheetState()
                 sheetState.currentValue
             })
         {
@@ -159,15 +162,20 @@ fun DetailScreen(
         }
 
         if(showBottomSheet){
-            ModalBottomSheet(onDismissRequest = { showBottomSheet = false },
+            ModalBottomSheet(onDismissRequest = { viewModel.changeBottomSheetState() },
                 sheetState = sheetState,
                 containerColor = onSecondaryLight,
-                modifier = Modifier.fillMaxHeight(0.9f)
+                modifier = Modifier
+                    .fillMaxHeight(
+                        if(desc.mainCategory == BEVERAGE) 0.9f
+                        else 0.5f)
             )
             {
                 if(desc.mainCategory == BEVERAGE)
-                    BeverageContent(desc.subCategory == COFFEE, desc.temperature, desc.price, viewModel, amount)
+                    BeverageContent(desc.subCategory == COFFEE, desc.temperature, totalPrice, viewModel, amount)
 
+                else if(desc.mainCategory == DESSERT)
+                    DessertContent(price = totalPrice, viewModel = viewModel, amount = amount)
             }
         }
 

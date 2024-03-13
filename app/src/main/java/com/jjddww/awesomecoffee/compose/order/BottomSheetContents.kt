@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +39,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
+import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.utilities.HOT
 import com.jjddww.awesomecoffee.utilities.ICED
@@ -56,7 +58,7 @@ fun BeverageContent(isCoffee: Boolean,
 
     Column(
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(onSecondaryLight)
     ) {
         Text(
@@ -106,24 +108,79 @@ fun BeverageContent(isCoffee: Boolean,
 
                 Checkbox(
                     checked = checkBoxState.value,
-                    onCheckedChange = { checkBoxState.value = it },
+                    onCheckedChange = {
+                        checkBoxState.value = it
+                        if(checkBoxState.value)
+                            viewModel.extraShot()
+                        else
+                            viewModel.leaveOutShot()
+                        },
+
                     modifier = Modifier.padding(start = 20.dp),
                     colors = CheckboxDefaults.colors(checkedColor = surfaceVariant)
                 )
 
                 Text(
-                    modifier = Modifier.clickable { checkBoxState.value = !checkBoxState.value },
+                    modifier = Modifier.clickable {
+                        checkBoxState.value = !checkBoxState.value
+                        if(checkBoxState.value)
+                            viewModel.extraShot()
+                        else
+                            viewModel.leaveOutShot() },
                     text = "샷 추가 (+500원)",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         SetAmountButtonView(viewModel, amount, price)
+
+        Spacer(Modifier.height(40.dp))
+
+        OrderButtonView(viewModel)
     }
 }
+
+@Composable
+fun DessertContent(price: Int,
+                   viewModel: DetailViewModel,
+                   amount: Int){
+
+    Column (
+        Modifier
+            .fillMaxWidth()
+            .background(onSecondaryLight)){
+
+        Text(
+            text = "옵션선택",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 10.dp)
+        )
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+
+        Text(
+            text = "포장 여부", modifier = Modifier.padding(start = 20.dp),
+            fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
+            fontSize = 15.sp
+        )
+
+
+        TakeoutToggleButton()
+
+        SetAmountButtonView(viewModel, amount, price)
+
+        Spacer(Modifier.height(40.dp))
+
+        OrderButtonView(viewModel)
+    }
+}
+
 
 @Composable
 fun SetAmountButtonView(viewModel: DetailViewModel, amount: Int, price: Int){
@@ -161,5 +218,37 @@ fun SetAmountButtonView(viewModel: DetailViewModel, amount: Int, price: Int){
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.titleMedium)
 
+    }
+}
+
+@Composable
+fun OrderButtonView(viewModel: DetailViewModel){
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp)
+        .padding(start = 20.dp, end = 20.dp),
+        Arrangement.SpaceEvenly){
+
+        OrderButton(onClick = { viewModel.changeBottomSheetState() }, color = surfaceVariant, text = stringResource(
+            id = R.string.add_cart
+        )
+        )
+
+        OrderButton(onClick = { viewModel.changeBottomSheetState() }, color = onSurfaceVariantLight, text = stringResource(
+            id = R.string.order
+        )
+        )
+    }
+}
+
+@Composable
+fun OrderButton(onClick: () -> Unit, color: Color, text: String) {
+    Button(onClick = { onClick() },
+        modifier = Modifier
+            .width(170.dp)
+            .height(40.dp),
+        colors = ButtonDefaults.buttonColors(color)
+    ) {
+        Text(text = text)
     }
 }

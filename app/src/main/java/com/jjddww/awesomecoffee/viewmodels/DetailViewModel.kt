@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.viewmodels
 
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,8 +16,11 @@ class DetailViewModel(var id: Int): ViewModel() {
 
     val description: LiveData<List<Menu>> = repository.getMenuDescription(id).asLiveData()
 
-
     var totalAmount = MutableLiveData(1)
+
+    var totalPrice = MutableLiveData(0)
+
+    var showBottomSheet = MutableLiveData(false)
 
     fun setAmount(){
         totalAmount.value = 1
@@ -30,5 +34,21 @@ class DetailViewModel(var id: Int): ViewModel() {
         if (totalAmount.value!! > 1){
             totalAmount.value = totalAmount.value!! - 1
         }
+    }
+
+    fun setPrice(price: Int){
+        totalPrice.value = totalAmount.value?.times(price)
+    }
+
+    fun extraShot(){
+        totalPrice.value = totalPrice.value?.plus(500)
+    }
+
+    fun leaveOutShot(){
+        totalPrice.value = totalPrice.value?.minus(500)
+    }
+
+    fun changeBottomSheetState(){
+        showBottomSheet.value = !showBottomSheet.value!!
     }
 }
