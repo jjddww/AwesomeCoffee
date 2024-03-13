@@ -49,7 +49,9 @@ import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 fun BeverageContent(isCoffee: Boolean,
                     isOnlyIced: String,
                     price: Int,
-                    viewModel: DetailViewModel,
+                    onShotChange:(isExtra: Boolean) -> Unit,
+                    onAmountChange:(Boolean) -> Unit,
+                    onShowBottomSheetChange:() -> Unit,
                     amount: Int) {
     lateinit var checkBoxState: MutableState<Boolean>
 
@@ -111,9 +113,9 @@ fun BeverageContent(isCoffee: Boolean,
                     onCheckedChange = {
                         checkBoxState.value = it
                         if(checkBoxState.value)
-                            viewModel.extraShot()
+                            onShotChange(true)
                         else
-                            viewModel.leaveOutShot()
+                            onShotChange(false)
                         },
 
                     modifier = Modifier.padding(start = 20.dp),
@@ -124,9 +126,9 @@ fun BeverageContent(isCoffee: Boolean,
                     modifier = Modifier.clickable {
                         checkBoxState.value = !checkBoxState.value
                         if(checkBoxState.value)
-                            viewModel.extraShot()
+                            onShotChange(true)
                         else
-                            viewModel.leaveOutShot() },
+                            onShotChange(false) },
                     text = "샷 추가 (+500원)",
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -135,17 +137,18 @@ fun BeverageContent(isCoffee: Boolean,
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        SetAmountButtonView(viewModel, amount, price)
+        SetAmountButtonView(onAmountChange, amount, price)
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(viewModel)
+        OrderButtonView(onShowBottomSheetChange)
     }
 }
 
 @Composable
 fun DessertContent(price: Int,
-                   viewModel: DetailViewModel,
+                   onAmountChange:(Boolean) -> Unit,
+                   onShowBottomSheetChange:() -> Unit,
                    amount: Int){
 
     Column (
@@ -173,23 +176,25 @@ fun DessertContent(price: Int,
 
         TakeoutToggleButton()
 
-        SetAmountButtonView(viewModel, amount, price)
+        SetAmountButtonView(onAmountChange, amount, price)
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(viewModel)
+        OrderButtonView(onShowBottomSheetChange)
     }
 }
 
 
 @Composable
-fun SetAmountButtonView(viewModel: DetailViewModel, amount: Int, price: Int){
+fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
+                        amount: Int,
+                        price: Int){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(start = 20.dp)){
 
         IconButton(onClick = {
-            viewModel.decreaseAmount()
+            onIncreaseAmount(false)
         },
             enabled = amount > 1,
             modifier = Modifier
@@ -202,7 +207,7 @@ fun SetAmountButtonView(viewModel: DetailViewModel, amount: Int, price: Int){
         Text(text = "$amount", modifier = Modifier.padding(start = 8.dp, end = 8.dp), style = MaterialTheme.typography.titleMedium)
 
         IconButton(onClick = {
-            viewModel.increaseAmount()
+            onIncreaseAmount(true)
         },
             modifier = Modifier
                 .width(24.dp)
@@ -222,19 +227,19 @@ fun SetAmountButtonView(viewModel: DetailViewModel, amount: Int, price: Int){
 }
 
 @Composable
-fun OrderButtonView(viewModel: DetailViewModel){
+fun OrderButtonView(onShowBottomSheetChange:() -> Unit,){
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
         .padding(start = 20.dp, end = 20.dp),
         Arrangement.SpaceEvenly){
 
-        OrderButton(onClick = { viewModel.changeBottomSheetState() }, color = surfaceVariant, text = stringResource(
+        OrderButton(onClick = { onShowBottomSheetChange() }, color = surfaceVariant, text = stringResource(
             id = R.string.add_cart
         )
         )
 
-        OrderButton(onClick = { viewModel.changeBottomSheetState() }, color = onSurfaceVariantLight, text = stringResource(
+        OrderButton(onClick = { onShowBottomSheetChange() }, color = onSurfaceVariantLight, text = stringResource(
             id = R.string.order
         )
         )

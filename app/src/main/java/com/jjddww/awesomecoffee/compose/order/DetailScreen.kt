@@ -105,6 +105,19 @@ fun DetailScreen(
     val showBottomSheet by viewModel.showBottomSheet.observeAsState(initial = false)
     val amount by viewModel.totalAmount.observeAsState(initial = 1)
     val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
+
+    val onShotChange = { isExtra: Boolean ->
+        if (isExtra) viewModel.extraShot() else viewModel.leaveOutShot()}
+
+    val onAmountChange = { isIncrease: Boolean ->
+        if(isIncrease) viewModel.increaseAmount()  else viewModel.decreaseAmount()}
+
+    val onShowBottomSheetChange = {
+        viewModel.changeBottomSheetState()
+    }
+
+
+
     viewModel.setAmount()
     viewModel.setPrice(desc.price)
 
@@ -172,10 +185,16 @@ fun DetailScreen(
             )
             {
                 if(desc.mainCategory == BEVERAGE)
-                    BeverageContent(desc.subCategory == COFFEE, desc.temperature, totalPrice, viewModel, amount)
+                    BeverageContent(isCoffee = desc.subCategory == COFFEE,
+                        isOnlyIced = desc.temperature,
+                        price = totalPrice,
+                        onShotChange = onShotChange,
+                        onAmountChange = onAmountChange,
+                        onShowBottomSheetChange = onShowBottomSheetChange,
+                        amount = amount)
 
                 else if(desc.mainCategory == DESSERT)
-                    DessertContent(price = totalPrice, viewModel = viewModel, amount = amount)
+                    DessertContent(price = totalPrice, onAmountChange = onAmountChange, onShowBottomSheetChange = onShowBottomSheetChange,amount = amount)
             }
         }
 
