@@ -1,7 +1,9 @@
 package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.BannerAd
+import com.jjddww.awesomecoffee.data.model.MainCategory
 import com.jjddww.awesomecoffee.data.model.Menu
+import com.jjddww.awesomecoffee.data.model.SubCategory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,7 +12,7 @@ interface ApiService {
     suspend fun getAdvertisementList() : List<BannerAd>
 
     @GET("/api/menu/all")
-    suspend fun getAllMenuList(): List <Menu>
+    suspend fun getMenuList(@Query("sub_category") category: String): List <Menu>
 
     @GET("/api/menu/recommend")
     suspend fun getRecommendMenuList(): List<Menu>
@@ -22,8 +24,8 @@ interface ApiService {
     suspend fun getMenuDescription(@Query("id") id: Int): List<Menu>
 
     @GET("/api/category/main")
-    suspend fun getMainCategory(): List<String>
+    suspend fun getMainCategory(): List<MainCategory>
 
     @GET("/api/category/sub")
-    suspend fun getSubCategory(@Query("main_category") mainCategory: String): List<String>
+    suspend fun getSubCategory(@Query("main_category") mainCategory: String): List<SubCategory>
 }

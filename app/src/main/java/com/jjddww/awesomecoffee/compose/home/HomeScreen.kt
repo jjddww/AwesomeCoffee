@@ -82,7 +82,7 @@ fun HomeScreen(
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
         containerColor = surfaceVariantLight)
     {
-        paddingValues ->
+
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)

@@ -33,4 +33,6 @@
     <string name="to_go">먹고 갈게요</string>
     <string name="take_out">포장해주세요</string>
     <string name="add_cart">담기</string>
+    <string name="beverage">음료</string>
+    <string name="dessert">디저트</string>
 </resources>

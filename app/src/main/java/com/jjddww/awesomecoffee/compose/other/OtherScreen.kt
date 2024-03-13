@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.compose.etc
+package com.jjddww.awesomecoffee.compose.other
 
 import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold

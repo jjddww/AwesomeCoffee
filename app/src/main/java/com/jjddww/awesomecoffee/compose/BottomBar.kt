@@ -4,14 +4,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,27 +22,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
-import com.jjddww.awesomecoffee.compose.etc.OtherScreen
+import com.jjddww.awesomecoffee.compose.other.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
-import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onPrimaryDark
-import com.jjddww.awesomecoffee.ui.theme.surfaceLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
 import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
+import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 
 enum class Sections(
     @StringRes val title:Int,
@@ -73,7 +67,7 @@ fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
             CartScreen(appNavController.navController, onNavigateRoute)
         }
         composable(Sections.ORDER.route){
-            OrderScreen(appNavController.navController, onNavigateRoute)
+            OrderScreen(OrderViewModel(), appNavController.navController, onNavigateRoute)
         }
         composable(Sections.HOME.route){navBackStackEntry ->
             HomeScreen(HomeViewModel(), appNavController.navController, onNavigateRoute
