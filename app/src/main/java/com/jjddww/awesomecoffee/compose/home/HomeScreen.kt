@@ -66,11 +66,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
     navController: NavController,
     onNavigateRoute: (String) -> Unit,
     onMenuSelected: (Int) -> Unit
 ){
+    val viewModel = HomeViewModel()
     val imageUrlList by viewModel.advertisements.observeAsState(initial = emptyList())
     val recommendedMenuList by viewModel.recommendedMenuList.observeAsState(initial = emptyList())
     val newMenuList by viewModel.newMenuList.observeAsState(initial = emptyList())

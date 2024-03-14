@@ -13,6 +13,8 @@ import com.jjddww.awesomecoffee.data.api.RetrofitClient
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.data.model.SubCategory
 import com.jjddww.awesomecoffee.data.repository.OrderRepository
+import com.jjddww.awesomecoffee.utilities.BEVERAGE
+import com.jjddww.awesomecoffee.utilities.DESSERT
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -24,26 +26,22 @@ class OrderViewModel: ViewModel() {
 
     var repository = OrderRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
 
-    var menuData: MutableLiveData<List<Menu>> = MutableLiveData()
-    var menuList = MediatorLiveData<List<Menu>>()
+    var menuData = repository.getMenuList().asLiveData()
 
-    fun ddd():  LiveData<List<SubCategory>>{
-        return repository.getSubCategoryData("ㅇ").asLiveData()
+    var menuList = MutableLiveData<List<Menu>>()
+
+    var beverageCategories = repository.getSubCategoryData(BEVERAGE).asLiveData()
+
+    var dessertCategories = repository.getSubCategoryData(DESSERT).asLiveData()
+
+    fun setMenuList(category: String){
+        if(!menuData.value.isNullOrEmpty()){
+            val list = menuData.value?.partition{ it.subCategory == category }?.first
+            menuList.value = if (list.isNullOrEmpty()) emptyList() else list
+        }
+
+        Log.e("zzzz", menuList.value.toString())
     }
-
-
-    fun getSubCategory(category: String): LiveData<List<SubCategory>> =
-        repository.getSubCategoryData(category).asLiveData()
-
-    fun getMenuLivedata(subCategory: String): LiveData<List<Menu>> {
-        return repository.getMenuList(subCategory).asLiveData()
-    }
-
-
-    fun getMenuList(subCategory: String){
-        menuList.addSource(getMenuLivedata(subCategory)) { menuData.value = it }
-    }
-
 
 
 }

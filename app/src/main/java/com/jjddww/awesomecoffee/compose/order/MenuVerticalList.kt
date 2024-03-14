@@ -2,10 +2,13 @@ package com.jjddww.awesomecoffee.compose.order
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,9 +37,9 @@ import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 @Composable
 fun MenuItem(menu: Menu){
     Row(modifier = Modifier
-        .width(140.dp)
+        .fillMaxSize()
         .height(130.dp)
-        .padding(start = 15.dp)){
+        .padding(start = 20.dp)){
 
         Image(
             painter = rememberImagePainter (data = menu.imgUrl),
@@ -48,22 +51,22 @@ fun MenuItem(menu: Menu){
                 .align(Alignment.CenterVertically)
         )
 
-        Spacer(Modifier.width(30.dp))
+        Spacer(Modifier.width(40.dp))
 
-        Column (modifier = Modifier.height(130.dp)){
+        Column (modifier = Modifier.fillMaxHeight()
+            .padding(top = 23.dp, bottom = 20.dp)
+            , Arrangement.SpaceEvenly){
             Text(text = menu.menuName,
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                 fontSize = 14.sp,
                 color = Color.Black)
-
-            Spacer(modifier = Modifier.height(10.dp))
 
             Text(text = menu.englishMenuName,
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                 fontSize = 12.sp,
                 color = neutralVariant70)
 
-            Spacer(modifier = Modifier.height(10.dp))
+
 
             Text(text = "${menu.price}원",
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
@@ -75,7 +78,7 @@ fun MenuItem(menu: Menu){
 
 @Composable
 fun MenuVerticalList(menuList: List<Menu>){
-    LazyColumn(modifier = Modifier.height(200.dp)){
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)){
 
         items(menuList){menu ->
             MenuItem(menu = menu)

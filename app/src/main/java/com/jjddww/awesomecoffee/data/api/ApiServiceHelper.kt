@@ -19,6 +19,6 @@ interface ApiServiceHelper {
 
     fun getSubCategory(category: String): Flow<List<SubCategory>>
 
-    fun getMenuList(subCategory: String): Flow<List<Menu>>
+    fun getMenuList(): Flow<List<Menu>>
 
 }

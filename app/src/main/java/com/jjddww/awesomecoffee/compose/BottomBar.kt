@@ -67,10 +67,10 @@ fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
             CartScreen(appNavController.navController, onNavigateRoute)
         }
         composable(Sections.ORDER.route){
-            OrderScreen(OrderViewModel(), appNavController.navController, onNavigateRoute)
+            OrderScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute)
         }
         composable(Sections.HOME.route){navBackStackEntry ->
-            HomeScreen(HomeViewModel(), appNavController.navController, onNavigateRoute
+            HomeScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute
             ) { id -> onMenuSelected(id, navBackStackEntry) }
         }
         composable(Sections.COUPON.route){

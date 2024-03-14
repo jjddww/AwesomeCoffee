@@ -31,8 +31,8 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getSubCategory(category))
     }
 
-    override fun getMenuList(subCategory: String): Flow<List<Menu>>  = flow {
-        emit(apiService.getMenuList(subCategory))
+    override fun getMenuList(): Flow<List<Menu>>  = flow {
+        emit(apiService.getMenuList())
     }
 
 }

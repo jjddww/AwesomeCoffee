@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -73,16 +74,16 @@ enum class CategoryPages(
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavigateRoute: (String) -> Unit){
+fun OrderScreen(navController: NavController, onNavigateRoute: (String) -> Unit){
 
-    val scrollState = rememberScrollState()
+    val viewModel = OrderViewModel()
     val pagerState = rememberPagerState (pageCount = {CategoryPages.entries.size})
-    val beverageCategories by viewModel.getSubCategory(BEVERAGE).observeAsState(initial = emptyList())
-    val dessertCategories by viewModel.getSubCategory(DESSERT).observeAsState(initial = emptyList())
+    val beverageCategories by viewModel.beverageCategories.observeAsState(initial = emptyList())
+    val dessertCategories by viewModel.dessertCategories.observeAsState(initial = emptyList())
     val menuList by viewModel.menuData.observeAsState(initial = emptyList())
-    val ddd by viewModel.ddd().observeAsState(initial = emptyList())
+    val partitionMenuList by viewModel.menuList.observeAsState(initial = emptyList())
 
-    val onChangeMenuList = { subCategory: String -> viewModel.getMenuList(subCategory)}
+    val onChangeList = { c: String -> viewModel.setMenuList(c)}
 
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute)},
@@ -90,7 +91,6 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
 
         Column (
             modifier = Modifier
-                .verticalScroll(scrollState)
                 .fillMaxWidth()
         ){
             Spacer(Modifier.height(35.dp))
@@ -101,7 +101,7 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
                 color = tertiaryLight
             )
 
-            
+
             IconButton(onClick = { /*TODO*/ },
                 modifier = Modifier
                     .align(Alignment.End)
@@ -110,7 +110,7 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
                 Icon(painterResource(id = R.drawable.baseline_search_30), contentDescription = null)
             }
 
-            SearchPagerScreen(onChangeMenuList, beverageCategories, dessertCategories, pagerState, menuList = menuList)
+            SearchPagerScreen(onChangeList, partitionMenuList, menuList, beverageCategories, dessertCategories, pagerState)
 
 
         }
@@ -120,12 +120,13 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPagerScreen(
-    onChangeMenuList:(String) -> Unit,
+    onChangeList: (String) -> Unit,
+    p: List<Menu>,
+    menuList: List<Menu>,
     beverageList: List<SubCategory>,
     dessertList: List<SubCategory>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    menuList: List<Menu> = emptyList(),
 ){
     val coroutineScope = rememberCoroutineScope()
     val pages = CategoryPages.entries.toTypedArray()
@@ -163,11 +164,11 @@ fun SearchPagerScreen(
             index ->
             when(pages[index]){
                 CategoryPages.BEVERAGE -> {
-                    OrderPageScreen(beverageList, onChangeMenuList, menuList)
+                    OrderPageScreen(onChangeList, p, menuList, beverageList)
                 }
 
                 CategoryPages.DESSERT -> {
-                    OrderPageScreen(dessertList, onChangeMenuList, menuList)
+                    OrderPageScreen(onChangeList, p, menuList, dessertList)
                 }
             }
         }
@@ -177,12 +178,13 @@ fun SearchPagerScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderPageScreen(categories: List<SubCategory>,
-                    onChangeMenuList:(String) -> Unit,
-                    menuList: List<Menu>){
+fun OrderPageScreen(
+    onChangeList: (String) -> Unit,
+    p: List<Menu>,
+    menuList: List<Menu>,
+    categories: List<SubCategory>){
     var selectedOption by remember { mutableStateOf(0) }
-    if (categories.isNotEmpty())
-        onChangeMenuList(categories[0].subCategory)
+    var selectedCategories by remember { mutableStateOf(if (categories.isNotEmpty()) categories[0].subCategory else "") }
 
     Column(Modifier.fillMaxSize()){
         SingleChoiceSegmentedButtonRow(modifier= Modifier
@@ -193,8 +195,9 @@ fun OrderPageScreen(categories: List<SubCategory>,
                     modifier = Modifier
                         .width(110.dp)
                         .padding(start = if (index == 0) 20.dp else 15.dp) ,
-                    onClick = { onChangeMenuList(item.subCategory);
-                        selectedOption = index},
+                    onClick = { selectedOption = index
+                        selectedCategories = item.subCategory
+                        onChangeList(selectedCategories)},
                     icon = {},
                     colors = SegmentedButtonDefaults.colors(activeContainerColor = onSurfaceVariantLight,
                         activeBorderColor = onSurfaceVariantLight, activeContentColor = Color.White,
@@ -211,7 +214,8 @@ fun OrderPageScreen(categories: List<SubCategory>,
             }
         }
 
-        MenuVerticalList(menuList)
+        MenuVerticalList(menuList = p)
+
     }
 
 

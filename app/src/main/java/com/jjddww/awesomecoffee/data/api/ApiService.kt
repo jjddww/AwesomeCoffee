@@ -12,7 +12,7 @@ interface ApiService {
     suspend fun getAdvertisementList() : List<BannerAd>
 
     @GET("/api/menu/all")
-    suspend fun getMenuList(@Query("sub_category") category: String): List <Menu>
+    suspend fun getMenuList(): List <Menu>
 
     @GET("/api/menu/recommend")
     suspend fun getRecommendMenuList(): List<Menu>
