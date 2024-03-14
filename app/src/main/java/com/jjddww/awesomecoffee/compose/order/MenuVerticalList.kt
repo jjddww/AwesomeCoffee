@@ -35,11 +35,12 @@ import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 
 @Composable
-fun MenuItem(menu: Menu){
+fun MenuItem(menu: Menu, onMenuSelected: (Int) -> Unit){
     Row(modifier = Modifier
         .fillMaxSize()
         .height(130.dp)
-        .padding(start = 20.dp)){
+        .padding(start = 20.dp)
+        .clickable { onMenuSelected(menu.id) }){
 
         Image(
             painter = rememberImagePainter (data = menu.imgUrl),
@@ -77,11 +78,11 @@ fun MenuItem(menu: Menu){
 }
 
 @Composable
-fun MenuVerticalList(menuList: List<Menu>){
+fun MenuVerticalList(menuList: List<Menu>, onMenuSelected: (Int) -> Unit){
     LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)){
 
         items(menuList){menu ->
-            MenuItem(menu = menu)
+            MenuItem(menu = menu, onMenuSelected = onMenuSelected)
         }
     }
 }

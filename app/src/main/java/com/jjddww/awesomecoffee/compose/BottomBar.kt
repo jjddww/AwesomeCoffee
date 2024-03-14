@@ -66,8 +66,9 @@ fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
         composable(Sections.CART.route){
             CartScreen(appNavController.navController, onNavigateRoute)
         }
-        composable(Sections.ORDER.route){
-            OrderScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute)
+        composable(Sections.ORDER.route){navBackStackEntry ->
+            OrderScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute
+            ){ id -> onMenuSelected(id, navBackStackEntry)}
         }
         composable(Sections.HOME.route){navBackStackEntry ->
             HomeScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute

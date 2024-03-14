@@ -71,19 +71,27 @@ enum class CategoryPages(
     DESSERT(R.string.dessert)
 }
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OrderScreen(navController: NavController, onNavigateRoute: (String) -> Unit){
+fun OrderScreen(navController: NavController, onNavigateRoute: (String) -> Unit, onMenuSelected: (Int) -> Unit){
+
+    Log.e("띠용", "dddddd")
 
     val viewModel = OrderViewModel()
     val pagerState = rememberPagerState (pageCount = {CategoryPages.entries.size})
     val beverageCategories by viewModel.beverageCategories.observeAsState(initial = emptyList())
     val dessertCategories by viewModel.dessertCategories.observeAsState(initial = emptyList())
     val menuList by viewModel.menuData.observeAsState(initial = emptyList())
-    val partitionMenuList by viewModel.menuList.observeAsState(initial = emptyList())
+    val partitionBeverageMenuList by viewModel.beverageMenuList.observeAsState(initial = emptyList())
+    val partitionDessertMenuList by viewModel.dessertMenuList.observeAsState(initial = emptyList())
+    val beverageIndex by viewModel.beverageListIndex.observeAsState(initial = 0)
+    val dessertIndex by viewModel.dessertListIndex.observeAsState(initial = 0)
 
-    val onChangeList = { c: String -> viewModel.setMenuList(c)}
+    val onBeverageChangeList = { c: String -> viewModel.setBeverageMenuList(c)}
+    val onDessertChangeList = { c: String -> viewModel.setDessertMenuList(c)}
+    val onChangeIndex = { c: String, idx: Int -> viewModel.changeIndex(c, idx)}
 
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute)},
@@ -110,7 +118,12 @@ fun OrderScreen(navController: NavController, onNavigateRoute: (String) -> Unit)
                 Icon(painterResource(id = R.drawable.baseline_search_30), contentDescription = null)
             }
 
-            SearchPagerScreen(onChangeList, partitionMenuList, menuList, beverageCategories, dessertCategories, pagerState)
+            if (!beverageCategories.isNullOrEmpty())
+                onBeverageChangeList(beverageCategories[beverageIndex].subCategory)
+
+            SearchPagerScreen(onChangeIndex, beverageIndex, dessertIndex, onBeverageChangeList,
+                onDessertChangeList, partitionBeverageMenuList, partitionDessertMenuList, beverageCategories,
+                dessertCategories, pagerState, onMenuSelected = onMenuSelected)
 
 
         }
@@ -120,13 +133,18 @@ fun OrderScreen(navController: NavController, onNavigateRoute: (String) -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPagerScreen(
-    onChangeList: (String) -> Unit,
-    p: List<Menu>,
-    menuList: List<Menu>,
+    onChangeIndex: (String, Int) -> Unit,
+    beverageIndex: Int,
+    dessertIndex: Int,
+    onChangeBeverageList: (String) -> Unit,
+    onChangeDessertList: (String) -> Unit,
+    p1: List<Menu>,
+    p2: List<Menu>,
     beverageList: List<SubCategory>,
     dessertList: List<SubCategory>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
+    onMenuSelected: (Int) -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
     val pages = CategoryPages.entries.toTypedArray()
@@ -157,18 +175,22 @@ fun SearchPagerScreen(
             }
         }
 
-        HorizontalPager(state = pagerState,
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()) {
-
             index ->
             when(pages[index]){
                 CategoryPages.BEVERAGE -> {
-                    OrderPageScreen(onChangeList, p, menuList, beverageList)
+                    if(beverageList.isNotEmpty())
+                        onChangeBeverageList(beverageList[beverageIndex].subCategory)
+                    OrderPageScreen(onChangeIndex, BEVERAGE, p1,  beverageList, beverageIndex, onMenuSelected)
                 }
 
                 CategoryPages.DESSERT -> {
-                    OrderPageScreen(onChangeList, p, menuList, dessertList)
+                    if(dessertList.isNotEmpty())
+                        onChangeDessertList(dessertList[dessertIndex].subCategory)
+                    OrderPageScreen(onChangeIndex, DESSERT, p2, dessertList, dessertIndex, onMenuSelected)
                 }
             }
         }
@@ -179,12 +201,15 @@ fun SearchPagerScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderPageScreen(
-    onChangeList: (String) -> Unit,
+    onChangeIndex: (String, Int) -> Unit,
+    mainCategory: String,
     p: List<Menu>,
-    menuList: List<Menu>,
-    categories: List<SubCategory>){
-    var selectedOption by remember { mutableStateOf(0) }
-    var selectedCategories by remember { mutableStateOf(if (categories.isNotEmpty()) categories[0].subCategory else "") }
+    categories: List<SubCategory>,
+    savedIndex: Int,
+    onMenuSelected: (Int) -> Unit){
+    var selectedOption by remember { mutableStateOf(savedIndex) }
+    var selectedCategories by remember { mutableStateOf(if (categories.isNotEmpty()) categories[savedIndex].subCategory else "") }
+
 
     Column(Modifier.fillMaxSize()){
         SingleChoiceSegmentedButtonRow(modifier= Modifier
@@ -196,8 +221,8 @@ fun OrderPageScreen(
                         .width(110.dp)
                         .padding(start = if (index == 0) 20.dp else 15.dp) ,
                     onClick = { selectedOption = index
-                        selectedCategories = item.subCategory
-                        onChangeList(selectedCategories)},
+                        onChangeIndex( mainCategory, selectedOption)
+                        selectedCategories = item.subCategory },
                     icon = {},
                     colors = SegmentedButtonDefaults.colors(activeContainerColor = onSurfaceVariantLight,
                         activeBorderColor = onSurfaceVariantLight, activeContentColor = Color.White,
@@ -214,7 +239,7 @@ fun OrderPageScreen(
             }
         }
 
-        MenuVerticalList(menuList = p)
+        MenuVerticalList(menuList = p, onMenuSelected)
 
     }
 

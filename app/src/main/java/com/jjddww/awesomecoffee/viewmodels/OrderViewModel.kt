@@ -28,19 +28,37 @@ class OrderViewModel: ViewModel() {
 
     var menuData = repository.getMenuList().asLiveData()
 
-    var menuList = MutableLiveData<List<Menu>>()
+    var beverageMenuList = MutableLiveData<List<Menu>>()
+
+    var dessertMenuList = MutableLiveData<List<Menu>>()
 
     var beverageCategories = repository.getSubCategoryData(BEVERAGE).asLiveData()
 
     var dessertCategories = repository.getSubCategoryData(DESSERT).asLiveData()
 
-    fun setMenuList(category: String){
+    var beverageListIndex = MutableLiveData(0)
+
+    var dessertListIndex = MutableLiveData(0)
+
+    fun setBeverageMenuList(category: String){
         if(!menuData.value.isNullOrEmpty()){
             val list = menuData.value?.partition{ it.subCategory == category }?.first
-            menuList.value = if (list.isNullOrEmpty()) emptyList() else list
+            beverageMenuList.value = if (list.isNullOrEmpty()) emptyList() else list
         }
+    }
 
-        Log.e("zzzz", menuList.value.toString())
+    fun setDessertMenuList(category: String){
+        if(!menuData.value.isNullOrEmpty()){
+            val list = menuData.value?.partition{ it.subCategory == category }?.first
+            dessertMenuList.value = if (list.isNullOrEmpty()) emptyList() else list
+        }
+    }
+
+    fun changeIndex(category: String, index: Int){
+        if (category == BEVERAGE)
+            beverageListIndex.value = index
+        else
+            dessertListIndex.value = index
     }
 
 
