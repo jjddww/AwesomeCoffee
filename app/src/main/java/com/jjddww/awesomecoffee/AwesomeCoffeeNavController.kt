@@ -1,5 +1,7 @@
 package com.jjddww.awesomecoffee
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -12,6 +14,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jjddww.awesomecoffee.compose.MainDestinations
+import com.jjddww.awesomecoffee.compose.Sections
 
 @Composable
 fun rememberAppNavController(
@@ -38,7 +41,9 @@ class AppNavController(
         navController.navigateUp()
     }
 
+    @SuppressLint("RestrictedApi")
     fun navigateToBottomBarRoute(route: String) {
+
         if (route != currentRoute) {
             navController.navigate(route){
                 popUpTo(navController.graph.findStartDestination().id){
@@ -47,6 +52,15 @@ class AppNavController(
                 launchSingleTop = true
                 restoreState = true
             }
+        }
+
+        navController.addOnDestinationChangedListener { controller, _, _ ->
+            val routes = controller
+                .currentBackStack.value
+                .map { it.destination.route }
+                .joinToString(", ")
+
+            Log.d("BackStackLog", "BackStack: $routes")
         }
     }
 }

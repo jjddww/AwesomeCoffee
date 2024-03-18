@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="beverage">
+        <item>커피</item>
+        <item>차</item>
+        <item>기타음료</item>
+    </string-array>
+
+    <string-array name="dessert">
+        <item>케이크</item>
+        <item>쿠키</item>
+    </string-array>
+</resources>

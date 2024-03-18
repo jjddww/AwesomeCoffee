@@ -55,11 +55,13 @@ enum class Sections(
 
 object MainDestinations {
     const val HOME_ROUTE = "home"
+    const val ORDER_ROUTE = "order"
     const val DETAIL_ROUTE = "detail"
     const val MENU_ID_KEY = "menuId"
 }
 
-fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
+fun NavGraphBuilder.AppNavGraph(viewModel: OrderViewModel,
+                                appNavController: AppNavController,
                                 onMenuSelected: (Int, NavBackStackEntry) -> Unit,
                                 onNavigateRoute: (String) -> Unit)
 {
@@ -67,7 +69,7 @@ fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
             CartScreen(appNavController.navController, onNavigateRoute)
         }
         composable(Sections.ORDER.route){navBackStackEntry ->
-            OrderScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute
+            OrderScreen(viewModel = viewModel, navController = appNavController.navController, onNavigateRoute = onNavigateRoute
             ){ id -> onMenuSelected(id, navBackStackEntry)}
         }
         composable(Sections.HOME.route){navBackStackEntry ->
@@ -80,6 +82,7 @@ fun NavGraphBuilder.AppNavGraph(appNavController: AppNavController,
         composable(Sections.OTHER.route){
             OtherScreen(appNavController.navController, onNavigateRoute)
         }
+
 }
 
 

@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.compose.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.collection.intIntMapOf
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
@@ -30,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -62,6 +64,11 @@ import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private fun log(msg: String) {
+    Log.d("HomeComposable", msg)
+}
+
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,6 +85,15 @@ fun HomeScreen(
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
     val scrollState = rememberScrollState()
     val isLogin = true
+
+    log("Compose") // 최초 Compose, Recompose 시점에 호출
+    DisposableEffect(key1 = true) { // Composable Lifecycle 동안 1번만 호출하기 위해서 key로 true
+        log("Enter") // Composable이 Composition 트리에서 추가될 때
+        onDispose {
+            log("Leave") // Composable이 Composition 트리에서 제거될 때 호출
+        }
+
+    }
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
         containerColor = surfaceVariantLight)

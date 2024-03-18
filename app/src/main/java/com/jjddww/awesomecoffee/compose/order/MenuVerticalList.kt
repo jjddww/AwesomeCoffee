@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +57,8 @@ fun MenuItem(menu: Menu, onMenuSelected: (Int) -> Unit){
 
         Spacer(Modifier.width(40.dp))
 
-        Column (modifier = Modifier.fillMaxHeight()
+        Column (modifier = Modifier
+            .fillMaxHeight()
             .padding(top = 23.dp, bottom = 20.dp)
             , Arrangement.SpaceEvenly){
             Text(text = menu.menuName,
@@ -73,16 +77,6 @@ fun MenuItem(menu: Menu, onMenuSelected: (Int) -> Unit){
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                 fontSize = 14.sp,
                 color = Color.Black)
-        }
-    }
-}
-
-@Composable
-fun MenuVerticalList(menuList: List<Menu>, onMenuSelected: (Int) -> Unit){
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)){
-
-        items(menuList){menu ->
-            MenuItem(menu = menu, onMenuSelected = onMenuSelected)
         }
     }
 }

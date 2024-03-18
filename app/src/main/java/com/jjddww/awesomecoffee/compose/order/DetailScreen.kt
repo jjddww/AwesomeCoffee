@@ -95,7 +95,8 @@ enum class Pages(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
-    viewModel: DetailViewModel){
+    viewModel: DetailViewModel,
+    onNavigateRoute: (String) -> Unit){
 
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()

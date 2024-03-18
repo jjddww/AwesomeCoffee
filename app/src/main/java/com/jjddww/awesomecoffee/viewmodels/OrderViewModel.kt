@@ -28,37 +28,19 @@ class OrderViewModel: ViewModel() {
 
     var menuData = repository.getMenuList().asLiveData()
 
-    var beverageMenuList = MutableLiveData<List<Menu>>()
+    var filteredList1 = MutableLiveData<List<Menu>>()
+    var filteredList2 = MutableLiveData<List<Menu>>()
 
-    var dessertMenuList = MutableLiveData<List<Menu>>()
 
-    var beverageCategories = repository.getSubCategoryData(BEVERAGE).asLiveData()
-
-    var dessertCategories = repository.getSubCategoryData(DESSERT).asLiveData()
-
-    var beverageListIndex = MutableLiveData(0)
-
-    var dessertListIndex = MutableLiveData(0)
-
-    fun setBeverageMenuList(category: String){
+    fun setBeverageMenuList(main: String, category: String){
         if(!menuData.value.isNullOrEmpty()){
             val list = menuData.value?.partition{ it.subCategory == category }?.first
-            beverageMenuList.value = if (list.isNullOrEmpty()) emptyList() else list
-        }
-    }
 
-    fun setDessertMenuList(category: String){
-        if(!menuData.value.isNullOrEmpty()){
-            val list = menuData.value?.partition{ it.subCategory == category }?.first
-            dessertMenuList.value = if (list.isNullOrEmpty()) emptyList() else list
+            if(main == BEVERAGE)
+                filteredList1.value = if (list.isNullOrEmpty()) emptyList() else list
+            else
+                filteredList2.value = if (list.isNullOrEmpty()) emptyList() else list
         }
-    }
-
-    fun changeIndex(category: String, index: Int){
-        if (category == BEVERAGE)
-            beverageListIndex.value = index
-        else
-            dessertListIndex.value = index
     }
 
 
