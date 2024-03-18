@@ -14,18 +14,6 @@ import kotlinx.coroutines.flow.forEach
 
 class OrderRepository(private val apiHelper: ApiServiceHelper) {
 
-    fun getMainCategoryData() =
-        apiHelper.getMainCategory()
-            .catch { e ->
-                Log.e("get Main Category Api Error:", e.toString())
-            }
-
-    fun getSubCategoryData(category: String) =
-        apiHelper.getSubCategory(category)
-            .catch {e ->
-                Log.e("get Sub Category Api Error", e.toString())
-            }
-
     fun getMenuList() =
         apiHelper.getMenuList()
             .catch {e ->

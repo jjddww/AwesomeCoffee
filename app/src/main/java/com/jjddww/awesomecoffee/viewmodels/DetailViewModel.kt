@@ -12,7 +12,7 @@ import com.jjddww.awesomecoffee.data.repository.DetailRepository
 
 class DetailViewModel(var id: Int): ViewModel() {
 
-    var repository = DetailRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
+    private val repository = DetailRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
 
     val description: LiveData<List<Menu>> = repository.getMenuDescription(id).asLiveData()
 

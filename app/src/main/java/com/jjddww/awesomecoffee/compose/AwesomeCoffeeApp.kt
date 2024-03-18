@@ -14,7 +14,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
+import com.jjddww.awesomecoffee.compose.order.SearchScreen
 import com.jjddww.awesomecoffee.rememberAppNavController
+import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 
@@ -23,29 +25,34 @@ import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 fun AwesomeCoffeeApp() {
     val awesomeCoffeeNavController = rememberAppNavController()
     val orderViewModel = OrderViewModel()
+    val couponViewModel = CouponViewModel()
     NavHost(
         navController = awesomeCoffeeNavController.navController,
         startDestination = MainDestinations.HOME_ROUTE){
         awesomeCoffeeNavGraph(
+            couponViewModel = couponViewModel,
             orderViewModel = orderViewModel,
             navController = awesomeCoffeeNavController,
             onMenuSelected = awesomeCoffeeNavController::navigateToDetail,
+            onSearchScreen = awesomeCoffeeNavController::navigateToSearch,
             onNavigateRoute = awesomeCoffeeNavController::navigateToBottomBarRoute)
     }
 }
 
 
 private fun NavGraphBuilder.awesomeCoffeeNavGraph(
+    couponViewModel: CouponViewModel,
     orderViewModel: OrderViewModel,
     navController: AppNavController,
     onMenuSelected: (Int, NavBackStackEntry) -> Unit,
+    onSearchScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
     navigation(
         route = MainDestinations.HOME_ROUTE,
         startDestination = Sections.HOME.route
     ){
-        AppNavGraph(orderViewModel, navController, onMenuSelected, onNavigateRoute)
+        AppNavGraph(couponViewModel, orderViewModel, navController, onMenuSelected, onSearchScreen, onNavigateRoute)
     }
 
     composable(route = "${MainDestinations.DETAIL_ROUTE}/{${MainDestinations.MENU_ID_KEY}}",
@@ -54,20 +61,10 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     ){
         val arguments = requireNotNull(it.arguments)
         val menuId = arguments.getInt(MainDestinations.MENU_ID_KEY)
-        DetailScreen(DetailViewModel(menuId), onNavigateRoute)
+        DetailScreen(DetailViewModel(menuId))
     }
 
-//    navigation(
-//        route = MainDestinations.ORDER_ROUTE,
-//        startDestination = Sections.ORDER.route
-//    ){
-//        composable(route = "${MainDestinations.DETAIL_ROUTE}/{${MainDestinations.MENU_ID_KEY}}",
-//            arguments = listOf(navArgument(MainDestinations.MENU_ID_KEY) {type = NavType.IntType})
-//
-//        ){
-//            val arguments = requireNotNull(it.arguments)
-//            val menuId = arguments.getInt(MainDestinations.MENU_ID_KEY)
-//            DetailScreen(DetailViewModel(menuId), onNavigateRoute)
-//        }
-//    }
+    composable(route = "${MainDestinations.SEARCH_ROUTE}"){navBackStackEntry ->
+        SearchScreen(onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
+    }
 }

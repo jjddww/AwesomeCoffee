@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.BannerAd
+import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.MainCategory
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.data.model.SubCategory
@@ -23,9 +24,6 @@ interface ApiService {
     @GET("/api/menu/desc")
     suspend fun getMenuDescription(@Query("id") id: Int): List<Menu>
 
-    @GET("/api/category/main")
-    suspend fun getMainCategory(): List<MainCategory>
-
-    @GET("/api/category/sub")
-    suspend fun getSubCategory(@Query("main_category") mainCategory: String): List<SubCategory>
+    @GET("/api/coupon/coupon_info")
+    suspend fun getCouponList(): List<Coupon>
 }

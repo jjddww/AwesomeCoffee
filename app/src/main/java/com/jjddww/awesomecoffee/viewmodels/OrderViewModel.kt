@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class OrderViewModel: ViewModel() {
 
-    var repository = OrderRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
+    private val repository = OrderRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
 
     var menuData = repository.getMenuList().asLiveData()
 

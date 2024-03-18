@@ -12,7 +12,7 @@ import com.jjddww.awesomecoffee.data.repository.HomeRepository
 
 class HomeViewModel: ViewModel() {
 
-    var repository = HomeRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
+    private val repository = HomeRepository(ApiServiceHelperImpl(RetrofitClient.retrofit))
 
     val advertisements: LiveData<List<BannerAd>> = repository.getAdvertisementData().asLiveData()
 

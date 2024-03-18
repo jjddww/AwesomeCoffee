@@ -1,7 +1,6 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,18 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -42,15 +32,12 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,7 +52,6 @@ import androidx.navigation.NavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.Menu
-import com.jjddww.awesomecoffee.data.model.SubCategory
 import com.jjddww.awesomecoffee.ui.theme.black60
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineVariantLight
@@ -90,53 +76,23 @@ data class ChipState(
     val isSelected: MutableState<Boolean>
 )
 
-private fun log(msg: String) {
-    Log.d("MyComposable", msg)
-}
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavigateRoute: (String) -> Unit, onMenuSelected: (Int) -> Unit){
+fun OrderScreen(
+    viewModel: OrderViewModel, navController: NavController,
+    onNavigateRoute: (String) -> Unit,
+    onMenuSelected: (Int) -> Unit,
+    onSearchScreen: () -> Unit
+){
 
     val pagerState = rememberPagerState (pageCount = {CategoryPages.entries.size})
     val menuList by viewModel.menuData.observeAsState(initial = emptyList())
-
-    val categories = stringArrayResource(id = R.array.beverage)
-    val categories2 = stringArrayResource(id = R.array.dessert)
-    val states by remember {
-        mutableStateOf(
-            mutableListOf(
-                ChipState(categories[0], mutableStateOf(true)),
-                ChipState(categories[1], mutableStateOf(false)),
-                ChipState(categories[2], mutableStateOf(false))
-            )
-        )
-    }
-
-    val states2 by remember {
-        mutableStateOf(
-            mutableListOf(
-                ChipState(categories2[0], mutableStateOf(true)),
-                ChipState(categories2[1], mutableStateOf(false))
-            )
-        )
-    }
-
     val menuData1 by viewModel.filteredList1.observeAsState(initial = emptyList())
     val menuData2 by viewModel.filteredList2.observeAsState(initial = emptyList())
 
     val onChangeList = {m:String, c: String -> viewModel.setBeverageMenuList(m, c)}
-
-    log("Compose") // 최초 Compose, Recompose 시점에 호출
-    DisposableEffect(key1 = true) { // Composable Lifecycle 동안 1번만 호출하기 위해서 key로 true
-        log("Enter") // Composable이 Composition 트리에서 추가될 때
-        onDispose {
-            log("Leave") // Composable이 Composition 트리에서 제거될 때 호출
-        }
-
-    }
 
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute)},
@@ -155,7 +111,7 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
             )
 
 
-            IconButton(onClick = { /*TODO*/ },
+            IconButton(onClick = { onSearchScreen() },
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(end = 15.dp)
@@ -163,8 +119,7 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
                 Icon(painterResource(id = R.drawable.baseline_search_30), contentDescription = null)
             }
 
-            SearchPagerScreen(categories, categories2, states, states2,
-                menuData1, menuData2, pagerState, onChangeList = onChangeList, onMenuSelected = onMenuSelected)
+            SearchPagerScreen(menuData1, menuData2, pagerState, onChangeList = onChangeList, onMenuSelected = onMenuSelected)
 
         }
     }
@@ -173,10 +128,6 @@ fun OrderScreen(viewModel: OrderViewModel, navController: NavController, onNavig
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchPagerScreen(
-    categories:Array<String>,
-    categories2: Array<String>,
-    states: List<ChipState>,
-    states2: List<ChipState>,
     menuList: List<Menu>,
     menuList2: List<Menu>,
     pagerState: PagerState,
@@ -185,8 +136,29 @@ fun SearchPagerScreen(
     onMenuSelected: (Int) -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
+    val categories = stringArrayResource(id = R.array.beverage)
+    val categories2 = stringArrayResource(id = R.array.dessert)
+    val states by rememberSaveable {
+        mutableStateOf(
+            mutableListOf(
+                ChipState(categories[0], mutableStateOf(true)),
+                ChipState(categories[1], mutableStateOf(false)),
+                ChipState(categories[2], mutableStateOf(false))
+            )
+        )
+    }
+
+    val states2 by rememberSaveable {
+        mutableStateOf(
+            mutableListOf(
+                ChipState(categories2[0], mutableStateOf(true)),
+                ChipState(categories2[1], mutableStateOf(false))
+            )
+        )
+    }
 
     val pages = CategoryPages.entries.toTypedArray()
+
 
     Column(modifier) {
         TabRow(
@@ -220,9 +192,11 @@ fun SearchPagerScreen(
                 .fillMaxSize()) {
             index ->
 
-            Column(Modifier.fillMaxWidth()
-                .fillMaxHeight()
-                .padding(top = 20.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(top = 20.dp)) {
                 when(pages[index]){
                     CategoryPages.BEVERAGE -> {
                         Chips(
@@ -319,9 +293,6 @@ private fun Chip(
 
     onChangeList(main, category[state.indices.find { state[it].isSelected.value }!!])
 
-    state.forEach{
-        Log.e("dkdkdkdkdk", it.isSelected.value.toString())
-    }
 
     Surface(
         modifier = Modifier

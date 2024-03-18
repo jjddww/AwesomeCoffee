@@ -37,7 +37,7 @@ import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
 import com.jjddww.awesomecoffee.ui.theme.onPrimaryDark
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
-import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
+import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 
 enum class Sections(
@@ -55,29 +55,37 @@ enum class Sections(
 
 object MainDestinations {
     const val HOME_ROUTE = "home"
-    const val ORDER_ROUTE = "order"
     const val DETAIL_ROUTE = "detail"
+    const val SEARCH_ROUTE = "search"
     const val MENU_ID_KEY = "menuId"
 }
 
-fun NavGraphBuilder.AppNavGraph(viewModel: OrderViewModel,
+fun NavGraphBuilder.AppNavGraph(
+                                couponViewModel: CouponViewModel,
+                                viewModel: OrderViewModel,
                                 appNavController: AppNavController,
                                 onMenuSelected: (Int, NavBackStackEntry) -> Unit,
+                                onSearchScreen: (NavBackStackEntry) -> Unit,
                                 onNavigateRoute: (String) -> Unit)
 {
         composable(Sections.CART.route){
             CartScreen(appNavController.navController, onNavigateRoute)
         }
         composable(Sections.ORDER.route){navBackStackEntry ->
-            OrderScreen(viewModel = viewModel, navController = appNavController.navController, onNavigateRoute = onNavigateRoute
-            ){ id -> onMenuSelected(id, navBackStackEntry)}
+            OrderScreen(
+                viewModel = viewModel,
+                navController = appNavController.navController,
+                onNavigateRoute = onNavigateRoute,
+                onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)},
+                onSearchScreen = {onSearchScreen(navBackStackEntry)}
+            )
         }
         composable(Sections.HOME.route){navBackStackEntry ->
             HomeScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute
             ) { id -> onMenuSelected(id, navBackStackEntry) }
         }
         composable(Sections.COUPON.route){
-            CouponScreen(appNavController.navController, onNavigateRoute)
+            CouponScreen(couponViewModel, appNavController.navController, onNavigateRoute)
         }
         composable(Sections.OTHER.route){
             OtherScreen(appNavController.navController, onNavigateRoute)

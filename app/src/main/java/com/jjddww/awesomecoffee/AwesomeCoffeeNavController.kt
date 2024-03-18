@@ -36,6 +36,12 @@ class AppNavController(
         }
     }
 
+    fun navigateToSearch(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate("${MainDestinations.SEARCH_ROUTE}")
+        }
+    }
+
 
     fun navigateUp() {
         navController.navigateUp()

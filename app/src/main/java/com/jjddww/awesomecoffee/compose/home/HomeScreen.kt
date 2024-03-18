@@ -64,10 +64,6 @@ import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private fun log(msg: String) {
-    Log.d("HomeComposable", msg)
-}
-
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
@@ -86,14 +82,6 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     val isLogin = true
 
-    log("Compose") // 최초 Compose, Recompose 시점에 호출
-    DisposableEffect(key1 = true) { // Composable Lifecycle 동안 1번만 호출하기 위해서 key로 true
-        log("Enter") // Composable이 Composition 트리에서 추가될 때
-        onDispose {
-            log("Leave") // Composable이 Composition 트리에서 제거될 때 호출
-        }
-
-    }
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
         containerColor = surfaceVariantLight)

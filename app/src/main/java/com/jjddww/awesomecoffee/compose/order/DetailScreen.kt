@@ -94,9 +94,7 @@ enum class Pages(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(
-    viewModel: DetailViewModel,
-    onNavigateRoute: (String) -> Unit){
+fun DetailScreen(viewModel: DetailViewModel){
 
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
