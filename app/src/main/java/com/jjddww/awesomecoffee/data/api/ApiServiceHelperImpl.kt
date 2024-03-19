@@ -32,4 +32,8 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getCouponList())
     }
 
+    override fun getSearchResult(keyword: String): Flow<List<Menu>> = flow{
+        emit(apiService.getMenuSearchResult(keyword))
+    }
+
 }

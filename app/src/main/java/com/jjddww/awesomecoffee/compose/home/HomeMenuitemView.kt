@@ -18,12 +18,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavBackStackEntry
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.data.model.Menu
 
 @Composable
-fun MenuItemView(
+fun HomeMenuItemView(
     menu: Menu,
     onMenuSelected: (Int) -> Unit
 ){

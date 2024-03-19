@@ -26,4 +26,7 @@ interface ApiService {
 
     @GET("/api/coupon/coupon_info")
     suspend fun getCouponList(): List<Coupon>
+
+    @GET("/api/menu/search")
+    suspend fun getMenuSearchResult(@Query("keyword") keyword: String): List<Menu>
 }

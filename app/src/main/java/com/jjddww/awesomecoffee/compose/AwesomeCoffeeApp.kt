@@ -19,6 +19,7 @@ import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
+import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -48,6 +49,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     onSearchScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
+
     navigation(
         route = MainDestinations.HOME_ROUTE,
         startDestination = Sections.HOME.route
@@ -64,7 +66,9 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
         DetailScreen(DetailViewModel(menuId))
     }
 
-    composable(route = "${MainDestinations.SEARCH_ROUTE}"){navBackStackEntry ->
-        SearchScreen(onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
+    composable(route = MainDestinations.SEARCH_ROUTE){ navBackStackEntry ->
+        val searchViewModel = SearchViewModel()
+        SearchScreen(viewModel = searchViewModel,
+            onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
     }
 }

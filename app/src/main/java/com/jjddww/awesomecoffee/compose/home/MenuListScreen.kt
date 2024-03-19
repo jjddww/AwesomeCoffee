@@ -20,7 +20,7 @@ fun MenuListScreen(modifier: Modifier,
     )
     {
         items(menuList) {menu ->
-            MenuItemView(menu, onMenuSelected)
+            HomeMenuItemView(menu, onMenuSelected)
         }
     }
 }

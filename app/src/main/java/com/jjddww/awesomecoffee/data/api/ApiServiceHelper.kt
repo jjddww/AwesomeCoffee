@@ -20,4 +20,5 @@ interface ApiServiceHelper {
 
     fun getCouponList(): Flow<List<Coupon>>
 
+    fun getSearchResult(keyword: String): Flow<List<Menu>>
 }
