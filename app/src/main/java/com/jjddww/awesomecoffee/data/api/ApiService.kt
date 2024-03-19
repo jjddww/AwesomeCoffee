@@ -2,9 +2,7 @@ package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Coupon
-import com.jjddww.awesomecoffee.data.model.MainCategory
 import com.jjddww.awesomecoffee.data.model.Menu
-import com.jjddww.awesomecoffee.data.model.SubCategory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -29,4 +27,16 @@ interface ApiService {
 
     @GET("/api/menu/search")
     suspend fun getMenuSearchResult(@Query("keyword") keyword: String): List<Menu>
+
+//    @GET("/api/cart/add")
+//    suspend fun addCart(@Query("menuId") menuId: Int,
+//                        @Query("option") option: String,
+//                        @Query("amount") amount: Int,
+//                        @Query("shot") extraShot: Boolean): String
+//
+//    @GET("/api/cart/remove")
+//    suspend fun removeCart(@Query("id") id: Int): String
+//
+//    @GET("/api/cart/getList")
+//    suspend fun getCartList(): List<CartItem>
 }

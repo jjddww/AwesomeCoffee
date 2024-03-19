@@ -78,10 +78,13 @@ import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.secondaryLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
+import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
 import com.jjddww.awesomecoffee.utilities.COFFEE
 import com.jjddww.awesomecoffee.utilities.DESSERT
 import kotlinx.coroutines.launch
+import java.lang.String.format
+import java.text.DecimalFormat
 
 enum class Pages(
     @StringRes val titleId: Int
@@ -145,7 +148,7 @@ fun DetailScreen(viewModel: DetailViewModel){
             color = neutralVariant70,
             fontSize = 18.sp)
 
-        Text(text = "${desc.price}원",
+        Text(text = format(stringResource(id = R.string.price_format), ApplyDecimalFormat(desc.price)),
             modifier = Modifier.padding(start = 20.dp, top = 19.dp),
             style = MaterialTheme.typography.titleMedium,
             color = Color.Black)

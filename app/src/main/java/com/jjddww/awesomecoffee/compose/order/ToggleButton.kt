@@ -251,7 +251,7 @@ fun FixedTempToggleButton(temperature: String){
                 ) {
                     Column (
                         horizontalAlignment = Alignment.CenterHorizontally){
-                        Text(text = "${stringResource(id = item.text)} Only",
+                        Text(text = format(stringResource(id = R.string.only), stringResource(id = item.text)),
                             style = MaterialTheme.typography.titleSmall)
                     }
                 }

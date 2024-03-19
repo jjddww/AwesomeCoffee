@@ -36,8 +36,11 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
+import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.HOT
 import com.jjddww.awesomecoffee.utilities.ICED
+import java.lang.String.format
+import java.text.DecimalFormat
 
 
 @Composable
@@ -59,7 +62,7 @@ fun BeverageContent(isCoffee: Boolean,
             .background(onSecondaryLight)
     ) {
         Text(
-            text = "옵션선택",
+            text = stringResource(id = R.string.option_select),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -69,7 +72,7 @@ fun BeverageContent(isCoffee: Boolean,
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "HOT / ICED", modifier = Modifier.padding(start = 20.dp),
+            text = stringResource(id = R.string.hot_or_iced), modifier = Modifier.padding(start = 20.dp),
             fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
             fontSize = 15.sp
         )
@@ -81,7 +84,7 @@ fun BeverageContent(isCoffee: Boolean,
         }
 
         Text(
-            text = "사이즈", modifier = Modifier.padding(start = 20.dp),
+            text = stringResource(id = R.string.cup_size), modifier = Modifier.padding(start = 20.dp),
             fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
             fontSize = 15.sp
         )
@@ -92,7 +95,7 @@ fun BeverageContent(isCoffee: Boolean,
 
         if (isCoffee) {
             Text(
-                text = "퍼스널 옵션", modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                text = stringResource(id = R.string.personal_option), modifier = Modifier.padding(start = 20.dp, top = 20.dp),
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
                 fontSize = 15.sp
             )
@@ -124,7 +127,7 @@ fun BeverageContent(isCoffee: Boolean,
                             onShotChange(true)
                         else
                             onShotChange(false) },
-                    text = "샷 추가 (+500원)",
+                    text = stringResource(id = R.string.extra_shot),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -152,7 +155,7 @@ fun DessertContent(price: Int,
             .background(onSecondaryLight)){
 
         Text(
-            text = "옵션선택",
+            text = stringResource(id = R.string.option_select),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -163,7 +166,7 @@ fun DessertContent(price: Int,
 
 
         Text(
-            text = "포장 여부", modifier = Modifier.padding(start = 20.dp),
+            text = stringResource(id = R.string.select_take_out), modifier = Modifier.padding(start = 20.dp),
             fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
             fontSize = 15.sp
         )
@@ -211,7 +214,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
                 contentDescription = null)
         }
 
-        Text(text = "${amount * price}원",
+        Text(text = format(stringResource(id = R.string.price_format), ApplyDecimalFormat(amount * price)),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 20.dp),

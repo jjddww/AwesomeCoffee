@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,8 @@ import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
+import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import java.lang.String.format
 
 @Composable
 fun MenuItem(menu: Menu, onMenuSelected: (Int) -> Unit){
@@ -65,7 +68,7 @@ fun MenuItem(menu: Menu, onMenuSelected: (Int) -> Unit){
 
 
 
-            Text(text = "${menu.price}원",
+            Text(text = format(stringResource(id = R.string.price_format), ApplyDecimalFormat(menu.price)),
                 fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                 fontSize = 14.sp,
                 color = Color.Black)

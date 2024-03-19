@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text2.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +64,7 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
 import com.jjddww.awesomecoffee.utilities.DESSERT
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
 
 enum class CategoryPages(
@@ -71,10 +75,11 @@ enum class CategoryPages(
 }
 
 
+@Parcelize
 data class ChipState(
     var text: String,
-    val isSelected: MutableState<Boolean>
-)
+    var isSelected: Boolean,
+): Parcelable
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -136,23 +141,24 @@ fun SearchPagerScreen(
     onMenuSelected: (Int) -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
-    val categories = stringArrayResource(id = R.array.beverage)
-    val categories2 = stringArrayResource(id = R.array.dessert)
-    val states by rememberSaveable {
+    val beverageCategory = stringArrayResource(id = R.array.beverage)
+    val dessertCategory = stringArrayResource(id = R.array.dessert)
+
+    val beverageChipStates by rememberSaveable{
         mutableStateOf(
             mutableListOf(
-                ChipState(categories[0], mutableStateOf(true)),
-                ChipState(categories[1], mutableStateOf(false)),
-                ChipState(categories[2], mutableStateOf(false))
+                ChipState(beverageCategory[0], true),
+                ChipState(beverageCategory[1], false),
+                ChipState(beverageCategory[2], false)
             )
         )
     }
 
-    val states2 by rememberSaveable {
+    val dessertChipStates by rememberSaveable{
         mutableStateOf(
             mutableListOf(
-                ChipState(categories2[0], mutableStateOf(true)),
-                ChipState(categories2[1], mutableStateOf(false))
+                ChipState(dessertCategory[0], true),
+                ChipState(dessertCategory[1], false)
             )
         )
     }
@@ -201,13 +207,13 @@ fun SearchPagerScreen(
                     CategoryPages.BEVERAGE -> {
                         Chips(
                             BEVERAGE,
-                            categories,
+                            beverageCategory,
                             onChangeList,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(40.dp)
                                 .padding(start = 20.dp)
-                            , elements = categories, states = states)
+                            , elements = beverageCategory, states = beverageChipStates)
 
                         LazyColumn(Modifier.padding(bottom = 80.dp)){
                             items(menuList){menu ->
@@ -222,13 +228,13 @@ fun SearchPagerScreen(
 
                         Chips(
                             DESSERT,
-                            categories2,
+                            dessertCategory,
                             onChangeList,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(40.dp)
                                 .padding(start = 20.dp),
-                            elements = categories2, states = states2)
+                            elements = dessertCategory, states = dessertChipStates)
 
                         LazyColumn(Modifier.padding(bottom = 80.dp)){
                             items(menuList2){menu ->
@@ -268,8 +274,7 @@ fun Chips(
                 category,
                 onChangeList,
                 text = states[index].text,
-                selected = states[index].isSelected.value,
-                modifier = Modifier.height(60.dp),
+                selected = states[index].isSelected,
                 state = states,
                 index = index
             )
@@ -286,12 +291,11 @@ private fun Chip(
     onChangeList: (String, String) -> Unit,
     text: String,
     selected: Boolean,
-    modifier: Modifier = Modifier,
     state: List<ChipState>,
     index : Int
 ){
 
-    onChangeList(main, category[state.indices.find { state[it].isSelected.value }!!])
+    onChangeList(main, category[state.indices.find { state[it].isSelected }!!])
 
 
     Surface(
@@ -315,7 +319,7 @@ private fun Chip(
                 .height(35.dp)
                 .clickable {
                     state.forEachIndexed { idx, chipState ->
-                        chipState.isSelected.value = index == idx
+                        chipState.isSelected = index == idx
                     }
                     onChangeList(main, state[index].text)
                 },

@@ -20,7 +20,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.outlineLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
@@ -84,7 +85,7 @@ fun SearchScreen(viewModel: SearchViewModel, onMenuSelected: (Int) -> Unit,
                     onSearchMenu(text.text)
                     keyboardController?.hide() }),
 
-            label = { Text("검색어 입력", style = MaterialTheme.typography.bodySmall) },
+            label = { Text(stringResource(id = R.string.input_keyword), style = MaterialTheme.typography.bodySmall) },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = tertiaryLight,
@@ -108,7 +109,7 @@ fun SearchResultView(
 
         if(searchResult.isEmpty()){
             item{
-                Text(text = "검색 결과가 없습니다.",
+                Text(text = stringResource(id = R.string.empty_search_result),
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(align = Alignment.CenterHorizontally))

@@ -35,4 +35,14 @@
     <string name="add_cart">담기</string>
     <string name="beverage">음료</string>
     <string name="dessert">디저트</string>
+    <string name="option_select">옵션 선택</string>
+    <string name="hot_or_iced">HOT / ICED</string>
+    <string name="cup_size">사이즈</string>
+    <string name="personal_option">퍼스널 옵션</string>
+    <string name="extra_shot">샷 추가 (+500원)</string>
+    <string name="select_take_out">포장 여부</string>
+    <string name="price_format">%s원</string>
+    <string name="only">%s Only</string>
+    <string name="input_keyword">검색어 입력</string>
+    <string name="empty_search_result">검색 결과가 없습니다.</string>
 </resources>
