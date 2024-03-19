@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.compose
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
@@ -50,6 +51,8 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     onNavigateRoute: (String) -> Unit
 ){
 
+    val searchViewModel = SearchViewModel()
+
     navigation(
         route = MainDestinations.HOME_ROUTE,
         startDestination = Sections.HOME.route
@@ -67,8 +70,10 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     }
 
     composable(route = MainDestinations.SEARCH_ROUTE){ navBackStackEntry ->
-        val searchViewModel = SearchViewModel()
         SearchScreen(viewModel = searchViewModel,
+            onBackButtonPressed = {
+                searchViewModel.clear()
+                navController.navigateUp() },
             onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
     }
 }
