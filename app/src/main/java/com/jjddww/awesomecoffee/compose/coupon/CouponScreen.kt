@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,14 +27,10 @@ import androidx.navigation.NavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.Coupon
-import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
-import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
-import java.text.SimpleDateFormat
-
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

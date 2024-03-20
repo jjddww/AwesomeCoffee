@@ -19,13 +19,4 @@ interface ApiServiceHelper {
     fun getCouponList(): Flow<List<Coupon>>
 
     fun getSearchResult(keyword: String): Flow<List<Menu>>
-
-//    fun addMenuToCart(menuId: Int,
-//                      option: String,
-//                      amount: Int,
-//                      extraShot: Boolean): Flow<String>
-//
-//    fun removeMenu(id: Int): Flow<String>
-//
-//    fun getCartList(): Flow<List<CartItem>>
 }

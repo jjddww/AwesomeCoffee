@@ -1,21 +1,16 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.annotation.SuppressLint
-import android.widget.CheckBox
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -24,20 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ModalBottomSheetDefaults
-import androidx.compose.material3.ModalBottomSheetProperties
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -55,10 +40,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
-import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.black60
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
@@ -66,17 +49,8 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.MutableLiveData
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
-import com.jjddww.awesomecoffee.ui.theme.secondaryLight
-import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
@@ -84,7 +58,6 @@ import com.jjddww.awesomecoffee.utilities.COFFEE
 import com.jjddww.awesomecoffee.utilities.DESSERT
 import kotlinx.coroutines.launch
 import java.lang.String.format
-import java.text.DecimalFormat
 
 enum class Pages(
     @StringRes val titleId: Int
