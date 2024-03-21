@@ -33,10 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.data.model.Cart
+import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import com.jjddww.awesomecoffee.utilities.BEVERAGE
+import com.jjddww.awesomecoffee.utilities.DESSERT
 import com.jjddww.awesomecoffee.utilities.HOT
 import com.jjddww.awesomecoffee.utilities.ICED
 import java.lang.String.format
@@ -47,9 +51,12 @@ import java.text.DecimalFormat
 fun BeverageContent(isCoffee: Boolean,
                     isOnlyIced: String,
                     price: Int,
+                    menu: Menu,
                     onShotChange:(isExtra: Boolean) -> Unit,
                     onAmountChange:(Boolean) -> Unit,
-                    onShowBottomSheetChange:() -> Unit,
+                    onSettingOptions:(Any) -> Unit,
+                    onAddCartItem:(Menu, String) -> Unit,
+                    onMoveToPayment: () -> Unit,
                     amount: Int) {
     lateinit var checkBoxState: MutableState<Boolean>
 
@@ -77,10 +84,10 @@ fun BeverageContent(isCoffee: Boolean,
             fontSize = 15.sp
         )
         if(isOnlyIced != ICED && isOnlyIced != HOT){
-            TemperatureToggleButton()
+            TemperatureToggleButton(onSettingOptions)
         }
         else{
-            FixedTempToggleButton(temperature = isOnlyIced)
+            FixedTempToggleButton(temperature = isOnlyIced, onSettingOptions)
         }
 
         Text(
@@ -89,9 +96,9 @@ fun BeverageContent(isCoffee: Boolean,
             fontSize = 15.sp
         )
 
-        SizeToggleButton()
+        SizeToggleButton(onSettingOptions)
 
-        CupToggleButton()
+        CupToggleButton(onSettingOptions)
 
         if (isCoffee) {
             Text(
@@ -139,14 +146,17 @@ fun BeverageContent(isCoffee: Boolean,
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(onShowBottomSheetChange)
+        OrderButtonView(BEVERAGE, menu, onAddCartItem, onMoveToPayment)
     }
 }
 
 @Composable
 fun DessertContent(price: Int,
+                   menu: Menu,
                    onAmountChange:(Boolean) -> Unit,
-                   onShowBottomSheetChange:() -> Unit,
+                   onSettingOptions:(String) -> Unit,
+                   onAddCartItem:(Menu, String) -> Unit,
+                   onMoveToPayment: () -> Unit,
                    amount: Int){
 
     Column (
@@ -172,13 +182,13 @@ fun DessertContent(price: Int,
         )
 
 
-        TakeoutToggleButton()
+        TakeoutToggleButton(onSettingOptions)
 
         SetAmountButtonView(onAmountChange, amount, price)
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(onShowBottomSheetChange)
+        OrderButtonView(DESSERT, menu, onAddCartItem, onMoveToPayment)
     }
 }
 
@@ -225,19 +235,22 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
 }
 
 @Composable
-fun OrderButtonView(onShowBottomSheetChange:() -> Unit,){
+fun OrderButtonView(mainCategory: String,
+                    menu: Menu,
+                    onAddCartItem:(Menu, String) -> Unit,
+                    onMoveToPayment:() -> Unit){
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
         .padding(start = 20.dp, end = 20.dp),
         Arrangement.SpaceEvenly){
 
-        OrderButton(onClick = { onShowBottomSheetChange() }, color = surfaceVariant, text = stringResource(
+        OrderButton(onClick = { onAddCartItem(menu, mainCategory) }, color = surfaceVariant, text = stringResource(
             id = R.string.add_cart
         )
         )
 
-        OrderButton(onClick = { onShowBottomSheetChange() }, color = onSurfaceVariantLight, text = stringResource(
+        OrderButton(onClick = { onMoveToPayment() }, color = onSurfaceVariantLight, text = stringResource(
             id = R.string.order
         )
         )

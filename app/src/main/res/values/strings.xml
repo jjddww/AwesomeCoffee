@@ -45,4 +45,7 @@
     <string name="only">%s Only</string>
     <string name="input_keyword">검색어 입력</string>
     <string name="empty_search_result">검색 결과가 없습니다.</string>
+    <string name="empty_cart">장바구니가 비어있습니다.</string>
+    <string name="all_selected">전체 선택</string>
+    <string name="remove_selected_box">선택 삭제</string>
 </resources>

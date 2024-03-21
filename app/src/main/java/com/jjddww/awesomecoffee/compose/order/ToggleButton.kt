@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose.order
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -92,7 +93,7 @@ enum class Takeout(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SizeToggleButton(){
+fun SizeToggleButton(onSettingOptions:(Any) -> Unit){
     val items = Sizes.entries.toTypedArray()
 
     var selectedOption by remember {
@@ -111,7 +112,8 @@ fun SizeToggleButton(){
                 SegmentedButton(
                     modifier = Modifier.padding(start = 3.dp, end = 3.dp),
                     selected = index == selectedOption,
-                    onClick = { selectedOption = index },
+                    onClick = { selectedOption = index
+                              onSettingOptions(Sizes.entries[selectedOption])},
                     colors = SegmentedButtonDefaults.colors(activeContainerColor = secondaryContainerLight,
                         activeBorderColor = primaryContainerDarkMediumContrast, activeContentColor = primaryLight,
                         inactiveContainerColor = Color.White, inactiveBorderColor = Color.Black),
@@ -142,7 +144,7 @@ fun SizeToggleButton(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CupToggleButton(){
+fun CupToggleButton(onSettingOptions:(Any) -> Unit){
     val items = Cups.entries.toTypedArray()
 
     var selectedOption by remember {
@@ -158,10 +160,14 @@ fun CupToggleButton(){
             .padding(start = 15.dp, end = 15.dp, top = 20.dp)){
             items.forEachIndexed{ index, item ->
 
+                var option = stringResource(id = item.text)
+
                 SegmentedButton(
                     modifier = Modifier.padding(start = 3.dp, end = 3.dp),
                     selected = index == selectedOption,
-                    onClick = { selectedOption = index },
+                    onClick = {
+                        selectedOption = index
+                        onSettingOptions(option)},
                     colors = SegmentedButtonDefaults.colors(activeContainerColor = secondaryContainerLight,
                         activeBorderColor = primaryContainerDarkMediumContrast, activeContentColor = primaryLight,
                         inactiveContainerColor = Color.White, inactiveBorderColor = Color.Black),
@@ -181,7 +187,7 @@ fun CupToggleButton(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TemperatureToggleButton(){
+fun TemperatureToggleButton(onSettingOptions: (Any) -> Unit){
     val items = Temperature.entries.toTypedArray()
     var selectedOption by remember {
         mutableStateOf(0)
@@ -199,7 +205,9 @@ fun TemperatureToggleButton(){
                 SegmentedButton(
                     modifier = Modifier.padding(start = 3.dp, end = 3.dp),
                     selected = index == selectedOption,
-                    onClick = { selectedOption = index },
+                    onClick = { selectedOption = index
+                        onSettingOptions(Temperature.entries[selectedOption])
+                              },
                     colors = SegmentedButtonDefaults.colors(
                         activeContainerColor = if (index == 0) Color.Red else Color.Blue,
                         activeBorderColor = if (index == 0) Color.Red else Color.Blue,
@@ -223,13 +231,18 @@ fun TemperatureToggleButton(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FixedTempToggleButton(temperature: String){
+fun FixedTempToggleButton(temperature: String,
+                          onSettingOptions:(Any) -> Unit){
     val item = if(temperature == HOT) Temperature.entries.toTypedArray()[FIRST_INDEX]
         else Temperature.entries.toTypedArray()[SECOND_INDEX]
 
     var selectedOption by remember {
         mutableStateOf(0)
     }
+
+    onSettingOptions(
+        if(temperature == HOT) Temperature.entries[FIRST_INDEX]
+        else Temperature.entries[SECOND_INDEX])
 
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly){
@@ -261,7 +274,7 @@ fun FixedTempToggleButton(temperature: String){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TakeoutToggleButton(){
+fun TakeoutToggleButton(onSettingOptions:(String) -> Unit){
     val items = Takeout.entries.toTypedArray()
 
     var selectedOption by remember {
@@ -277,12 +290,15 @@ fun TakeoutToggleButton(){
             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 40.dp)){
             items.forEachIndexed{ index, item ->
 
+                var option = stringResource(id =item.text)
+
                 SegmentedButton(
                     modifier = Modifier
                         .padding(start = 3.dp, end = 3.dp)
                         .height(80.dp),
                     selected = index == selectedOption,
-                    onClick = { selectedOption = index },
+                    onClick = { selectedOption = index
+                              onSettingOptions(option)},
                     colors = SegmentedButtonDefaults.colors(activeContainerColor = secondaryContainerLight,
                         activeBorderColor = primaryContainerDarkMediumContrast, activeContentColor = primaryLight,
                         inactiveContainerColor = Color.White, inactiveBorderColor = Color.Black),
@@ -304,34 +320,34 @@ fun TakeoutToggleButton(){
 @Preview(showBackground = true)
 @Composable
 fun ButtonPreview(){
-    SizeToggleButton()
+    SizeToggleButton({})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CupButtonPreview(){
-    CupToggleButton()
+    CupToggleButton({})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TemperaturePreview(){
-    TemperatureToggleButton()
+    TemperatureToggleButton({})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FixedButtonPreview(){
     Column{
-        FixedTempToggleButton(HOT)
-        FixedTempToggleButton(ICED)
+        FixedTempToggleButton(HOT, {})
+        FixedTempToggleButton(ICED, {})
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TakeoutButtonPreview(){
-    TakeoutToggleButton()
+    TakeoutToggleButton({})
 }
 
 

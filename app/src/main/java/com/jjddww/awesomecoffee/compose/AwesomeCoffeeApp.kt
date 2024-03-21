@@ -1,9 +1,16 @@
 package com.jjddww.awesomecoffee.compose
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -16,6 +23,7 @@ import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.SearchScreen
+import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
@@ -66,7 +74,16 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     ){
         val arguments = requireNotNull(it.arguments)
         val menuId = arguments.getInt(MainDestinations.MENU_ID_KEY)
-        DetailScreen(DetailViewModel(menuId))
+
+        val owner = LocalViewModelStoreOwner.current
+        owner?.let {
+            val viewModel: DetailViewModel = viewModel(
+                it,
+                "DetailViewModel",
+                DetailViewModelFactory(LocalContext.current.applicationContext as Application, menuId)
+            )
+            DetailScreen(viewModel)
+        }
     }
 
     composable(route = MainDestinations.SEARCH_ROUTE){ navBackStackEntry ->
@@ -75,5 +92,11 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 searchViewModel.clear()
                 navController.navigateUp() },
             onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
+    }
+}
+
+class DetailViewModelFactory(private val application: Application, private val menuId: Int): ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return DetailViewModel(application, menuId) as T
     }
 }

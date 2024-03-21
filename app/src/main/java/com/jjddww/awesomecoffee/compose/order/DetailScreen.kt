@@ -49,6 +49,7 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
+import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
@@ -87,9 +88,14 @@ fun DetailScreen(viewModel: DetailViewModel){
     val onAmountChange = { isIncrease: Boolean ->
         if(isIncrease) viewModel.increaseAmount()  else viewModel.decreaseAmount()}
 
-    val onShowBottomSheetChange = {
-        viewModel.changeBottomSheetState()
+    val onAddCartItem = { menu: Menu, mainCategory: String ->
+        viewModel.addCartItem(menu, mainCategory)
     }
+
+    val settingBeverageOptions = { optionType: Any -> viewModel.settingBeverageOptions(optionType)}
+    val settingDessertOptions = { option: String -> viewModel.settingDessertOptions(option)}
+
+    val onMoveToPayment = {}
 
 
 
@@ -163,13 +169,17 @@ fun DetailScreen(viewModel: DetailViewModel){
                     BeverageContent(isCoffee = desc.subCategory == COFFEE,
                         isOnlyIced = desc.temperature,
                         price = totalPrice,
+                        menu = desc,
                         onShotChange = onShotChange,
                         onAmountChange = onAmountChange,
-                        onShowBottomSheetChange = onShowBottomSheetChange,
+                        onAddCartItem = onAddCartItem,
+                        onSettingOptions = settingBeverageOptions,
+                        onMoveToPayment = onMoveToPayment,
                         amount = amount)
 
                 else if(desc.mainCategory == DESSERT)
-                    DessertContent(price = totalPrice, onAmountChange = onAmountChange, onShowBottomSheetChange = onShowBottomSheetChange,amount = amount)
+                    DessertContent(price = totalPrice, menu= desc, onAmountChange = onAmountChange, onSettingOptions = settingDessertOptions,
+                        onAddCartItem = onAddCartItem, onMoveToPayment = onMoveToPayment, amount = amount)
             }
         }
 

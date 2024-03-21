@@ -4,13 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "cart")
+@Entity(tableName = "cart", primaryKeys = ["menu_name", "option", "extra_shot"])
 data class Cart(
-    @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name= "url") val url: String,
     @ColumnInfo(name= "menu_name") val menuName: String,
     @ColumnInfo(name= "price") val price: Int,
     @ColumnInfo(name= "option") val option: String,
-    @ColumnInfo(name= "extra_shot") val shot: String,
-    @ColumnInfo(name= "amount") val amount: String
+    @ColumnInfo(name= "extra_shot") val shot: Boolean,
+    @ColumnInfo(name= "amount") var amount: Int
 )

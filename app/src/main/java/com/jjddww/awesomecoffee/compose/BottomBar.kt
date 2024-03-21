@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose
 
+import android.app.Application
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -33,11 +39,14 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
 import com.jjddww.awesomecoffee.compose.other.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
+import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
 import com.jjddww.awesomecoffee.ui.theme.onPrimaryDark
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
+import com.jjddww.awesomecoffee.viewmodels.CartViewModel
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
+import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 
 enum class Sections(
@@ -60,6 +69,12 @@ object MainDestinations {
     const val MENU_ID_KEY = "menuId"
 }
 
+class CartViewModelFactory(private val application: Application): ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return CartViewModel(application) as T
+    }
+}
+
 fun NavGraphBuilder.AppNavGraph(
                                 couponViewModel: CouponViewModel,
                                 viewModel: OrderViewModel,
@@ -69,7 +84,15 @@ fun NavGraphBuilder.AppNavGraph(
                                 onNavigateRoute: (String) -> Unit)
 {
         composable(Sections.CART.route){
-            CartScreen(appNavController.navController, onNavigateRoute)
+            val owner = LocalViewModelStoreOwner.current
+            owner?.let {
+                val viewModel: CartViewModel = viewModel(
+                    it,
+                    "DetailViewModel",
+                    CartViewModelFactory(LocalContext.current.applicationContext as Application)
+                )
+                CartScreen(viewModel, appNavController.navController, onNavigateRoute)
+            }
         }
         composable(Sections.ORDER.route){navBackStackEntry ->
             OrderScreen(
