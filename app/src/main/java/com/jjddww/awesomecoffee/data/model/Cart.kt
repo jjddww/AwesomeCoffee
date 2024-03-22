@@ -11,5 +11,6 @@ data class Cart(
     @ColumnInfo(name= "price") val price: Int,
     @ColumnInfo(name= "option") val option: String,
     @ColumnInfo(name= "extra_shot") val shot: Boolean,
-    @ColumnInfo(name= "amount") var amount: Int
+    @ColumnInfo(name= "amount") var amount: Int,
+    var checked: Boolean = false
 )

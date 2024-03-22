@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose.payment
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,7 +52,8 @@ fun CartItem(item: Cart,
              onIncreaseAmount: (Boolean) -> Unit){
     val checkBoxState = remember { mutableStateOf(false) }
 
-    checkBoxState.value = checkAllBoxState.value
+    if(checkAllBoxState.value) checkBoxState.value = true
+
 
     Column(
         Modifier
@@ -64,7 +66,11 @@ fun CartItem(item: Cart,
             horizontalArrangement = Arrangement.SpaceBetween){
             Checkbox(checked = checkBoxState.value,
                 onCheckedChange = {
+                    Log.e("dddd","click! ${it}")
+                    if(!it)
+                        checkAllBoxState.value = false
                     checkBoxState.value = it
+
                 },
                 colors = CheckboxDefaults.colors(checkedColor = surfaceVariant))
 

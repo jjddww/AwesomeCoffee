@@ -139,9 +139,7 @@ fun CheckAllItemsView(
 
 
         Button(onClick = { if(checkAllBoxState.value) deleteAllItems()
-                         else{
-
-                         }},
+                         else{}},
             modifier = Modifier
                 .width(130.dp)
                 .height(40.dp)
