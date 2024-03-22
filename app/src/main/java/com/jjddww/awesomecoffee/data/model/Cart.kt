@@ -1,7 +1,10 @@
 package com.jjddww.awesomecoffee.data.model
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "cart", primaryKeys = ["menu_name", "option", "extra_shot"])
@@ -12,5 +15,7 @@ data class Cart(
     @ColumnInfo(name= "option") val option: String,
     @ColumnInfo(name= "extra_shot") val shot: Boolean,
     @ColumnInfo(name= "amount") var amount: Int,
-    var checked: Boolean = false
-)
+){
+    @Ignore
+    var checked: MutableState<Boolean> = mutableStateOf(false)
+}

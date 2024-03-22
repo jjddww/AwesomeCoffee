@@ -48,12 +48,12 @@ import java.lang.String
 
 @Composable
 fun CartItem(item: Cart,
+             detectAllChecked:() -> Unit,
              checkAllBoxState: MutableState<Boolean>,
-             onIncreaseAmount: (Boolean) -> Unit){
+             onIncreaseAmount: (Cart) -> Unit){
     val checkBoxState = remember { mutableStateOf(false) }
 
-    if(checkAllBoxState.value) checkBoxState.value = true
-
+    checkBoxState.value = item.checked.value
 
     Column(
         Modifier
@@ -66,11 +66,12 @@ fun CartItem(item: Cart,
             horizontalArrangement = Arrangement.SpaceBetween){
             Checkbox(checked = checkBoxState.value,
                 onCheckedChange = {
-                    Log.e("dddd","click! ${it}")
-                    if(!it)
+                    item.checked.value = !item.checked.value
+                    checkBoxState.value = item.checked.value
+                    if(!item.checked.value)
                         checkAllBoxState.value = false
-                    checkBoxState.value = it
 
+                    detectAllChecked()
                 },
                 colors = CheckboxDefaults.colors(checkedColor = surfaceVariant))
 
@@ -104,7 +105,7 @@ fun CartItem(item: Cart,
         }
 
 
-        SetAmountButtonView(onIncreaseAmount, item.shot, item.amount, item.price)
+        SetAmountButtonView(onIncreaseAmount, item)
 
         HorizontalDivider(
             modifier = Modifier
@@ -118,18 +119,23 @@ fun CartItem(item: Cart,
 
 
 @Composable
-fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
-                        shot: Boolean,
-                        amount: Int,
-                        price: Int){
+fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
+                        item: Cart){
+
+    var cnt = mutableStateOf(item.amount)
+
     Row(modifier = Modifier
         .wrapContentWidth()
         .padding(start = 20.dp, top = 30.dp)){
 
         IconButton(onClick = {
-            onIncreaseAmount(false)
+            if(cnt.value > 1){
+                cnt.value -= 1
+                item.amount = cnt.value
+                onIncreaseAmount(item)
+            }
         },
-            enabled = amount > 1,
+            enabled = cnt.value > 1,
             modifier = Modifier
                 .width(24.dp)
                 .height(24.dp)){
@@ -137,10 +143,12 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
                 contentDescription = null)
         }
 
-        Text(text = "$amount", modifier = Modifier.padding(start = 8.dp, end = 8.dp), style = MaterialTheme.typography.titleMedium)
+        Text(text = "${cnt.value}", modifier = Modifier.padding(start = 8.dp, end = 8.dp), style = MaterialTheme.typography.titleMedium)
 
         IconButton(onClick = {
-            onIncreaseAmount(true)
+            cnt.value += 1
+            item.amount = cnt.value
+            onIncreaseAmount(item)
         },
             modifier = Modifier
                 .width(24.dp)
@@ -151,7 +159,8 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
 
         Text(text = String.format(
             stringResource(id = R.string.price_format),
-            ApplyDecimalFormat(if(shot) {amount * price + 500} else {amount * price})
+            ApplyDecimalFormat(if(item.shot) {item.amount * item.price + 500 * item.amount}
+            else {item.amount * item.price})
         ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,14 +169,4 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
             style = MaterialTheme.typography.titleMedium)
 
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ItemPreview(){
-    var checkAllBox: MutableState<Boolean> = mutableStateOf(true)
-
-    CartItem(
-        Cart("", "카페 모카", 4800, "Iced| Tall| 매장컵", true, 1), checkAllBox, {})
 }

@@ -18,4 +18,9 @@ class CartRepository (private val cartDao: CartDao){
     suspend fun deleteCheckedCartItems(menuName: String, option: String, extraShot: Boolean){
         cartDao.deleteCheckedItems(menuName, option, extraShot)
     }
+
+    @WorkerThread
+    suspend fun addCartItem(item: Cart) {
+        cartDao.addCartItem(item)
+    }
 }

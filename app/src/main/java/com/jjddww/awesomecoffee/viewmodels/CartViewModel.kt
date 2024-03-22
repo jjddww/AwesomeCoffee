@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.viewmodels
 
 import android.app.Application
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,13 @@ class CartViewModel(application: Application): ViewModel() {
     fun deleteCheckedItems(menuName:String, option: String, shot: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteCheckedCartItems(menuName, option, shot)
+        }
+    }
+
+
+    fun addCartItem(item: Cart) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addCartItem(item)
         }
     }
 }
