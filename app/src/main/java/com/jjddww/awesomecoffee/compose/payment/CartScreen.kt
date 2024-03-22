@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,33 +33,52 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.Cart
+import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
+import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.viewmodels.CartViewModel
+import java.lang.String.format
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigateRoute: (String) -> Unit){
 
     val cartList by viewModel.cartItems.observeAsState(initial = emptyList())
-    val checkAllBoxState = remember { mutableStateOf(false) }
+//    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
 
+    val checkAllBoxState = remember { mutableStateOf(false) }
+    val totalPrice = mutableStateOf(0)
     val deleteAllItems = {viewModel.deleteAllItems()}
     val deleteCheckedItems = { menuName: String, option: String, shot: Boolean ->
         viewModel.deleteCheckedItems(menuName, option, shot)}
 
     val onIncreaseAmount = { item: Cart -> viewModel.addCartItem(item)}
+
+    val onChangeTotalPrice = {
+        totalPrice.value = 0
+        cartList.forEach{
+            totalPrice.value += it.price * it.amount
+            if(it.shot)
+                totalPrice.value += 500
+        }
+    }
 
 
     val detectAllChecked = {
@@ -74,6 +94,8 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
             checkAllBoxState.value = true
 
     }
+
+    onChangeTotalPrice()
 
 
     Scaffold(bottomBar = { AppBottomBar(navController = navController, onNavigateRoute) },
@@ -120,11 +142,24 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
                 LazyColumn(
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 100.dp)){
+                        .height(430.dp)){
                     items(cartList){
-                        CartItem(item = it, detectAllChecked = detectAllChecked, checkAllBoxState = checkAllBoxState, onIncreaseAmount = onIncreaseAmount)
+                        CartItem(item = it, detectAllChecked = detectAllChecked,
+                            checkAllBoxState = checkAllBoxState, onIncreaseAmount = onIncreaseAmount,
+                            onChangeTotalPrice = onChangeTotalPrice)
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(text = format(stringResource(id = R.string.total_price_format), ApplyDecimalFormat(totalPrice.value)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
+                    fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
+                    color = Color.Black, fontSize = 17.sp
+                )
+
             }
         }
 

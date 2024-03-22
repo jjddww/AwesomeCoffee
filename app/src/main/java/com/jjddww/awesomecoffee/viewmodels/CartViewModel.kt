@@ -9,6 +9,7 @@ import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.repository.CartRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class CartViewModel(application: Application): ViewModel() {
@@ -20,6 +21,7 @@ class CartViewModel(application: Application): ViewModel() {
     }
 
     val cartItems = repository.getCartList.asLiveData()
+
 
     fun deleteAllItems() {
         viewModelScope.launch(Dispatchers.IO) {

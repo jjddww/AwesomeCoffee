@@ -50,7 +50,8 @@ import java.lang.String
 fun CartItem(item: Cart,
              detectAllChecked:() -> Unit,
              checkAllBoxState: MutableState<Boolean>,
-             onIncreaseAmount: (Cart) -> Unit){
+             onIncreaseAmount: (Cart) -> Unit,
+             onChangeTotalPrice:() -> Unit){
     val checkBoxState = remember { mutableStateOf(false) }
 
     checkBoxState.value = item.checked.value
@@ -105,7 +106,7 @@ fun CartItem(item: Cart,
         }
 
 
-        SetAmountButtonView(onIncreaseAmount, item)
+        SetAmountButtonView(onIncreaseAmount, item, onChangeTotalPrice)
 
         HorizontalDivider(
             modifier = Modifier
@@ -120,7 +121,8 @@ fun CartItem(item: Cart,
 
 @Composable
 fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
-                        item: Cart){
+                        item: Cart,
+                        onChangeTotalPrice:() -> Unit){
 
     var cnt = mutableStateOf(item.amount)
 
@@ -133,6 +135,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
                 cnt.value -= 1
                 item.amount = cnt.value
                 onIncreaseAmount(item)
+                onChangeTotalPrice()
             }
         },
             enabled = cnt.value > 1,
@@ -149,6 +152,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
             cnt.value += 1
             item.amount = cnt.value
             onIncreaseAmount(item)
+            onChangeTotalPrice()
         },
             modifier = Modifier
                 .width(24.dp)

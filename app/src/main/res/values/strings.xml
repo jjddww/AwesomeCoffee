@@ -42,6 +42,7 @@
     <string name="extra_shot">샷 추가 (+500원)</string>
     <string name="select_take_out">포장 여부</string>
     <string name="price_format">%s원</string>
+    <string name="total_price_format">총 %s원</string>
     <string name="only">%s Only</string>
     <string name="input_keyword">검색어 입력</string>
     <string name="empty_search_result">검색 결과가 없습니다.</string>

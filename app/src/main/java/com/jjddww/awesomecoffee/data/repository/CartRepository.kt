@@ -4,10 +4,13 @@ import androidx.annotation.WorkerThread
 import com.jjddww.awesomecoffee.data.dao.CartDao
 import com.jjddww.awesomecoffee.data.model.Cart
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 
 class CartRepository (private val cartDao: CartDao){
 
     val getCartList: Flow<List<Cart>> = cartDao.getCartList()
+
 
     @WorkerThread
     suspend fun deleteAllCartItems(){

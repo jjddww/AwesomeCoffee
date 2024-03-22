@@ -13,13 +13,13 @@ interface CartDao {
     @Query("SELECT * FROM cart") //장바구니 목록 불러올 때
     fun getCartList(): Flow<List<Cart>>
 
-    @Query("SELECT amount from cart where menu_name = :menuName and option = :option and extra_shot = :extraShot")
+    @Query("SELECT amount FROM cart WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot")
     fun findSameMenuAmount(menuName: String, option: String, extraShot: Boolean):Flow<Int>
 
     @Query("DELETE from cart") //장바구니 모두 지우기
     suspend fun deleteAllItems()
 
-    @Query("DELETE FROM cart where menu_name = :menuName and option = :option and extra_shot = :extraShot") //체크한 아이템 삭제
+    @Query("DELETE FROM cart WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot") //체크한 아이템 삭제
     suspend fun deleteCheckedItems(menuName: String, option: String, extraShot: Boolean)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
