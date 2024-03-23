@@ -76,7 +76,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
         cartList.forEach{
             totalPrice.value += it.price * it.amount
             if(it.shot)
-                totalPrice.value += 500
+                totalPrice.value += 500 * it.amount
         }
     }
 

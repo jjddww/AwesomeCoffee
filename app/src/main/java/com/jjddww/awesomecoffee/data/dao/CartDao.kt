@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CartDao {
-    @Query("SELECT * FROM cart") //장바구니 목록 불러올 때
+    @Query("SELECT * FROM cart ORDER BY menu_name DESC") //장바구니 목록 불러올 때
     fun getCartList(): Flow<List<Cart>>
 
     @Query("SELECT amount FROM cart WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot")
