@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -56,6 +58,7 @@ import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import com.jjddww.awesomecoffee.viewmodels.CartViewModel
 import java.lang.String.format
 
@@ -66,6 +69,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
     val cartList by viewModel.cartItems.observeAsState(initial = emptyList())
     val checkAllBoxState = remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
     val totalPrice = mutableStateOf(0)
     val deleteAllItems = {viewModel.deleteAllItems()}
     val deleteCheckedItems = { menuName: String, option: String, shot: Boolean ->
@@ -78,7 +82,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
         cartList.forEach{
             totalPrice.value += it.price * it.amount
             if(it.shot)
-                totalPrice.value += 500 * it.amount
+                totalPrice.value += EXTRA_SHOT_PRICE * it.amount
         }
     }
 
@@ -104,7 +108,8 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
         containerColor = surfaceVariantLight
     ){
 
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()
+            .verticalScroll(scrollState)) {
 
             Spacer(Modifier.height(35.dp))
 
@@ -151,10 +156,12 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
                             onChangeTotalPrice = onChangeTotalPrice)
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(30.dp))
 
-                Row(Modifier.fillMaxWidth().wrapContentHeight(),
+                Spacer(Modifier.height(10.dp))
+
+                Row(Modifier.fillMaxSize()
+                    .padding(bottom = 110.dp),
+                    verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
                         text = format(
@@ -163,7 +170,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
                         ),
                         modifier = Modifier
                             .wrapContentWidth()
-                            .padding(start = 20.dp, top= 10.dp),
+                            .padding(start = 20.dp, top = 10.dp),
                         textAlign = TextAlign.Center,
                         fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
                         color = Color.Black, fontSize = 20.sp

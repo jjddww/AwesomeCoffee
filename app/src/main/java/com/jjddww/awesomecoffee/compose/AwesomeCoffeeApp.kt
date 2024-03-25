@@ -19,6 +19,7 @@ import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.PaymentScreen
+import com.jjddww.awesomecoffee.compose.order.PaymentSuccessScreen
 import com.jjddww.awesomecoffee.compose.order.SearchScreen
 import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
@@ -43,6 +44,8 @@ fun AwesomeCoffeeApp() {
             onMenuSelected = awesomeCoffeeNavController::navigateToDetail,
             onSearchScreen = awesomeCoffeeNavController::navigateToSearch,
             onPaymentScreen = awesomeCoffeeNavController::navigateToPayment,
+            onPaymentSuccessScreen = awesomeCoffeeNavController::navigateToSuccessPayment,
+            onHomeScreen = awesomeCoffeeNavController::navigateToHome,
             onNavigateRoute = awesomeCoffeeNavController::navigateToBottomBarRoute)
     }
 }
@@ -55,6 +58,8 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     onMenuSelected: (Int, NavBackStackEntry) -> Unit,
     onSearchScreen: (NavBackStackEntry) -> Unit,
     onPaymentScreen: (NavBackStackEntry) -> Unit,
+    onPaymentSuccessScreen: (NavBackStackEntry)-> Unit,
+    onHomeScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
 
@@ -93,7 +98,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
             onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
     }
 
-    composable(route = MainDestinations.PAYMENT_ROUTE){
+    composable(route = MainDestinations.PAYMENT_ROUTE){navBackStackEntry ->
         val owner = LocalViewModelStoreOwner.current
         owner?.let {
             val viewModel: PaymentViewModel = viewModel(
@@ -102,8 +107,12 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 PaymentViewModelFactory(LocalContext.current.applicationContext as Application)
             )
 
-            PaymentScreen(viewModel)
+            PaymentScreen(viewModel) { onPaymentSuccessScreen(navBackStackEntry) }
         }
+    }
+
+    composable(route = MainDestinations.PAYMENT_SUCCESS_ROUTE){navBackStackEntry ->
+        PaymentSuccessScreen{ onHomeScreen(navBackStackEntry) }
     }
 }
 

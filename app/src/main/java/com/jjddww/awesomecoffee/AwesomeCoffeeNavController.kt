@@ -49,6 +49,26 @@ class AppNavController(
         }
     }
 
+    fun navigateToSuccessPayment(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(MainDestinations.PAYMENT_SUCCESS_ROUTE){
+                popUpTo(navController.graph.findStartDestination().id){
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+    fun navigateToHome(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(MainDestinations.HOME_ROUTE){
+                popUpTo(navController.graph.findStartDestination().id){
+                    inclusive = true
+                }
+            }
+        }
+    }
+
 
     fun navigateUp() {
         navController.navigateUp()

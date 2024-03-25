@@ -5,6 +5,7 @@
 
             <domain includeSubdomains="true">unsplash.com</domain>
             <domain includeSubdomains="true">34.64.104.72</domain>
+            <domain includeSubdomains="true">webview.bootpay.co.kr</domain>
 
         </domain-config>
 </network-security-config>

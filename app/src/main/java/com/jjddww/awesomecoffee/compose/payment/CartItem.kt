@@ -46,6 +46,7 @@ import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import java.lang.String
 
 
@@ -167,7 +168,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
 
         Text(text = String.format(
             stringResource(id = R.string.price_format),
-            ApplyDecimalFormat(if(item.shot) {item.amount * item.price + 500 * item.amount}
+            ApplyDecimalFormat(if(item.shot) {item.amount * item.price + EXTRA_SHOT_PRICE * item.amount}
             else {item.amount * item.price})
         ),
             modifier = Modifier

@@ -16,6 +16,7 @@ import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.data.repository.DetailRepository
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
+import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import com.jjddww.awesomecoffee.utilities.PERSONAL_CUP
 import com.jjddww.awesomecoffee.utilities.TOGO
 import kotlinx.coroutines.Dispatchers
@@ -112,12 +113,12 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
 
     fun extraShot(){
         extraShot.value = true
-        totalPrice.value = totalPrice.value?.plus(500)
+        totalPrice.value = totalPrice.value?.plus(EXTRA_SHOT_PRICE)
     }
 
     fun leaveOutShot(){
         extraShot.value = false
-        totalPrice.value = totalPrice.value?.minus(500)
+        totalPrice.value = totalPrice.value?.minus(EXTRA_SHOT_PRICE)
     }
 
     fun changeBottomSheetState(){

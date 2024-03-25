@@ -1,5 +1,7 @@
 package com.jjddww.awesomecoffee.compose.order
 
+import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,14 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -27,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -43,27 +50,56 @@ import com.jjddww.awesomecoffee.ui.theme.outlineLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
 import okhttp3.internal.format
 
 @Composable
-fun PaymentScreen(viewModel: PaymentViewModel) {
+fun PaymentScreen(
+    viewModel: PaymentViewModel,
+    onPaymentSuccessScreen:() -> Unit
+) {
 
     val items by viewModel.items.observeAsState(initial = emptyList())
     val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
+    val activity = LocalContext.current as Activity
+    val isSuccessPayment by viewModel.isSuccessPayment.observeAsState(initial = false)
+    val scrollState = rememberScrollState()
     viewModel.getTotalPrice()
-    
-    val onAddItems = { item: Cart ->
-        viewModel.addItems(item)
+
+
+    val onClearSuccess = {
+        viewModel.clearSuccessPayment()
     }
 
-    val onRequestPayment = { totalPrice: Int ->
-        viewModel.paymentTest(totalPrice)
+
+    val onAddItems = { items.forEach {
+        viewModel.addItems(it)
+    } }
+
+    val onClearItems = {
+        viewModel.clearItems()
+    }
+
+    val onRequestPayment = { totalPrice: Int, activity: Activity ->
+        viewModel.paymentTest(totalPrice, activity)
+    }
+
+    if(isSuccessPayment) {
+        onPaymentSuccessScreen()
+        onClearSuccess()
+
+    }
+
+
+    LaunchedEffect(true){
+        Log.e("ㅇㅇㅇ", "$isSuccessPayment")
     }
     
     Column(
         Modifier
-            .fillMaxSize()){
+            .fillMaxSize()
+            .verticalScroll(scrollState)){
         Spacer(Modifier.height(35.dp))
 
         Text(text = stringResource(id = R.string.payment),
@@ -125,10 +161,9 @@ fun PaymentScreen(viewModel: PaymentViewModel) {
         LazyColumn(
             Modifier
                 .fillMaxWidth()
-                .height(330.dp)){
+                .height(300.dp)){
 
             items(items){
-                onAddItems(it)
                 PaymentListItem(it)
             }
         }
@@ -149,7 +184,8 @@ fun PaymentScreen(viewModel: PaymentViewModel) {
             textAlign = TextAlign.End,
             style = MaterialTheme.typography.titleMedium)
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(20.dp))
+
 
         Row(
             Modifier
@@ -158,7 +194,11 @@ fun PaymentScreen(viewModel: PaymentViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom){
 
-            PaymentButton(onClick = { onRequestPayment(totalPrice) }, color = onSurfaceVariantLight, text = stringResource(id = R.string.payment))
+            PaymentButton(onClick = {
+                onClearItems()
+                onAddItems()
+                onRequestPayment(totalPrice, activity)},
+                color = onSurfaceVariantLight, text = stringResource(id = R.string.payment))
             PaymentButton(onClick = { /*TODO*/ }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
         }
 
@@ -250,7 +290,7 @@ fun PaymentListItem(item: Cart){
 
                 Text(
                     text = format(stringResource(id = R.string.total_price_format),
-                        ApplyDecimalFormat((item.price + if(item.shot) 500 else 0) * item.amount)),
+                        ApplyDecimalFormat((item.price + if(item.shot) EXTRA_SHOT_PRICE else 0) * item.amount)),
                     modifier = Modifier.padding(end = 10.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = Color.Black, fontSize = 12.sp

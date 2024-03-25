@@ -67,6 +67,7 @@ object MainDestinations {
     const val DETAIL_ROUTE = "detail"
     const val SEARCH_ROUTE = "search"
     const val PAYMENT_ROUTE = "payment"
+    const val PAYMENT_SUCCESS_ROUTE = "payment_success"
     const val MENU_ID_KEY = "menuId"
 }
 
