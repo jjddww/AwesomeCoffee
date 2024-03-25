@@ -2,6 +2,7 @@ package com.jjddww.awesomecoffee.compose.payment
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -142,7 +145,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
                 LazyColumn(
                     Modifier
                         .fillMaxWidth()
-                        .height(430.dp)){
+                        .height(500.dp)){
                     items(cartList){
                         CartItem(item = it, detectAllChecked = detectAllChecked,
                             checkAllBoxState = checkAllBoxState, onIncreaseAmount = onIncreaseAmount,
@@ -150,15 +153,40 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-                Text(text = format(stringResource(id = R.string.total_price_format), ApplyDecimalFormat(totalPrice.value)),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp),
-                    fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
-                    color = Color.Black, fontSize = 17.sp
-                )
+                Row(Modifier.fillMaxWidth().wrapContentHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = format(
+                            stringResource(id = R.string.total_price_format),
+                            ApplyDecimalFormat(totalPrice.value)
+                        ),
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(start = 20.dp, top= 10.dp),
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
+                        color = Color.Black, fontSize = 20.sp
+                    )
+
+                    Button(modifier = Modifier
+                        .width(150.dp)
+                        .height(40.dp)
+                        .padding(end = 20.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
+                        onClick = {
+                        })
+                    {
+                        Text(
+                            stringResource(id = R.string.payment),
+                            fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
 
             }
         }

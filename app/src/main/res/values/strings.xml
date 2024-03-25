@@ -15,7 +15,8 @@
     <string name="new_menu">새로 나왔어요!</string>
     <string name="title_activity_order">OrderActivity</string>
     <string name="cart">장바구니</string>
-    <string name="order">주문하기</string>
+    <string name="order">주문 하기</string>
+    <string name="payment">결제 하기</string>
     <string name="home">홈</string>
     <string name="coupon">쿠폰함</string>
     <string name="other">기타</string>

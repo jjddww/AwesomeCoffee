@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -85,9 +86,9 @@ fun CartItem(item: Cart,
 
             Column (
                 Modifier
-                    .wrapContentSize()
+                    .width(200.dp)
                     .padding(start = 10.dp, end = 10.dp)){
-                Text(text = item.menuName, style = MaterialTheme.typography.labelSmall)
+                Text(text = item.menuName, style = MaterialTheme.typography.labelMedium)
                 Text(text = item.option, modifier = Modifier.padding(top = 5.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = neutralVariant70, fontSize = 12.sp)
@@ -170,7 +171,8 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
                 .fillMaxWidth()
                 .padding(end = 20.dp),
             textAlign = TextAlign.End,
-            style = MaterialTheme.typography.titleMedium)
-
+            fontFamily = FontFamily(Font(R.font.spoqahansansneo_bold)),
+            fontSize = 17.sp
+        )
     }
 }
