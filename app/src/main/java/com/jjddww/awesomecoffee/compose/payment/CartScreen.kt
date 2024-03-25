@@ -61,11 +61,10 @@ import java.lang.String.format
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigateRoute: (String) -> Unit){
+fun CartScreen(viewModel: CartViewModel, navController: NavController,
+               onPaymentScreen:() -> Unit, onNavigateRoute: (String) -> Unit){
 
     val cartList by viewModel.cartItems.observeAsState(initial = emptyList())
-//    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
-
     val checkAllBoxState = remember { mutableStateOf(false) }
     val totalPrice = mutableStateOf(0)
     val deleteAllItems = {viewModel.deleteAllItems()}
@@ -176,8 +175,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController, onNavigat
                         .padding(end = 20.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
-                        onClick = {
-                        })
+                        onClick = { onPaymentScreen() })
                     {
                         Text(
                             stringResource(id = R.string.payment),

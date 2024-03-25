@@ -50,4 +50,9 @@
     <string name="empty_cart">장바구니가 비어있습니다.</string>
     <string name="all_selected">전체 선택</string>
     <string name="remove_selected_box">선택 삭제</string>
+    <string name="cancel">취소</string>
+    <string name="empty_coupon">사용가능한 쿠폰이 없습니다.</string>
+    <string name="select_coupon">쿠폰 선택</string>
+    <string name="use_coupon">쿠폰 사용</string>
+    <string name="order_list">주문 내역</string>
 </resources>

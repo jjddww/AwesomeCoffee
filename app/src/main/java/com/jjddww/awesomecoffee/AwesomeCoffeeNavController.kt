@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jjddww.awesomecoffee.compose.MainDestinations
 import com.jjddww.awesomecoffee.compose.Sections
+import com.jjddww.awesomecoffee.data.model.Cart
 
 @Composable
 fun rememberAppNavController(
@@ -39,6 +40,12 @@ class AppNavController(
     fun navigateToSearch(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
             navController.navigate("${MainDestinations.SEARCH_ROUTE}")
+        }
+    }
+
+    fun navigateToPayment(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(MainDestinations.PAYMENT_ROUTE)
         }
     }
 

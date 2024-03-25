@@ -4,7 +4,7 @@
         <domain-config cleartextTrafficPermitted="true">
 
             <domain includeSubdomains="true">unsplash.com</domain>
-            <domain includeSubdomains="true">34.47.89.131</domain>
+            <domain includeSubdomains="true">34.64.104.72</domain>
 
         </domain-config>
 </network-security-config>

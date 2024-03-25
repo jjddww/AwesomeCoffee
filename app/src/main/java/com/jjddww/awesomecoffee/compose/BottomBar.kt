@@ -39,9 +39,9 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
 import com.jjddww.awesomecoffee.compose.other.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
-import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
+import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.ui.theme.onPrimaryDark
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
 import com.jjddww.awesomecoffee.viewmodels.CartViewModel
@@ -66,6 +66,7 @@ object MainDestinations {
     const val HOME_ROUTE = "home"
     const val DETAIL_ROUTE = "detail"
     const val SEARCH_ROUTE = "search"
+    const val PAYMENT_ROUTE = "payment"
     const val MENU_ID_KEY = "menuId"
 }
 
@@ -76,14 +77,15 @@ class CartViewModelFactory(private val application: Application): ViewModelProvi
 }
 
 fun NavGraphBuilder.AppNavGraph(
-                                couponViewModel: CouponViewModel,
-                                viewModel: OrderViewModel,
-                                appNavController: AppNavController,
-                                onMenuSelected: (Int, NavBackStackEntry) -> Unit,
-                                onSearchScreen: (NavBackStackEntry) -> Unit,
-                                onNavigateRoute: (String) -> Unit)
+    couponViewModel: CouponViewModel,
+    viewModel: OrderViewModel,
+    appNavController: AppNavController,
+    onMenuSelected: (Int, NavBackStackEntry) -> Unit,
+    onSearchScreen: (NavBackStackEntry) -> Unit,
+    onPaymentScreen: (NavBackStackEntry) -> Unit,
+    onNavigateRoute: (String) -> Unit)
 {
-        composable(Sections.CART.route){
+        composable(Sections.CART.route){navBackStackEntry ->
             val owner = LocalViewModelStoreOwner.current
             owner?.let {
                 val viewModel: CartViewModel = viewModel(
@@ -91,7 +93,11 @@ fun NavGraphBuilder.AppNavGraph(
                     "DetailViewModel",
                     CartViewModelFactory(LocalContext.current.applicationContext as Application)
                 )
-                CartScreen(viewModel, appNavController.navController, onNavigateRoute)
+                CartScreen(
+                    viewModel= viewModel,
+                    navController = appNavController.navController,
+                    onNavigateRoute = onNavigateRoute,
+                    onPaymentScreen = {onPaymentScreen(navBackStackEntry)})
             }
         }
         composable(Sections.ORDER.route){navBackStackEntry ->

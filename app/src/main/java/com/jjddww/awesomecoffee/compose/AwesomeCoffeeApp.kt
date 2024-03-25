@@ -2,32 +2,29 @@ package com.jjddww.awesomecoffee.compose
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
+import com.jjddww.awesomecoffee.compose.order.PaymentScreen
 import com.jjddww.awesomecoffee.compose.order.SearchScreen
-import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
+import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
 import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -45,6 +42,7 @@ fun AwesomeCoffeeApp() {
             navController = awesomeCoffeeNavController,
             onMenuSelected = awesomeCoffeeNavController::navigateToDetail,
             onSearchScreen = awesomeCoffeeNavController::navigateToSearch,
+            onPaymentScreen = awesomeCoffeeNavController::navigateToPayment,
             onNavigateRoute = awesomeCoffeeNavController::navigateToBottomBarRoute)
     }
 }
@@ -56,6 +54,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     navController: AppNavController,
     onMenuSelected: (Int, NavBackStackEntry) -> Unit,
     onSearchScreen: (NavBackStackEntry) -> Unit,
+    onPaymentScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
 
@@ -65,7 +64,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
         route = MainDestinations.HOME_ROUTE,
         startDestination = Sections.HOME.route
     ){
-        AppNavGraph(couponViewModel, orderViewModel, navController, onMenuSelected, onSearchScreen, onNavigateRoute)
+        AppNavGraph(couponViewModel, orderViewModel, navController, onMenuSelected, onSearchScreen, onPaymentScreen, onNavigateRoute)
     }
 
     composable(route = "${MainDestinations.DETAIL_ROUTE}/{${MainDestinations.MENU_ID_KEY}}",
@@ -93,10 +92,29 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 navController.navigateUp() },
             onMenuSelected = {id -> onMenuSelected(id, navBackStackEntry)})
     }
+
+    composable(route = MainDestinations.PAYMENT_ROUTE){
+        val owner = LocalViewModelStoreOwner.current
+        owner?.let {
+            val viewModel: PaymentViewModel = viewModel(
+                it,
+                "PaymentViewModel",
+                PaymentViewModelFactory(LocalContext.current.applicationContext as Application)
+            )
+
+            PaymentScreen(viewModel)
+        }
+    }
 }
 
 class DetailViewModelFactory(private val application: Application, private val menuId: Int): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return DetailViewModel(application, menuId) as T
+    }
+}
+
+class PaymentViewModelFactory(private val application: Application): ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return PaymentViewModel(application) as T
     }
 }
