@@ -49,7 +49,7 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
-import com.jjddww.awesomecoffee.data.model.Cart
+import androidx.navigation.NavBackStackEntry
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
@@ -71,7 +71,10 @@ enum class Pages(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(viewModel: DetailViewModel){
+fun DetailScreen(
+    viewModel: DetailViewModel,
+    onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit
+){
 
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
@@ -81,6 +84,7 @@ fun DetailScreen(viewModel: DetailViewModel){
     val showBottomSheet by viewModel.showBottomSheet.observeAsState(initial = false)
     val amount by viewModel.totalAmount.observeAsState(initial = 1)
     val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
+    val extraShot by viewModel.extraShot.observeAsState(initial = false)
 
     val onShotChange = { isExtra: Boolean ->
         if (isExtra) viewModel.extraShot() else viewModel.leaveOutShot()}
@@ -92,11 +96,10 @@ fun DetailScreen(viewModel: DetailViewModel){
         viewModel.addCartItem(menu, mainCategory)
     }
 
+    val getOption = { mainCategory: String -> viewModel.getOption(mainCategory)}
+
     val settingBeverageOptions = { optionType: Any -> viewModel.settingBeverageOptions(optionType)}
     val settingDessertOptions = { option: String -> viewModel.settingDessertOptions(option)}
-
-    val onMoveToPayment = {}
-
 
 
     viewModel.setAmount()
@@ -170,16 +173,26 @@ fun DetailScreen(viewModel: DetailViewModel){
                         isOnlyIced = desc.temperature,
                         price = totalPrice,
                         menu = desc,
+                        extraShot = extraShot,
+                        getOption = getOption,
                         onShotChange = onShotChange,
                         onAmountChange = onAmountChange,
                         onAddCartItem = onAddCartItem,
                         onSettingOptions = settingBeverageOptions,
-                        onMoveToPayment = onMoveToPayment,
-                        amount = amount)
+                        onPaymentSingleScreen = onPaymentSingleScreen,
+                        amount = amount,
+                        )
 
                 else if(desc.mainCategory == DESSERT)
-                    DessertContent(price = totalPrice, menu= desc, onAmountChange = onAmountChange, onSettingOptions = settingDessertOptions,
-                        onAddCartItem = onAddCartItem, onMoveToPayment = onMoveToPayment, amount = amount)
+                    DessertContent(price = totalPrice,
+                        menu= desc,
+                        extraShot = extraShot,
+                        getOption = getOption,
+                        onAmountChange = onAmountChange,
+                        onSettingOptions = settingDessertOptions,
+                        onAddCartItem = onAddCartItem,
+                        onPaymentSingleScreen = onPaymentSingleScreen,
+                        amount = amount)
             }
         }
 

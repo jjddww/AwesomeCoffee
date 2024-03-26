@@ -39,7 +39,7 @@ class AppNavController(
 
     fun navigateToSearch(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
-            navController.navigate("${MainDestinations.SEARCH_ROUTE}")
+            navController.navigate(MainDestinations.SEARCH_ROUTE)
         }
     }
 
@@ -48,6 +48,13 @@ class AppNavController(
             navController.navigate(MainDestinations.PAYMENT_ROUTE)
         }
     }
+
+    fun navigateToPaymentSingle(menu: String, amount: Int, option: String, isShot: Boolean, from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate("${MainDestinations.PAYMENT_SINGLE_ROUTE}/$menu/$amount/$option/$isShot")
+        }
+    }
+
 
     fun navigateToSuccessPayment(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){

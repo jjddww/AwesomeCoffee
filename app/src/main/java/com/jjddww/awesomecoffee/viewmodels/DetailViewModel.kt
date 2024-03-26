@@ -54,6 +54,17 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
     var extraShot = MutableLiveData<Boolean>(false)
 
 
+    fun getOption(mainCategory: String): String{
+        var option = ""
+        if (mainCategory == BEVERAGE) {
+            option = "${isIced.value} | ${cupSize.value} | ${cup.value}"}
+        else
+            option = "$takeout.value"
+
+        return option
+    }
+
+
     fun addCartItem(menu: Menu, mainCategory: String) {
         val item =
             if (mainCategory == BEVERAGE) {

@@ -24,6 +24,8 @@ const val BOOTPAY = "boot pay"
 class PaymentRepository(private val cartDao: CartDao,
                         private val application: Application) {
 
+
+
     val getCartList: Flow<List<Cart>> = cartDao.getCartList()
 
     val items: MutableList<BootItem> = ArrayList()

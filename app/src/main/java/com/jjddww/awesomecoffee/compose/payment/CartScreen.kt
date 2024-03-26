@@ -127,7 +127,9 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
                     horizontalAlignment = Alignment.CenterHorizontally) {
 
                     Text(text= stringResource(id = R.string.empty_cart),
-                        style = MaterialTheme.typography.labelMedium)
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxSize().padding(top = 300.dp),
+                        textAlign = TextAlign.Center)
                 }
             }
 

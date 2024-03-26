@@ -1,7 +1,6 @@
 package com.jjddww.awesomecoffee.compose.order
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -40,9 +37,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Cart
+import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
@@ -51,31 +51,36 @@ import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
-import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
+import com.jjddww.awesomecoffee.viewmodels.SingleMenuPaymentViewModel
 import okhttp3.internal.format
 
 @Composable
-fun PaymentScreen(
-    viewModel: PaymentViewModel,
-    onPaymentSuccessScreen:() -> Unit
-) {
+fun SingleMenuPaymentScreen(
+    viewModel: SingleMenuPaymentViewModel,
+    onPaymentSuccessScreen:() -> Unit,
+    menu: Menu,
+    option: String,
+    amount: Int,
+    isShot: Boolean){
 
-    val items by viewModel.items.observeAsState(initial = emptyList())
-    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
-    val activity = LocalContext.current as Activity
-    val isSuccessPayment by viewModel.isSuccessPayment.observeAsState(initial = false)
     val scrollState = rememberScrollState()
-    viewModel.getTotalPrice()
-
+    val isSuccessPayment by viewModel.isSuccessPayment.observeAsState(false)
+    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
+    val menuData by viewModel.menuData.observeAsState()
+    val optionData by viewModel.optionData.observeAsState()
+    val qty by viewModel.qty.observeAsState()
+    val extraShot by viewModel.extraShot.observeAsState()
+    val activity = LocalContext.current as Activity
+    val setItem = { viewModel.setCart(menu, option, amount, isShot)}
 
     val onClearSuccess = {
         viewModel.clearSuccessPayment()
     }
 
 
-    val onAddItems = { items.forEach {
-        viewModel.addItems(it)
-    } }
+    val onAddItems = {
+        viewModel.addItems()
+    }
 
     val onClearItems = {
         viewModel.clearItems()
@@ -91,7 +96,12 @@ fun PaymentScreen(
 
     }
 
-    
+    setItem()
+
+    if(isSuccessPayment){
+
+    }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -115,7 +125,8 @@ fun PaymentScreen(
         Spacer(Modifier.height(10.dp))
 
 
-        Row(Modifier.fillMaxWidth(),
+        Row(
+            Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween){
 
@@ -159,8 +170,10 @@ fun PaymentScreen(
                 .fillMaxWidth()
                 .height(300.dp)){
 
-            items(items){
-                PaymentListItem(it)
+            item {
+                if(menuData != null && qty != null && optionData != null && extraShot != null){
+                    SinglePaymentListItem(menuData!!, qty!!, optionData!!, extraShot!!)
+                }
             }
         }
 
@@ -193,30 +206,18 @@ fun PaymentScreen(
             PaymentButton(onClick = {
                 onClearItems()
                 onAddItems()
-                onRequestPayment(totalPrice, activity)},
-                color = onSurfaceVariantLight, text = stringResource(id = R.string.payment))
+                onRequestPayment(totalPrice, activity)
+            },
+                color = onSurfaceVariantLight, text = stringResource(id = R.string.payment)
+            )
             PaymentButton(onClick = { /*TODO*/ }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
         }
 
     }
 }
 
-
 @Composable
-fun PaymentButton(onClick: () -> Unit, color: Color, text: String) {
-    Button(onClick = { onClick() },
-        modifier = Modifier
-            .width(170.dp)
-            .height(40.dp),
-        colors = ButtonDefaults.buttonColors(color)
-    ) {
-        Text(text = text)
-    }
-}
-
-
-@Composable
-fun PaymentListItem(item: Cart){
+fun SinglePaymentListItem(item: Menu, amount: Int, option: String, extraShot: Boolean){
     Column(
         Modifier
             .fillMaxWidth()
@@ -230,7 +231,7 @@ fun PaymentListItem(item: Cart){
         ) {
 
             Image(
-                painter = rememberImagePainter(data = item.url),
+                painter = rememberImagePainter(data = item.imgUrl),
                 modifier = Modifier
                     .width(45.dp)
                     .height(45.dp)
@@ -247,12 +248,12 @@ fun PaymentListItem(item: Cart){
                 Text(text = item.menuName, fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                     fontSize = 14.sp, color = Color.Black)
                 Text(
-                    text = item.option, modifier = Modifier.padding(top = 5.dp),
+                    text = option, modifier = Modifier.padding(top = 5.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = neutralVariant70, fontSize = 12.sp
                 )
 
-                if (item.shot)
+                if (extraShot)
                     Text(
                         text = stringResource(id = R.string.extra_shot),
                         modifier = Modifier.padding(top = 5.dp),
@@ -278,7 +279,7 @@ fun PaymentListItem(item: Cart){
                 )
 
                 Text(
-                    text = "수량: ${item.amount}",
+                    text = "수량: $amount",
                     modifier = Modifier.padding(end = 10.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = Color.Black, fontSize = 12.sp
@@ -286,7 +287,7 @@ fun PaymentListItem(item: Cart){
 
                 Text(
                     text = format(stringResource(id = R.string.total_price_format),
-                        ApplyDecimalFormat((item.price + if(item.shot) EXTRA_SHOT_PRICE else 0) * item.amount)),
+                        ApplyDecimalFormat((item.price + if(extraShot) EXTRA_SHOT_PRICE else 0) * amount)),
                     modifier = Modifier.padding(end = 10.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = Color.Black, fontSize = 12.sp

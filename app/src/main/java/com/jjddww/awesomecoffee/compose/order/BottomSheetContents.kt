@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose.order
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
+import com.google.gson.Gson
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Menu
@@ -52,11 +55,13 @@ fun BeverageContent(isCoffee: Boolean,
                     isOnlyIced: String,
                     price: Int,
                     menu: Menu,
+                    extraShot:Boolean,
+                    getOption: (String) -> String,
                     onShotChange:(isExtra: Boolean) -> Unit,
                     onAmountChange:(Boolean) -> Unit,
                     onSettingOptions:(Any) -> Unit,
                     onAddCartItem:(Menu, String) -> Unit,
-                    onMoveToPayment: () -> Unit,
+                    onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit,
                     amount: Int) {
     lateinit var checkBoxState: MutableState<Boolean>
 
@@ -146,17 +151,19 @@ fun BeverageContent(isCoffee: Boolean,
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(BEVERAGE, menu, onAddCartItem, onMoveToPayment)
+        OrderButtonView(BEVERAGE, menu, getOption(BEVERAGE), amount, extraShot, onAddCartItem, onPaymentSingleScreen)
     }
 }
 
 @Composable
 fun DessertContent(price: Int,
                    menu: Menu,
+                   extraShot:Boolean,
+                   getOption: (String) -> String,
                    onAmountChange:(Boolean) -> Unit,
                    onSettingOptions:(String) -> Unit,
                    onAddCartItem:(Menu, String) -> Unit,
-                   onMoveToPayment: () -> Unit,
+                   onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit,
                    amount: Int){
 
     Column (
@@ -188,7 +195,7 @@ fun DessertContent(price: Int,
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(DESSERT, menu, onAddCartItem, onMoveToPayment)
+        OrderButtonView(DESSERT, menu, getOption(DESSERT), amount, extraShot, onAddCartItem, onPaymentSingleScreen)
     }
 }
 
@@ -237,20 +244,25 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
 @Composable
 fun OrderButtonView(mainCategory: String,
                     menu: Menu,
+                    option:String,
+                    amount: Int,
+                    isShot: Boolean,
                     onAddCartItem:(Menu, String) -> Unit,
-                    onMoveToPayment:() -> Unit){
+                    onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit){
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
         .padding(start = 20.dp, end = 20.dp),
         Arrangement.SpaceEvenly){
 
+        var menuJson = Uri.encode(Gson().toJson(menu))
+
         OrderButton(onClick = { onAddCartItem(menu, mainCategory) }, color = surfaceVariant, text = stringResource(
             id = R.string.add_cart
         )
         )
 
-        OrderButton(onClick = { onMoveToPayment() }, color = onSurfaceVariantLight, text = stringResource(
+        OrderButton(onClick = { onPaymentSingleScreen(menuJson, amount, option, isShot) }, color = onSurfaceVariantLight, text = stringResource(
             id = R.string.order
         )
         )
