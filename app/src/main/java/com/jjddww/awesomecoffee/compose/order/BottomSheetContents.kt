@@ -56,7 +56,7 @@ fun BeverageContent(isCoffee: Boolean,
                     price: Int,
                     menu: Menu,
                     extraShot:Boolean,
-                    getOption: (String) -> String,
+                    getOption: String,
                     onShotChange:(isExtra: Boolean) -> Unit,
                     onAmountChange:(Boolean) -> Unit,
                     onSettingOptions:(Any) -> Unit,
@@ -151,7 +151,7 @@ fun BeverageContent(isCoffee: Boolean,
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(BEVERAGE, menu, getOption(BEVERAGE), amount, extraShot, onAddCartItem, onPaymentSingleScreen)
+        OrderButtonView(BEVERAGE, menu, getOption, amount, extraShot, onAddCartItem, onPaymentSingleScreen)
     }
 }
 
@@ -159,7 +159,7 @@ fun BeverageContent(isCoffee: Boolean,
 fun DessertContent(price: Int,
                    menu: Menu,
                    extraShot:Boolean,
-                   getOption: (String) -> String,
+                   getOption: String,
                    onAmountChange:(Boolean) -> Unit,
                    onSettingOptions:(String) -> Unit,
                    onAddCartItem:(Menu, String) -> Unit,
@@ -195,7 +195,7 @@ fun DessertContent(price: Int,
 
         Spacer(Modifier.height(40.dp))
 
-        OrderButtonView(DESSERT, menu, getOption(DESSERT), amount, extraShot, onAddCartItem, onPaymentSingleScreen)
+        OrderButtonView(DESSERT, menu, getOption, amount, extraShot, onAddCartItem, onPaymentSingleScreen)
     }
 }
 

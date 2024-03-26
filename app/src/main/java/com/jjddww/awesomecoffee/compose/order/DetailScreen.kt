@@ -85,9 +85,12 @@ fun DetailScreen(
     val amount by viewModel.totalAmount.observeAsState(initial = 1)
     val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
     val extraShot by viewModel.extraShot.observeAsState(initial = false)
+    val beverageOption by viewModel.beverageOption.observeAsState(initial = "")
+    val dessertOption by viewModel.dessertOption.observeAsState(initial = "")
 
     val onShotChange = { isExtra: Boolean ->
         if (isExtra) viewModel.extraShot() else viewModel.leaveOutShot()}
+
 
     val onAmountChange = { isIncrease: Boolean ->
         if(isIncrease) viewModel.increaseAmount()  else viewModel.decreaseAmount()}
@@ -95,8 +98,6 @@ fun DetailScreen(
     val onAddCartItem = { menu: Menu, mainCategory: String ->
         viewModel.addCartItem(menu, mainCategory)
     }
-
-    val getOption = { mainCategory: String -> viewModel.getOption(mainCategory)}
 
     val settingBeverageOptions = { optionType: Any -> viewModel.settingBeverageOptions(optionType)}
     val settingDessertOptions = { option: String -> viewModel.settingDessertOptions(option)}
@@ -174,7 +175,7 @@ fun DetailScreen(
                         price = totalPrice,
                         menu = desc,
                         extraShot = extraShot,
-                        getOption = getOption,
+                        getOption = beverageOption,
                         onShotChange = onShotChange,
                         onAmountChange = onAmountChange,
                         onAddCartItem = onAddCartItem,
@@ -187,7 +188,7 @@ fun DetailScreen(
                     DessertContent(price = totalPrice,
                         menu= desc,
                         extraShot = extraShot,
-                        getOption = getOption,
+                        getOption = dessertOption,
                         onAmountChange = onAmountChange,
                         onSettingOptions = settingDessertOptions,
                         onAddCartItem = onAddCartItem,

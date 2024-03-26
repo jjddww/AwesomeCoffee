@@ -53,15 +53,16 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
 
     var extraShot = MutableLiveData<Boolean>(false)
 
+    var beverageOption = MutableLiveData<String>("")
+    var dessertOption = MutableLiveData<String>("")
 
-    fun getOption(mainCategory: String): String{
-        var option = ""
-        if (mainCategory == BEVERAGE) {
-            option = "${isIced.value} | ${cupSize.value} | ${cup.value}"}
-        else
-            option = "$takeout.value"
 
-        return option
+    fun setBeverageOption(){
+        beverageOption.value = "${isIced.value} | ${cupSize.value} | ${cup.value}"
+    }
+
+    fun setDessertOption(){
+        dessertOption.value = "${takeout.value}"
     }
 
 
@@ -150,9 +151,13 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
 
         if(option is String)
             cup.value = option.toString()
+
+        setBeverageOption()
     }
 
     fun settingDessertOptions(option: String){
         takeout.value = option
+
+        setDessertOption()
     }
 }
