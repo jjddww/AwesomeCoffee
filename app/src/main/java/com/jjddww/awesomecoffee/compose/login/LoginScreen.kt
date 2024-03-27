@@ -78,12 +78,12 @@ fun LoginScreen(){
                 style = MaterialTheme.typography.labelMedium)
         }
 
-        Row(Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center){
-            TextButton(string = stringResource(id = R.string.join))
-            TextButton(string = stringResource(id = R.string.find_id))
-            TextButton(string = stringResource(id = R.string.find_password))
-        }
+//        Row(Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.Center){
+//            TextButton(string = stringResource(id = R.string.join))
+//            TextButton(string = stringResource(id = R.string.find_id))
+//            TextButton(string = stringResource(id = R.string.find_password))
+//        }
     }
 }
 
@@ -127,9 +127,7 @@ fun LoginTextField(placeholder: String){
 @Preview(showSystemUi = true)
 @Composable
 fun Preview(){
-    AwesomeCoffeeTheme {
-        Surface (color = surfaceVariantLight){
-            LoginScreen()
-        }
+    Surface (color = surfaceVariantLight){
+        LoginScreen()
     }
 }

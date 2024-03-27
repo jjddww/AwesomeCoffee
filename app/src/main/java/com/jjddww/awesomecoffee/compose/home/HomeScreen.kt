@@ -72,7 +72,7 @@ fun HomeScreen(
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
     val scrollState = rememberScrollState()
-    val isLogin = true
+    val isLogin = false
 
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
