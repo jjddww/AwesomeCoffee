@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee.compose
 
+import android.app.Activity
 import android.app.Application
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -39,6 +40,7 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
 import com.jjddww.awesomecoffee.compose.other.OtherScreen
 import com.jjddww.awesomecoffee.compose.home.HomeScreen
+import com.jjddww.awesomecoffee.compose.login.LoginScreen
 import com.jjddww.awesomecoffee.compose.order.OrderScreen
 import com.jjddww.awesomecoffee.compose.payment.CartScreen
 import com.jjddww.awesomecoffee.data.model.Cart
@@ -47,6 +49,7 @@ import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLightMediumContrast
 import com.jjddww.awesomecoffee.viewmodels.CartViewModel
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
+import com.jjddww.awesomecoffee.viewmodels.LoginViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 
 enum class Sections(
@@ -62,6 +65,11 @@ enum class Sections(
 
 }
 
+object Login{
+    const val LOGIN_ROUTE = "home/login"
+}
+
+
 object MainDestinations {
     const val HOME_ROUTE = "home"
     const val DETAIL_ROUTE = "detail"
@@ -71,6 +79,7 @@ object MainDestinations {
     const val PAYMENT_SUCCESS_ROUTE = "payment_success"
     const val MENU_ID_KEY = "menuId"
 }
+
 
 class CartViewModelFactory(private val application: Application): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
@@ -85,6 +94,8 @@ fun NavGraphBuilder.AppNavGraph(
     onMenuSelected: (Int, NavBackStackEntry) -> Unit,
     onSearchScreen: (NavBackStackEntry) -> Unit,
     onPaymentScreen: (NavBackStackEntry) -> Unit,
+    onHomeScreen: (NavBackStackEntry) -> Unit,
+    onLoginScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit)
 {
         composable(Sections.CART.route){navBackStackEntry ->
@@ -112,7 +123,7 @@ fun NavGraphBuilder.AppNavGraph(
             )
         }
         composable(Sections.HOME.route){navBackStackEntry ->
-            HomeScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute
+            HomeScreen(navController = appNavController.navController, onNavigateRoute = onNavigateRoute,
             ) { id -> onMenuSelected(id, navBackStackEntry) }
         }
         composable(Sections.COUPON.route){
@@ -121,6 +132,21 @@ fun NavGraphBuilder.AppNavGraph(
         composable(Sections.OTHER.route){
             OtherScreen(appNavController.navController, onNavigateRoute)
         }
+
+        composable(route = Login.LOGIN_ROUTE){ navBackStackEntry ->
+
+            val owner = LocalViewModelStoreOwner.current
+            owner?.let {
+                val viewModel: LoginViewModel = viewModel(
+                    it,
+                    "LoginViewModel",
+                    LoginViewModelFactory(LocalContext.current as Activity)
+                )
+
+            LoginScreen(viewModel = viewModel){onHomeScreen(navBackStackEntry)}
+        }
+
+    }
 
 }
 

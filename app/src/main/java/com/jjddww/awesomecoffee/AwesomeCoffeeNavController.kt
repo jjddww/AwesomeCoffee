@@ -7,15 +7,13 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.jjddww.awesomecoffee.compose.Login
+
 import com.jjddww.awesomecoffee.compose.MainDestinations
 import com.jjddww.awesomecoffee.compose.Sections
-import com.jjddww.awesomecoffee.data.model.Cart
 
 @Composable
 fun rememberAppNavController(
@@ -55,6 +53,12 @@ class AppNavController(
         }
     }
 
+    fun navigateToLogin(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(Login.LOGIN_ROUTE)
+        }
+    }
+
 
     fun navigateToSuccessPayment(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
@@ -68,7 +72,7 @@ class AppNavController(
 
     fun navigateToHome(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
-            navController.navigate(MainDestinations.HOME_ROUTE){
+            navController.navigate(Sections.HOME.route){
                 popUpTo(navController.graph.findStartDestination().id){
                     inclusive = true
                 }

@@ -1,8 +1,15 @@
 package com.jjddww.awesomecoffee.compose
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +25,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.jjddww.awesomecoffee.AppNavController
+import com.jjddww.awesomecoffee.compose.login.LoginScreen
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.PaymentScreen
 import com.jjddww.awesomecoffee.compose.order.PaymentSuccessScreen
@@ -27,20 +35,27 @@ import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
+import com.jjddww.awesomecoffee.viewmodels.LoginViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
 import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
 import com.jjddww.awesomecoffee.viewmodels.SingleMenuPaymentViewModel
+import com.kakao.sdk.auth.AuthApiClient
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.model.KakaoSdkError
+import com.kakao.sdk.user.UserApiClient
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AwesomeCoffeeApp() {
     val awesomeCoffeeNavController = rememberAppNavController()
+
     val orderViewModel = OrderViewModel()
     val couponViewModel = CouponViewModel()
     NavHost(
         navController = awesomeCoffeeNavController.navController,
         startDestination = MainDestinations.HOME_ROUTE){
+
         awesomeCoffeeNavGraph(
             couponViewModel = couponViewModel,
             orderViewModel = orderViewModel,
@@ -51,6 +66,7 @@ fun AwesomeCoffeeApp() {
             onPaymentSuccessScreen = awesomeCoffeeNavController::navigateToSuccessPayment,
             onPaymentSingleScreen = awesomeCoffeeNavController::navigateToPaymentSingle,
             onHomeScreen = awesomeCoffeeNavController::navigateToHome,
+            onLoginScreen = awesomeCoffeeNavController::navigateToLogin,
             onNavigateRoute = awesomeCoffeeNavController::navigateToBottomBarRoute)
     }
 }
@@ -66,6 +82,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     onPaymentSingleScreen: (String, Int, String, Boolean, NavBackStackEntry) -> Unit,
     onPaymentSuccessScreen: (NavBackStackEntry)-> Unit,
     onHomeScreen: (NavBackStackEntry) -> Unit,
+    onLoginScreen: (NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
 
@@ -73,10 +90,21 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
 
     navigation(
         route = MainDestinations.HOME_ROUTE,
-        startDestination = Sections.HOME.route
+//        startDestination = if(isLogin) Sections.HOME.route else Login.LOGIN_ROUTE
+        startDestination = Login.LOGIN_ROUTE
     ){
-        AppNavGraph(couponViewModel, orderViewModel, navController, onMenuSelected, onSearchScreen, onPaymentScreen, onNavigateRoute)
+        AppNavGraph(
+            couponViewModel,
+            orderViewModel,
+            navController,
+            onMenuSelected,
+            onSearchScreen,
+            onPaymentScreen,
+            onHomeScreen,
+            onLoginScreen,
+            onNavigateRoute)
     }
+
 
     composable(route = "${MainDestinations.DETAIL_ROUTE}/{${MainDestinations.MENU_ID_KEY}}",
         arguments = listOf(navArgument(MainDestinations.MENU_ID_KEY) {type = NavType.IntType})
@@ -177,4 +205,36 @@ class SinglePaymentViewModelFactory(private val application: Application): ViewM
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return SingleMenuPaymentViewModel(application) as T
     }
+}
+
+class LoginViewModelFactory(private val activity: Activity): ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return LoginViewModel(activity) as T
+    }
+}
+
+private fun checkLoginToken(application: Application): Boolean {
+    var result = false
+
+    if (AuthApiClient.instance.hasToken()) {
+        UserApiClient.instance.accessTokenInfo { accessToken, error ->
+            if (error != null) {
+                Log.e("로그인 - 로그인 에러", error.toString())
+                if (error is KakaoSdkError && error.isInvalidTokenError()) //로그인 필요
+                    result = false
+                else //기타 에러
+                    result = false
+            } else //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
+            {
+                Log.e("로그인 - 토큰 유효성 체크", accessToken.toString())
+                result = true
+            }
+        }
+    }
+    else {
+        result = false
+        Log.e("로그인 - 토큰 유효성 체크", "토큰 없음.")
+    }
+
+    return result
 }

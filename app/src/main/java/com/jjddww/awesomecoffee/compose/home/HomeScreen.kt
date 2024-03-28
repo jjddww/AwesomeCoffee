@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -72,8 +73,6 @@ fun HomeScreen(
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
     val scrollState = rememberScrollState()
-    val isLogin = false
-
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
         containerColor = surfaceVariantLight)
@@ -104,11 +103,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            if (!isLogin)
-                MoveToLogin()
-            else
-                CouponStampView(stampCount, pointCount)
-
+            CouponStampView(stampCount, pointCount)
 
             Spacer(modifier = Modifier.height(39.dp))
 
@@ -181,29 +176,6 @@ fun AdsImageHorizontalPager(
     }
 }
 
-
-@Composable
-fun MoveToLogin(){
-    Column(
-        modifier =
-        Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(color = backgroundLight, shape = RectangleShape)
-    ){
-        Text(
-            text = stringResource(id = R.string.move_to_login),
-            modifier = Modifier.padding(start = 15.dp, top = 16.dp),
-            style = MaterialTheme.typography.bodySmall,
-            color = scrimLight)
-
-        Text(
-            text = stringResource(id = R.string.move_to_login2),
-            modifier = Modifier.padding(start = 15.dp, top = 10.dp),
-            style = MaterialTheme.typography.titleSmall,
-            color = scrimLight)
-    }
-}
 
 
 @Composable

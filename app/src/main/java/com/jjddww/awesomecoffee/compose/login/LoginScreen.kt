@@ -19,6 +19,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,16 +30,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.compose.AwesomeCoffeeApp
 import com.jjddww.awesomecoffee.ui.theme.AwesomeCoffeeTheme
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.primaryLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
+import com.jjddww.awesomecoffee.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(viewModel: LoginViewModel,
+                onHomeScreen:() -> Unit){
+
+    val isSuccessLogin by viewModel.isSuccessLogin.observeAsState(initial = false)
+
+    val requestLogin = { viewModel.LoginKakao() }
+
+    if(isSuccessLogin){
+        onHomeScreen()
+    }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -69,7 +83,7 @@ fun LoginScreen(){
 
         Button(
             modifier = Modifier.size(213.dp, 40.dp),
-            onClick = { /*TODO*/ },
+            onClick = { requestLogin() },
             colors = ButtonDefaults.buttonColors(
                 primaryLight
             )) {
@@ -120,14 +134,4 @@ fun LoginTextField(placeholder: String){
             unfocusedIndicatorColor = surfaceVariant,
             focusedIndicatorColor = onSurfaceVariantLight,
             focusedTextColor = onSurfaceVariantLight))
-}
-
-
-
-@Preview(showSystemUi = true)
-@Composable
-fun Preview(){
-    Surface (color = surfaceVariantLight){
-        LoginScreen()
-    }
 }

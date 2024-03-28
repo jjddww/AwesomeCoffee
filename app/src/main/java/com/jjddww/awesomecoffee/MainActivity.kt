@@ -1,5 +1,6 @@
 package com.jjddww.awesomecoffee
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,18 +10,20 @@ import com.jjddww.awesomecoffee.compose.AwesomeCoffeeApp
 import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.ui.theme.AwesomeCoffeeTheme
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
-import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.common.KakaoSdk
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AwesomeCoffeeTheme(darkTheme = false) {
-                Surface (color = surfaceVariantLight) {
+                Surface(color = surfaceVariantLight) {
                     AwesomeCoffeeApp()
                 }
             }
         }
+        KakaoSdk.init(application, "29b9b952f0e3a95b8c07119550dcc484")
 
 //        Log.d("Main", "keyhash : ${Utility.getKeyHash(this)}")
     }
