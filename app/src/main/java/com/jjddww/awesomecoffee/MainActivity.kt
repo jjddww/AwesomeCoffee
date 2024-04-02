@@ -11,6 +11,7 @@ import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.ui.theme.AwesomeCoffeeTheme
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
 
 class MainActivity : ComponentActivity() {
 
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
         }
         KakaoSdk.init(application, "29b9b952f0e3a95b8c07119550dcc484")
 
-//        Log.d("Main", "keyhash : ${Utility.getKeyHash(this)}")
+        Log.d("Main", "keyhash : ${Utility.getKeyHash(this)}")
     }
 
     override fun onDestroy() {

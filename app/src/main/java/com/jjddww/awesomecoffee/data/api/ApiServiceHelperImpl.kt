@@ -34,21 +34,8 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getMenuSearchResult(keyword))
     }
 
-//    override fun addMenuToCart(
-//        menuId: Int,
-//        option: String,
-//        amount: Int,
-//        extraShot: Boolean
-//    ): Flow<String> = flow{
-//        emit(apiService.addCart(menuId, option, amount, extraShot))
-//    }
-//
-//    override fun removeMenu(id: Int): Flow<String> = flow{
-//        emit(apiService.removeCart(id))
-//    }
-//
-//    override fun getCartList(): Flow<List<CartItem>> = flow{
-//        emit(apiService.getCartList())
-//    }
+    override fun sendMemberId(id: String): Flow<String> = flow {
+        emit(apiService.sendMemberId(id))
+    }
 
 }

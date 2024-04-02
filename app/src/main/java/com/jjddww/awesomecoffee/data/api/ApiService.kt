@@ -28,15 +28,6 @@ interface ApiService {
     @GET("/api/menu/search")
     suspend fun getMenuSearchResult(@Query("keyword") keyword: String): List<Menu>
 
-//    @GET("/api/cart/add")
-//    suspend fun addCart(@Query("menuId") menuId: Int,
-//                        @Query("option") option: String,
-//                        @Query("amount") amount: Int,
-//                        @Query("shot") extraShot: Boolean): String
-//
-//    @GET("/api/cart/remove")
-//    suspend fun removeCart(@Query("id") id: Int): String
-//
-//    @GET("/api/cart/getList")
-//    suspend fun getCartList(): List<CartItem>
+    @GET("/api/member/join")
+    fun sendMemberId(@Query("id") id: String): String
 }

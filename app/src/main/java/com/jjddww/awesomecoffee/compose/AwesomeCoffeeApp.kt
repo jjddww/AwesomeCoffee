@@ -25,7 +25,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.jjddww.awesomecoffee.AppNavController
-import com.jjddww.awesomecoffee.compose.login.LoginScreen
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.order.PaymentScreen
 import com.jjddww.awesomecoffee.compose.order.PaymentSuccessScreen
@@ -213,28 +212,3 @@ class LoginViewModelFactory(private val activity: Activity): ViewModelProvider.F
     }
 }
 
-private fun checkLoginToken(application: Application): Boolean {
-    var result = false
-
-    if (AuthApiClient.instance.hasToken()) {
-        UserApiClient.instance.accessTokenInfo { accessToken, error ->
-            if (error != null) {
-                Log.e("로그인 - 로그인 에러", error.toString())
-                if (error is KakaoSdkError && error.isInvalidTokenError()) //로그인 필요
-                    result = false
-                else //기타 에러
-                    result = false
-            } else //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
-            {
-                Log.e("로그인 - 토큰 유효성 체크", accessToken.toString())
-                result = true
-            }
-        }
-    }
-    else {
-        result = false
-        Log.e("로그인 - 토큰 유효성 체크", "토큰 없음.")
-    }
-
-    return result
-}

@@ -49,8 +49,14 @@ fun LoginScreen(viewModel: LoginViewModel,
 
     val requestLogin = { viewModel.LoginKakao() }
 
+    val checkLoginToken = { viewModel.checkLoginToken() }
+
+
     if(isSuccessLogin){
         onHomeScreen()
+    }
+    else{
+        checkLoginToken()
     }
 
 
