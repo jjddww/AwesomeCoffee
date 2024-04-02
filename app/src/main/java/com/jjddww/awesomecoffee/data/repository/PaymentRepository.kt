@@ -6,11 +6,14 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import com.jjddww.awesomecoffee.MemberInfo
+import com.jjddww.awesomecoffee.data.api.ApiServiceHelper
 import com.jjddww.awesomecoffee.data.dao.CartDao
 import com.jjddww.awesomecoffee.data.model.Cart
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kr.co.bootpay.android.Bootpay
 import kr.co.bootpay.android.events.BootpayEventListener
@@ -22,9 +25,8 @@ import kr.co.bootpay.android.models.Payload
 const val BOOTPAY = "boot pay"
 
 class PaymentRepository(private val cartDao: CartDao,
-                        private val application: Application) {
-
-
+                        private val application: Application,
+                        private val apiHelper: ApiServiceHelper) {
 
     val getCartList: Flow<List<Cart>> = cartDao.getCartList()
 
@@ -105,9 +107,8 @@ class PaymentRepository(private val cartDao: CartDao,
 
 
     fun getBootUser(): BootUser? { //TODO 로그인 기능 추가되면 유저 정보 입력
-        val userId = "123411aaaaaaaaaaaabd4ss121"
         val user = BootUser()
-        user.id = userId
+        user.id = MemberInfo.memberId.toString()
         user.area = "서울"
         user.gender = 1 //1: 남자, 0: 여자
         user.email = "ekdns0817@gmail.com"
@@ -115,5 +116,12 @@ class PaymentRepository(private val cartDao: CartDao,
         user.birth = "1988-06-10"
         user.username = "홍길동"
         return user
+    }
+
+    fun updateStamp(){
+        apiHelper.updateStamp(MemberInfo.memberId.toString(), items.size)
+            .catch { e ->
+                Log.e("update stamp api error", e.toString())
+            }
     }
 }

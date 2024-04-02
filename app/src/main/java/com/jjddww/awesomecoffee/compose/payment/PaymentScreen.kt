@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.compose.order
+package com.jjddww.awesomecoffee.compose.payment
 
 import android.app.Activity
 import android.util.Log
@@ -24,8 +24,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -41,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.jjddww.awesomecoffee.MemberInfo
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
@@ -85,10 +84,15 @@ fun PaymentScreen(
         viewModel.paymentTest(totalPrice, activity)
     }
 
+    val onRequestUpdateStamp = {
+        viewModel.updateStamp()
+    }
+
+
     if(isSuccessPayment) {
         onPaymentSuccessScreen()
         onClearSuccess()
-
+        onRequestUpdateStamp()
     }
 
     

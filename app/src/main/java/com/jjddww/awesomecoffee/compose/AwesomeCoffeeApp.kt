@@ -3,13 +3,7 @@ package com.jjddww.awesomecoffee.compose
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,10 +20,10 @@ import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.compose.order.DetailScreen
-import com.jjddww.awesomecoffee.compose.order.PaymentScreen
-import com.jjddww.awesomecoffee.compose.order.PaymentSuccessScreen
+import com.jjddww.awesomecoffee.compose.payment.PaymentScreen
+import com.jjddww.awesomecoffee.compose.payment.PaymentSuccessScreen
 import com.jjddww.awesomecoffee.compose.order.SearchScreen
-import com.jjddww.awesomecoffee.compose.order.SingleMenuPaymentScreen
+import com.jjddww.awesomecoffee.compose.payment.SingleMenuPaymentScreen
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
@@ -39,10 +33,6 @@ import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
 import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
 import com.jjddww.awesomecoffee.viewmodels.SingleMenuPaymentViewModel
-import com.kakao.sdk.auth.AuthApiClient
-import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.model.KakaoSdkError
-import com.kakao.sdk.user.UserApiClient
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

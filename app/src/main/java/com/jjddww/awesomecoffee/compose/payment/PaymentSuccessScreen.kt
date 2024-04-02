@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.compose.order
+package com.jjddww.awesomecoffee.compose.payment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column

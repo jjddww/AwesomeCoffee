@@ -4,6 +4,7 @@ import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 interface ApiServiceHelper {
     fun getAdvertisementList(): Flow<List<BannerAd>>
@@ -20,5 +21,9 @@ interface ApiServiceHelper {
 
     fun getSearchResult(keyword: String): Flow<List<Menu>>
 
-    fun sendMemberId(id: String): Flow<String>
+    fun sendMemberId(id: String): Unit
+
+    fun getStampCount(id: String): Flow<Int>
+
+    fun updateStamp(id: String, qty: Int): Flow<String>
 }

@@ -2,8 +2,13 @@ package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper {
     override fun getAdvertisementList() = flow{
@@ -34,8 +39,18 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getMenuSearchResult(keyword))
     }
 
-    override fun sendMemberId(id: String): Flow<String> = flow {
-        emit(apiService.sendMemberId(id))
+    override fun sendMemberId(id: String){
+        CoroutineScope(Dispatchers.IO).launch{
+            apiService.sendMemberId(id)
+        }
+    }
+
+    override fun getStampCount(id: String): Flow<Int> = flow{
+        emit(apiService.getStampCount(id).toInt())
+    }
+
+    override fun updateStamp(id: String, qty: Int): Flow<String> = flow{
+        emit(apiService.updateStamp(id, qty))
     }
 
 }

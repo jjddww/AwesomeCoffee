@@ -3,6 +3,7 @@ package com.jjddww.awesomecoffee.data.api
 import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -29,5 +30,12 @@ interface ApiService {
     suspend fun getMenuSearchResult(@Query("keyword") keyword: String): List<Menu>
 
     @GET("/api/member/join")
-    fun sendMemberId(@Query("id") id: String): String
+    suspend fun sendMemberId(@Query("id") id: String): Response<String>
+
+    @GET("/api/member/stamp_list")
+    suspend fun getStampCount(@Query("id") id: String): String
+
+    @GET("/api/member/stamp")
+    suspend fun updateStamp(@Query("id") id: String,
+                            @Query("quantity") qty: Int): String
 }

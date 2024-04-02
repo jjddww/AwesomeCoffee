@@ -25,7 +25,6 @@ class LoginRepository(private val apiHelper: ApiServiceHelper) {
         } else if (token != null) {
             Log.e(TAG, "로그인 성공 ${token.accessToken}")
             isSuccessLogin.value = true
-            apiHelper.sendMemberId(token.idToken.toString())
         }
     }
 
@@ -50,7 +49,6 @@ class LoginRepository(private val apiHelper: ApiServiceHelper) {
                 else if (token != null) {
                     Log.e(TAG, "로그인 성공 ${token.accessToken}")
                     isSuccessLogin.value = true
-                    apiHelper.sendMemberId(token.idToken.toString())
                 }
             }
         } else {
@@ -73,6 +71,8 @@ class LoginRepository(private val apiHelper: ApiServiceHelper) {
                 {
                     Log.e("로그인 - 토큰 유효성 체크", accessToken.toString())
                     isSuccessLogin.value = true
+
+
                 }
             }
         }

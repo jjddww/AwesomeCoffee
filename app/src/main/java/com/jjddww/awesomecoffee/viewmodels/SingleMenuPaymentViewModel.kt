@@ -5,11 +5,15 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.jjddww.awesomecoffee.data.AppDatabase
+import com.jjddww.awesomecoffee.data.api.ApiServiceHelperImpl
+import com.jjddww.awesomecoffee.data.api.RetrofitClient
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.data.repository.PaymentRepository
 import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
+import kotlinx.coroutines.launch
 
 class SingleMenuPaymentViewModel(application: Application): ViewModel() {
     val repository: PaymentRepository
@@ -18,7 +22,7 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
     init {
         val db = AppDatabase.getInstance(application)
         val cartDao = db.cartDao()
-        repository = PaymentRepository(cartDao, application)
+        repository = PaymentRepository(cartDao, application, ApiServiceHelperImpl(RetrofitClient.retrofit))
     }
 
     val isSuccessPayment = repository.isSuccessPayment.asLiveData()
@@ -38,6 +42,7 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
     }
 
     fun clearSuccessPayment(){
+        updateStamp()
         repository.clearIsSuccessPayment()
     }
 
@@ -53,5 +58,11 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
 
     fun paymentTest(totalPrice: Int, activity: Activity){
         repository.paymentTest(totalPrice.toDouble(), activity)
+    }
+
+    private fun updateStamp(){
+        viewModelScope.launch {
+            repository.updateStamp()
+        }
     }
 }

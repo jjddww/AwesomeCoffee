@@ -1,4 +1,4 @@
-package com.jjddww.awesomecoffee.compose.order
+package com.jjddww.awesomecoffee.compose.payment
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,11 +36,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
-import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
@@ -97,10 +93,6 @@ fun SingleMenuPaymentScreen(
     }
 
     setItem()
-
-    if(isSuccessPayment){
-
-    }
 
     Column(
         Modifier

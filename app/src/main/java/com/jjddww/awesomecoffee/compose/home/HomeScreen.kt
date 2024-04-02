@@ -70,9 +70,16 @@ fun HomeScreen(
     val imageUrlList by viewModel.advertisements.observeAsState(initial = emptyList())
     val recommendedMenuList by viewModel.recommendedMenuList.observeAsState(initial = emptyList())
     val newMenuList by viewModel.newMenuList.observeAsState(initial = emptyList())
+    val stamp by viewModel.stampCount.observeAsState(initial = 0)
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
     val scrollState = rememberScrollState()
+
+    val settingMemberInfo = { viewModel.settingMemberInfo() }
+    val getStampCount = { viewModel.getStampCount()}
+
+    settingMemberInfo()
+    getStampCount()
 
     Scaffold(bottomBar = { AppBottomBar(navController, onNavigateRoute) },
         containerColor = surfaceVariantLight)
@@ -103,7 +110,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            CouponStampView(stampCount, pointCount)
+            CouponStampView(stampCount, stamp)
 
             Spacer(modifier = Modifier.height(39.dp))
 
