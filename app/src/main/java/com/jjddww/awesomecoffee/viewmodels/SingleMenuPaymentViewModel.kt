@@ -38,7 +38,7 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
         optionData.value = option
         qty.value = amount
         extraShot.value = isShot
-        totalPrice.value = menu.price * amount + if(isShot) EXTRA_SHOT_PRICE * amount else 0
+        totalPrice.value = menu.price * qty.value!! + if(isShot) EXTRA_SHOT_PRICE * qty.value!! else 0
     }
 
     fun clearSuccessPayment(){

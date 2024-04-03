@@ -49,6 +49,7 @@ class AppNavController(
 
     fun navigateToPaymentSingle(menu: String, amount: Int, option: String, isShot: Boolean, from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            Log.e("dddd",  "${MainDestinations.PAYMENT_SINGLE_ROUTE}/$menu/$amount/$option/$isShot" )
             navController.navigate("${MainDestinations.PAYMENT_SINGLE_ROUTE}/$menu/$amount/$option/$isShot")
         }
     }

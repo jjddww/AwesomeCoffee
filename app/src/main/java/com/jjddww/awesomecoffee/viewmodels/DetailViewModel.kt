@@ -53,8 +53,8 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
 
     var extraShot = MutableLiveData<Boolean>(false)
 
-    var beverageOption = MutableLiveData<String>("")
-    var dessertOption = MutableLiveData<String>("")
+    var beverageOption = MutableLiveData<String>("${isIced.value} | ${cupSize.value} | ${cup.value}")
+    var dessertOption = MutableLiveData<String>("${takeout.value}")
 
 
     fun setBeverageOption(){
