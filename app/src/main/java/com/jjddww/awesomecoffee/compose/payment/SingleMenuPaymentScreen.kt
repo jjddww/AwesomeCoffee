@@ -1,11 +1,14 @@
 package com.jjddww.awesomecoffee.compose.payment
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,12 +21,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +52,7 @@ import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Menu
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
+import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.outlineLight
@@ -50,6 +63,7 @@ import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import com.jjddww.awesomecoffee.viewmodels.SingleMenuPaymentViewModel
 import okhttp3.internal.format
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SingleMenuPaymentScreen(
     viewModel: SingleMenuPaymentViewModel,
@@ -60,19 +74,24 @@ fun SingleMenuPaymentScreen(
     isShot: Boolean){
 
     val scrollState = rememberScrollState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by rememberSaveable { mutableStateOf(false)}
     val isSuccessPayment by viewModel.isSuccessPayment.observeAsState(false)
-    val totalPrice by viewModel.totalPrice.observeAsState(initial = 0)
+    val totalPrice by viewModel.totalPrice
     val menuData by viewModel.menuData.observeAsState()
+    val couponList by viewModel.couponList.observeAsState(initial = emptyList())
     val optionData by viewModel.optionData.observeAsState()
     val qty by viewModel.qty.observeAsState()
     val extraShot by viewModel.extraShot.observeAsState()
+    val couponId by viewModel.couponId.observeAsState(0)
+    val couponType by viewModel.couponType.observeAsState(initial = "")
+    val discountAmount by viewModel.discountAmount.observeAsState(0)
     val activity = LocalContext.current as Activity
     val setItem = { viewModel.setCart(menu, option, amount, isShot)}
 
     val onClearSuccess = {
         viewModel.clearSuccessPayment()
     }
-
 
     val onAddItems = {
         viewModel.addItems()
@@ -84,6 +103,10 @@ fun SingleMenuPaymentScreen(
 
     val onRequestPayment = { totalPrice: Int, activity: Activity ->
         viewModel.paymentTest(totalPrice, activity)
+    }
+
+    val onSettingCouponInfo = { id: Int, type: String, amount: Int ->
+        viewModel.setCouponInfo(id, type, amount)
     }
 
     if(isSuccessPayment) {
@@ -123,7 +146,8 @@ fun SingleMenuPaymentScreen(
             horizontalArrangement = Arrangement.SpaceBetween){
 
 
-            Text(text = stringResource(id = R.string.empty_coupon),
+            Text(text = if(couponList.isEmpty()) stringResource(id = R.string.empty_coupon)
+                        else stringResource(id = R.string.not_empty_coupon),
                 color = neutralVariant70,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(start = 20.dp))
@@ -133,7 +157,8 @@ fun SingleMenuPaymentScreen(
                 .width(130.dp)
                 .height(40.dp)
                 .padding(end = 20.dp),
-                onClick = {},
+                enabled = couponList.isNotEmpty(),
+                onClick = { showBottomSheet = true },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(outlineLight)){
 
@@ -171,7 +196,9 @@ fun SingleMenuPaymentScreen(
 
         Spacer(Modifier.height(30.dp))
 
-        Text(text = "할인 금액: 0원",
+        Text(text = if(couponType == ("deduction"))"할인 금액: ${discountAmount}원"
+            else "할인 금액: ${totalPrice * discountAmount}원",
+
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 20.dp),
@@ -203,6 +230,23 @@ fun SingleMenuPaymentScreen(
                 color = onSurfaceVariantLight, text = stringResource(id = R.string.payment)
             )
             PaymentButton(onClick = { /*TODO*/ }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
+        }
+
+        if(showBottomSheet){
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                    Log.e("가격은?", "$totalPrice")
+                                   },
+                sheetState = sheetState,
+                containerColor = onSecondaryLight,
+                modifier = Modifier
+                    .fillMaxHeight(0.6f)) {
+
+                CouponBottomSheet(
+                    onSettingCouponInfo = onSettingCouponInfo,
+                    couponList = couponList)
+            }
         }
 
     }

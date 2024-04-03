@@ -10,6 +10,7 @@ import com.jjddww.awesomecoffee.MemberInfo
 import com.jjddww.awesomecoffee.data.api.ApiServiceHelper
 import com.jjddww.awesomecoffee.data.dao.CartDao
 import com.jjddww.awesomecoffee.data.model.Cart
+import com.jjddww.awesomecoffee.data.model.Coupon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -122,4 +123,11 @@ class PaymentRepository(private val cartDao: CartDao,
     fun updateStamp(){
         apiHelper.updateStamp(MemberInfo.memberId?: 0L, items.size)
     }
+
+    fun getCouponList(): Flow<List<Coupon>> =
+        apiHelper.getCouponList()
+            .catch { e ->
+                Log.e("get coupon Api Error", e.toString())
+            }
+
 }

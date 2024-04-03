@@ -46,12 +46,9 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.Menu
-import com.jjddww.awesomecoffee.ui.theme.backgroundLight
-import com.jjddww.awesomecoffee.ui.theme.scrimLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.delayTime
-import com.jjddww.awesomecoffee.utilities.pointCount
 import com.jjddww.awesomecoffee.utilities.stampCount
 import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
 import kotlinx.coroutines.delay
