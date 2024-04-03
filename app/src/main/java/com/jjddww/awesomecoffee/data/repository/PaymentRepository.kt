@@ -56,7 +56,7 @@ class PaymentRepository(private val cartDao: CartDao,
 
         payload.setApplicationId("6601031b00be04001a06362f")
             .setOrderName("결제 테스트")
-            .setPg("이니시스")
+            .setPg("나이스페이")
             .setMethod("카드")
             .setOrderId("1234")
             .setPrice(totalPrice)
@@ -101,6 +101,7 @@ class PaymentRepository(private val cartDao: CartDao,
                 override fun onDone(data: String) {
                     Log.d("$BOOTPAY - onDone", data)
                     isSuccessPayment.value = true
+                    updateStamp()
                 }
             }).requestPayment()
     }
@@ -119,9 +120,6 @@ class PaymentRepository(private val cartDao: CartDao,
     }
 
     fun updateStamp(){
-        apiHelper.updateStamp(MemberInfo.memberId.toString(), items.size)
-            .catch { e ->
-                Log.e("update stamp api error", e.toString())
-            }
+        apiHelper.updateStamp(MemberInfo.memberId?: 0L, items.size)
     }
 }

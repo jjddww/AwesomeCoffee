@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.BannerAd
+import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
 import kotlinx.coroutines.flow.Flow
@@ -25,5 +26,5 @@ interface ApiServiceHelper {
 
     fun getStampCount(id: String): Flow<Int>
 
-    fun updateStamp(id: String, qty: Int): Flow<String>
+    fun updateStamp(id: Long, qty: Int)
 }

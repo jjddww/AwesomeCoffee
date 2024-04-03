@@ -1,5 +1,7 @@
 package com.jjddww.awesomecoffee.data.api
 
+import android.util.Log
+import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
 import kotlinx.coroutines.CoroutineScope
@@ -49,8 +51,10 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         emit(apiService.getStampCount(id).toInt())
     }
 
-    override fun updateStamp(id: String, qty: Int): Flow<String> = flow{
-        emit(apiService.updateStamp(id, qty))
+    override fun updateStamp(id: Long, qty: Int){
+        CoroutineScope(Dispatchers.IO).launch {
+            apiService.updateStamp(id, qty)
+        }
     }
 
 }

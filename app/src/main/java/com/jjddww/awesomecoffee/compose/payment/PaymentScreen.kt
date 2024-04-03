@@ -84,15 +84,10 @@ fun PaymentScreen(
         viewModel.paymentTest(totalPrice, activity)
     }
 
-    val onRequestUpdateStamp = {
-        viewModel.updateStamp()
-    }
-
 
     if(isSuccessPayment) {
         onPaymentSuccessScreen()
         onClearSuccess()
-        onRequestUpdateStamp()
     }
 
     

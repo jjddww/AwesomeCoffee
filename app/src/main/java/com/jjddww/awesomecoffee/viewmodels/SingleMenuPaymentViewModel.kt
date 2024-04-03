@@ -42,7 +42,6 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
     }
 
     fun clearSuccessPayment(){
-        updateStamp()
         repository.clearIsSuccessPayment()
     }
 
@@ -58,11 +57,5 @@ class SingleMenuPaymentViewModel(application: Application): ViewModel() {
 
     fun paymentTest(totalPrice: Int, activity: Activity){
         repository.paymentTest(totalPrice.toDouble(), activity)
-    }
-
-    private fun updateStamp(){
-        viewModelScope.launch {
-            repository.updateStamp()
-        }
     }
 }

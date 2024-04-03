@@ -53,10 +53,4 @@ class PaymentViewModel(application: Application): ViewModel() {
     fun paymentTest(totalPrice: Int, activity: Activity){
         repository.paymentTest(totalPrice.toDouble(), activity)
     }
-
-    fun updateStamp(){
-        viewModelScope.launch {
-            repository.updateStamp()
-        }
-    }
 }

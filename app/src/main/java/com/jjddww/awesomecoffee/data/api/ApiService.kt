@@ -1,6 +1,7 @@
 package com.jjddww.awesomecoffee.data.api
 
 import com.jjddww.awesomecoffee.data.model.BannerAd
+import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
 import retrofit2.Response
@@ -36,6 +37,6 @@ interface ApiService {
     suspend fun getStampCount(@Query("id") id: String): String
 
     @GET("/api/member/stamp")
-    suspend fun updateStamp(@Query("id") id: String,
-                            @Query("quantity") qty: Int): String
+    suspend fun updateStamp(@Query("id") id: Long,
+                            @Query("quantity") qty: Int): Response<CommonResponse>
 }
