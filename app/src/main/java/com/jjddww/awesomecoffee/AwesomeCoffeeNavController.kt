@@ -63,7 +63,7 @@ class AppNavController(
     fun navigateToSuccessPayment(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
             navController.navigate(MainDestinations.PAYMENT_SUCCESS_ROUTE){
-                popUpTo(navController.graph.findStartDestination().id){
+                popUpTo(0){
                     inclusive = true
                 }
             }
