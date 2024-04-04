@@ -74,7 +74,7 @@ class SingleMenuPaymentViewModel(
 
 
     fun addItems(){
-        val price = (if(extraShot.value == true) EXTRA_SHOT_PRICE * qty.value!! else 0) +
+        val price = (if(extraShot.value == true) EXTRA_SHOT_PRICE else 0) +
                 (menuData.value?.price ?: 0)
 
         if(couponType.value == "deduction"){

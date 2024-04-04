@@ -80,7 +80,7 @@ class PaymentViewModel(application: Application): ViewModel() {
     }
 
     fun addItems(item: Cart){
-        var price = (if(item.shot) EXTRA_SHOT_PRICE * item.amount else 0) + item.price
+        var price = (if(item.shot) EXTRA_SHOT_PRICE else 0) + item.price
         if(couponId.value != 0 && !checkApplyDiscount.value!!){
             if(item.amount > 1)
             {
@@ -95,6 +95,7 @@ class PaymentViewModel(application: Application): ViewModel() {
         else{
             repository.addItems(item.menuName, item.option, price.toDouble(), item.amount)
         }
+        Log.e("boot pay", "$price")
     }
 
     fun clearItems(){
@@ -102,6 +103,7 @@ class PaymentViewModel(application: Application): ViewModel() {
     }
 
     fun paymentTest(totalPrice: Int, activity: Activity){
+        Log.e("boot pay", "$totalPrice")
         repository.paymentTest(totalPrice.toDouble(), activity)
     }
 
