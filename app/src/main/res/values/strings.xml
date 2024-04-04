@@ -58,5 +58,6 @@
     <string name="no_use_coupon">쿠폰 사용 안함</string>
     <string name="order_list">주문 내역</string>
     <string name="complete_payment">결제 완료</string>
+    <string name="notice_select_menu">결제할 메뉴를 선택해주세요.</string>
     <string name="success_payment">주문이 접수되었습니다.\n제조 완료 알림을 확인해주세요.</string>
 </resources>

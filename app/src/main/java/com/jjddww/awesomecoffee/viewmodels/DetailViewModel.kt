@@ -72,7 +72,7 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
                 var option = "${isIced.value} | ${cupSize.value} | ${cup.value}"
                 totalAmount.value?.let { amount ->
                     extraShot.value?.let { isExtraShot ->
-                        Cart(menu.imgUrl, menu.menuName, menu.price, option, isExtraShot, amount)
+                        Cart(menu.imgUrl, menu.menuName, menu.price, option, isExtraShot, amount, false)
                     }
                 }
             } else {
@@ -82,7 +82,7 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
                     extraShot.value?.let { isExtraShot ->
                         option?.let { option ->
                             Cart(menu.imgUrl, menu.menuName, menu.price,
-                                option, isExtraShot, amount)
+                                option, isExtraShot, amount, false)
                         }
                     }
                 }

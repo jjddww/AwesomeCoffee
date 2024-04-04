@@ -13,6 +13,12 @@ interface CartDao {
     @Query("SELECT * FROM cart ORDER BY menu_name DESC") //장바구니 목록 불러올 때
     fun getCartList(): Flow<List<Cart>>
 
+    @Query("SELECT * FROM cart WHERE checked = true")
+    fun findCheckedItem(): Flow<List<Cart>>
+
+    @Query("UPDATE cart SET checked  = :check WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot ")
+    suspend fun updateChecked(check: Boolean, menuName: String, option: String, extraShot: Boolean)
+
     @Query("SELECT amount FROM cart WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot")
     fun findSameMenuAmount(menuName: String, option: String, extraShot: Boolean):Flow<Int>
 

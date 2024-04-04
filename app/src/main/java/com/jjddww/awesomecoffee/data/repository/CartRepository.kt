@@ -11,6 +11,11 @@ class CartRepository (private val cartDao: CartDao){
 
     val getCartList: Flow<List<Cart>> = cartDao.getCartList()
 
+    @WorkerThread
+    suspend fun updateItemChecked(check: Boolean, menuName: String, option: String, extraShot: Boolean){
+        cartDao.updateChecked(check, menuName, option, extraShot)
+    }
+
 
     @WorkerThread
     suspend fun deleteAllCartItems(){

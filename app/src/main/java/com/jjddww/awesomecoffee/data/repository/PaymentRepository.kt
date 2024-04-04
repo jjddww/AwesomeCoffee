@@ -30,7 +30,7 @@ class PaymentRepository(private val cartDao: CartDao,
                         private val application: Application,
                         private val apiHelper: ApiServiceHelper) {
 
-    val getCartList: Flow<List<Cart>> = cartDao.getCartList()
+    val getCartList: Flow<List<Cart>> = cartDao.findCheckedItem()
 
     val items: MutableList<BootItem> = ArrayList()
 

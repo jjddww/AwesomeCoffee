@@ -47,18 +47,20 @@ import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
-import java.lang.String
 
 
 @Composable
 fun CartItem(item: Cart,
+             decreaseTotalPrice:(Cart) -> Unit,
+             increaseTotalPrice:(Cart) -> Unit,
              detectAllChecked:() -> Unit,
+             onChangeItemChecked: (Boolean, String, String, Boolean) -> Unit,
              checkAllBoxState: MutableState<Boolean>,
              onIncreaseAmount: (Cart) -> Unit,
-             onChangeTotalPrice:() -> Unit){
+             onChangeTotalPrice:(Cart, Boolean) -> Unit){
     val checkBoxState = remember { mutableStateOf(false) }
 
-    checkBoxState.value = item.checked.value
+    checkBoxState.value = item.checked
 
     Column(
         Modifier
@@ -71,12 +73,13 @@ fun CartItem(item: Cart,
             horizontalArrangement = Arrangement.SpaceBetween){
             Checkbox(checked = checkBoxState.value,
                 onCheckedChange = {
-                    item.checked.value = !item.checked.value
-                    checkBoxState.value = item.checked.value
-                    if(!item.checked.value)
+                    item.checked = !item.checked
+                    onChangeItemChecked(item.checked, item.menuName, item.option, item.shot)
+                    checkBoxState.value = item.checked
+                    if(!item.checked)
                         checkAllBoxState.value = false
-
                     detectAllChecked()
+                    onChangeTotalPrice(item, item.checked)
                 },
                 colors = CheckboxDefaults.colors(checkedColor = surfaceVariant))
 
@@ -111,7 +114,7 @@ fun CartItem(item: Cart,
         }
 
 
-        SetAmountButtonView(onIncreaseAmount, item, onChangeTotalPrice)
+        SetAmountButtonView(onIncreaseAmount, decreaseTotalPrice, increaseTotalPrice, item)
 
         HorizontalDivider(
             modifier = Modifier
@@ -126,9 +129,9 @@ fun CartItem(item: Cart,
 
 @Composable
 fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
-                        item: Cart,
-                        onChangeTotalPrice:() -> Unit){
-
+                        decreaseTotalPrice:(Cart) -> Unit,
+                        increaseTotalPrice:(Cart) -> Unit,
+                        item: Cart){
     var cnt = mutableStateOf(item.amount)
 
     Row(modifier = Modifier
@@ -140,7 +143,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
                 cnt.value -= 1
                 item.amount = cnt.value
                 onIncreaseAmount(item)
-                onChangeTotalPrice()
+                decreaseTotalPrice(item)
             }
         },
             enabled = cnt.value > 1,
@@ -157,7 +160,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
             cnt.value += 1
             item.amount = cnt.value
             onIncreaseAmount(item)
-            onChangeTotalPrice()
+            increaseTotalPrice(item)
         },
             modifier = Modifier
                 .width(24.dp)

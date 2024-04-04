@@ -2,6 +2,7 @@ package com.jjddww.awesomecoffee.compose.payment
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -51,7 +56,6 @@ import androidx.navigation.NavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.AppBottomBar
 import com.jjddww.awesomecoffee.data.model.Cart
-import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
@@ -67,30 +71,41 @@ import java.lang.String.format
 fun CartScreen(viewModel: CartViewModel, navController: NavController,
                onPaymentScreen:() -> Unit, onNavigateRoute: (String) -> Unit){
 
+    val context = LocalContext.current
     val cartList by viewModel.cartItems.observeAsState(initial = emptyList())
     val checkAllBoxState = remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
-    val totalPrice = mutableStateOf(0)
+    val totalPrice = viewModel.totalPrice
     val deleteAllItems = {viewModel.deleteAllItems()}
     val deleteCheckedItems = { menuName: String, option: String, shot: Boolean ->
         viewModel.deleteCheckedItems(menuName, option, shot)}
 
     val onIncreaseAmount = { item: Cart -> viewModel.addCartItem(item)}
 
-    val onChangeTotalPrice = {
-        totalPrice.value = 0
-        cartList.forEach{
-            totalPrice.value += it.price * it.amount
-            if(it.shot)
-                totalPrice.value += EXTRA_SHOT_PRICE * it.amount
-        }
+    val onChangeItemChecked = {
+            check: Boolean, menuName: String, option: String, extraShot: Boolean ->
+        viewModel.updateChecked(check, menuName, option, extraShot)
     }
+
+    val onChangeTotalPrice = { item: Cart, checked: Boolean ->
+        viewModel.operateTotalPrice(item, checked)
+    }
+
+    val decreaseTotalPrice = { item: Cart ->
+        viewModel.decreaseTotalPrice(item)
+    }
+
+    val increaseTotalPrice = { item: Cart ->
+        viewModel.increaseTotalPrice(item)
+    }
+
+    val initTotalPrice = { viewModel.initialTotalPrice() }
 
 
     val detectAllChecked = {
         var allchecked = true
         cartList.forEach {
-            if(!it.checked.value)
+            if(!it.checked)
             {
                 allchecked = false
                 return@forEach
@@ -101,15 +116,19 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
     }
 
-    onChangeTotalPrice()
+    LaunchedEffect(cartList.isNotEmpty()){
+        viewModel.initCheckBoxState()
+    }
 
 
     Scaffold(bottomBar = { AppBottomBar(navController = navController, onNavigateRoute) },
         containerColor = surfaceVariantLight
     ){
 
-        Column(Modifier.fillMaxSize()
-            .verticalScroll(scrollState)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)) {
 
             Spacer(Modifier.height(35.dp))
 
@@ -128,7 +147,9 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
                     Text(text= stringResource(id = R.string.empty_cart),
                         style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.fillMaxSize().padding(top = 300.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 300.dp),
                         textAlign = TextAlign.Center)
                 }
             }
@@ -137,7 +158,8 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
                 Spacer(Modifier.height(50.dp))
 
-                CheckAllItemsView(checkAllBoxState = checkAllBoxState, deleteAllItems = deleteAllItems,
+                CheckAllItemsView(initTotalPrice = initTotalPrice, checkAllBoxState = checkAllBoxState,
+                    onChangeItemChecked = onChangeItemChecked, deleteAllItems = deleteAllItems,
                     deleteCheckedItems = deleteCheckedItems, cartList= cartList)
 
                 HorizontalDivider(
@@ -153,16 +175,23 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
                         .fillMaxWidth()
                         .height(500.dp)){
                     items(cartList){
-                        CartItem(item = it, detectAllChecked = detectAllChecked,
-                            checkAllBoxState = checkAllBoxState, onIncreaseAmount = onIncreaseAmount,
+                        CartItem(item = it,
+                            decreaseTotalPrice = decreaseTotalPrice,
+                            increaseTotalPrice = increaseTotalPrice,
+                            detectAllChecked = detectAllChecked,
+                            onChangeItemChecked = onChangeItemChecked,
+                            checkAllBoxState = checkAllBoxState,
+                            onIncreaseAmount = onIncreaseAmount,
                             onChangeTotalPrice = onChangeTotalPrice)
                     }
                 }
 
                 Spacer(Modifier.height(10.dp))
 
-                Row(Modifier.fillMaxSize()
-                    .padding(bottom = 110.dp),
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 110.dp),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
@@ -184,7 +213,13 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
                         .padding(end = 20.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.textButtonColors(onSurfaceVariantLight),
-                        onClick = { onPaymentScreen() })
+                        onClick = {
+                            if(totalPrice.value > 0){
+                                onPaymentScreen()
+                            }
+                            else
+                                Toast.makeText(context, R.string.notice_select_menu, Toast.LENGTH_SHORT).show()
+                        })
                     {
                         Text(
                             stringResource(id = R.string.payment),
@@ -203,7 +238,9 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
 @Composable
 fun CheckAllItemsView(
+    initTotalPrice:() -> Unit,
     checkAllBoxState: MutableState<Boolean>,
+    onChangeItemChecked: (Boolean, String, String, Boolean) -> Unit,
     deleteAllItems: ()-> Unit,
     deleteCheckedItems: (String, String, Boolean) -> Unit,
     cartList: List<Cart>
@@ -218,8 +255,17 @@ fun CheckAllItemsView(
             Checkbox(checked = checkAllBoxState.value,
                 onCheckedChange = {
                     checkAllBoxState.value = !checkAllBoxState.value
+
+                    if(!checkAllBoxState.value)
+                        initTotalPrice()
+
                     cartList.forEach { item ->
-                        item.checked.value = checkAllBoxState.value
+                        onChangeItemChecked(
+                            checkAllBoxState.value,
+                            item.menuName,
+                            item.option,
+                            item.shot
+                        )
                     }
                 },
                 modifier = Modifier.padding(start = 20.dp),
@@ -229,8 +275,17 @@ fun CheckAllItemsView(
                 modifier = Modifier
                     .clickable {
                         checkAllBoxState.value = !checkAllBoxState.value
+
+                        if(!checkAllBoxState.value)
+                            initTotalPrice()
+
                         cartList.forEach { item ->
-                            item.checked.value = checkAllBoxState.value
+                            onChangeItemChecked(
+                                checkAllBoxState.value,
+                                item.menuName,
+                                item.option,
+                                item.shot
+                            )
                         }
                     }
                     .align(Alignment.CenterVertically),
@@ -243,7 +298,7 @@ fun CheckAllItemsView(
         Button(onClick = { if(checkAllBoxState.value) deleteAllItems()
                            else{
                              cartList.forEach { item ->
-                                 if(item.checked.value)
+                                 if(item.checked)
                                     deleteCheckedItems(item.menuName, item.option, item.shot)
                              }
                          }

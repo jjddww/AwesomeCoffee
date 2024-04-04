@@ -15,7 +15,9 @@ data class Cart(
     @ColumnInfo(name= "option") val option: String,
     @ColumnInfo(name= "extra_shot") val shot: Boolean,
     @ColumnInfo(name= "amount") var amount: Int,
-){
-    @Ignore
-    var checked: MutableState<Boolean> = mutableStateOf(false)
-}
+    @ColumnInfo(name= "checked") var checked: Boolean
+)
+//){
+//    @Ignore
+//    var checked: MutableState<Boolean> = mutableStateOf(false)
+//}
