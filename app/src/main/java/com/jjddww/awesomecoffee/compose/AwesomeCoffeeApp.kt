@@ -161,14 +161,16 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
             val viewModel: SingleMenuPaymentViewModel = viewModel(
                 it,
                 "SinglePaymentViewModel",
-                SinglePaymentViewModelFactory(LocalContext.current.applicationContext as Application)
+                SinglePaymentViewModelFactory(
+                    LocalContext.current.applicationContext as Application,
+                    menu = menuData,
+                    option = option,
+                    amount = amount,
+                    isShot = isShot
+                )
             )
             SingleMenuPaymentScreen(viewModel =viewModel,
-                onPaymentSuccessScreen = { onPaymentSuccessScreen(navBackStackEntry) },
-                menu = menuData,
-                option = option,
-                amount = amount,
-                isShot = isShot)
+                onPaymentSuccessScreen = { onPaymentSuccessScreen(navBackStackEntry) })
         }
 
     }
@@ -190,9 +192,14 @@ class PaymentViewModelFactory(private val application: Application): ViewModelPr
     }
 }
 
-class SinglePaymentViewModelFactory(private val application: Application): ViewModelProvider.Factory{
+class SinglePaymentViewModelFactory(
+    private val application: Application,
+    val menu: Menu?,
+    val option: String,
+    val amount: Int,
+    val isShot: Boolean): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        return SingleMenuPaymentViewModel(application) as T
+        return SingleMenuPaymentViewModel(application, menu, option, amount, isShot) as T
     }
 }
 

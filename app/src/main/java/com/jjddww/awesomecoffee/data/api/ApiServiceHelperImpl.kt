@@ -57,4 +57,10 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         }
     }
 
+    override fun deleteUsedCoupon(couponId: Int, memberId: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiService.deleteUsedCoupon(couponId, memberId)
+        }
+    }
+
 }

@@ -39,4 +39,8 @@ interface ApiService {
     @GET("/api/member/stamp")
     suspend fun updateStamp(@Query("id") id: Long,
                             @Query("quantity") qty: Int): Response<CommonResponse>
+
+    @GET("/api/coupon/delete_coupon")
+    suspend fun deleteUsedCoupon(@Query("coupon_id") couponId: Int,
+                                 @Query("member_id") memberId: Long): Response<CommonResponse>
 }

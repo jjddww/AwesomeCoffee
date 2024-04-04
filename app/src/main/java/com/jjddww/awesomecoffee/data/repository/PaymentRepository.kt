@@ -11,6 +11,7 @@ import com.jjddww.awesomecoffee.data.api.ApiServiceHelper
 import com.jjddww.awesomecoffee.data.dao.CartDao
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Coupon
+import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,8 +34,13 @@ class PaymentRepository(private val cartDao: CartDao,
 
     val items: MutableList<BootItem> = ArrayList()
 
+    var couponId = mutableStateOf(0)
+
     var isSuccessPayment = MutableStateFlow(false)
 
+    fun settingCouponId(id: Int){
+        couponId.value = id
+    }
 
     fun clearIsSuccessPayment(){
         isSuccessPayment.value = false
@@ -57,7 +63,7 @@ class PaymentRepository(private val cartDao: CartDao,
 
         payload.setApplicationId("6601031b00be04001a06362f")
             .setOrderName("결제 테스트")
-            .setPg("나이스페이")
+            .setPg("이니시스")
             .setMethod("카드")
             .setOrderId("1234")
             .setPrice(totalPrice)
@@ -102,7 +108,11 @@ class PaymentRepository(private val cartDao: CartDao,
                 override fun onDone(data: String) {
                     Log.d("$BOOTPAY - onDone", data)
                     isSuccessPayment.value = true
-                    updateStamp()
+
+                    if(couponId.value != 0) //쿠폰 적용 시 쿠폰 사용, 스탬프 적립x
+                        useCoupon()
+                    else
+                        updateStamp() //쿠폰 사용안할 경우 스탬프 적립o
                 }
             }).requestPayment()
     }
@@ -123,6 +133,12 @@ class PaymentRepository(private val cartDao: CartDao,
     fun updateStamp(){
         apiHelper.updateStamp(MemberInfo.memberId?: 0L, items.size)
     }
+
+    fun useCoupon(){
+        if(couponId.value != 0)
+            apiHelper.deleteUsedCoupon(couponId.value, MemberInfo.memberId?: 0L)
+    }
+
 
     fun getCouponList(): Flow<List<Coupon>> =
         apiHelper.getCouponList()

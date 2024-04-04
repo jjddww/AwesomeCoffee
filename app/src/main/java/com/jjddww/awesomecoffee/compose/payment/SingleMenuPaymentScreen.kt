@@ -1,9 +1,7 @@
 package com.jjddww.awesomecoffee.compose.payment
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,9 +26,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +54,7 @@ import com.jjddww.awesomecoffee.ui.theme.outlineLight
 import com.jjddww.awesomecoffee.ui.theme.surfaceVariant
 import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
+import com.jjddww.awesomecoffee.utilities.COUPON_NOT_EMPTY
 import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
 import com.jjddww.awesomecoffee.viewmodels.SingleMenuPaymentViewModel
 import okhttp3.internal.format
@@ -67,11 +63,7 @@ import okhttp3.internal.format
 @Composable
 fun SingleMenuPaymentScreen(
     viewModel: SingleMenuPaymentViewModel,
-    onPaymentSuccessScreen:() -> Unit,
-    menu: Menu,
-    option: String,
-    amount: Int,
-    isShot: Boolean){
+    onPaymentSuccessScreen:() -> Unit){
 
     val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -84,10 +76,10 @@ fun SingleMenuPaymentScreen(
     val qty by viewModel.qty.observeAsState()
     val extraShot by viewModel.extraShot.observeAsState()
     val couponId by viewModel.couponId.observeAsState(0)
+    val couponNotice by viewModel.couponNotice.observeAsState(initial = COUPON_NOT_EMPTY)
     val couponType by viewModel.couponType.observeAsState(initial = "")
     val discountAmount by viewModel.discountAmount.observeAsState(0)
     val activity = LocalContext.current as Activity
-    val setItem = { viewModel.setCart(menu, option, amount, isShot)}
 
     val onClearSuccess = {
         viewModel.clearSuccessPayment()
@@ -105,8 +97,12 @@ fun SingleMenuPaymentScreen(
         viewModel.paymentTest(totalPrice, activity)
     }
 
-    val onSettingCouponInfo = { id: Int, type: String, amount: Int ->
-        viewModel.setCouponInfo(id, type, amount)
+    val onSettingCouponInfo = { id: Int, name: String, type: String, amount: Int ->
+        viewModel.setCouponInfo(id, name, type, amount)
+    }
+
+    val onRequestUseCoupon = {
+        viewModel.useCoupon()
     }
 
     if(isSuccessPayment) {
@@ -115,7 +111,6 @@ fun SingleMenuPaymentScreen(
 
     }
 
-    setItem()
 
     Column(
         Modifier
@@ -147,7 +142,7 @@ fun SingleMenuPaymentScreen(
 
 
             Text(text = if(couponList.isEmpty()) stringResource(id = R.string.empty_coupon)
-                        else stringResource(id = R.string.not_empty_coupon),
+                        else couponNotice,
                 color = neutralVariant70,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(start = 20.dp))
@@ -225,7 +220,12 @@ fun SingleMenuPaymentScreen(
             PaymentButton(onClick = {
                 onClearItems()
                 onAddItems()
-                onRequestPayment(totalPrice, activity)
+                if(totalPrice <= 0) {
+                    onRequestUseCoupon()
+                    onPaymentSuccessScreen()
+                }
+                else
+                    onRequestPayment(totalPrice, activity)
             },
                 color = onSurfaceVariantLight, text = stringResource(id = R.string.payment)
             )
@@ -234,10 +234,7 @@ fun SingleMenuPaymentScreen(
 
         if(showBottomSheet){
             ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                    Log.e("가격은?", "$totalPrice")
-                                   },
+                onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState,
                 containerColor = onSecondaryLight,
                 modifier = Modifier

@@ -27,4 +27,6 @@ interface ApiServiceHelper {
     fun getStampCount(id: String): Flow<Int>
 
     fun updateStamp(id: Long, qty: Int)
+
+    fun deleteUsedCoupon(couponId: Int, memberId: Long)
 }

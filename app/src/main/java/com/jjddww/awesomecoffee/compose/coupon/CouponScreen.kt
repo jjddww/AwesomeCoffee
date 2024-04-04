@@ -2,6 +2,7 @@ package com.jjddww.awesomecoffee.compose.coupon
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jjddww.awesomecoffee.R
@@ -60,9 +62,24 @@ fun CouponScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
 
-            LazyColumn(modifier= Modifier.fillMaxSize()){
-                items(couponList){
-                    CouponItemView(coupon = it)
+            if(couponList.isEmpty()){
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .align(Alignment.CenterHorizontally),
+                        verticalArrangement = Arrangement.Center) {
+                    Text(text= stringResource(id = R.string.empty_coupon),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxSize().padding(top = 300.dp),
+                        textAlign = TextAlign.Center)
+                }
+            }
+
+            else{
+                LazyColumn(modifier= Modifier.fillMaxSize()){
+                    items(couponList){
+                        CouponItemView(coupon = it)
+                    }
                 }
             }
         }

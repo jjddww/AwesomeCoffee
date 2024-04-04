@@ -29,11 +29,12 @@ import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
+import com.jjddww.awesomecoffee.utilities.COUPON_NOT_EMPTY
 
 @Composable
 fun CouponBottomSheet(
     couponList: List<Coupon>,
-    onSettingCouponInfo: (Int, String ,Int) -> Unit){
+    onSettingCouponInfo: (Int, String, String ,Int) -> Unit){
 
     var selectedOption = remember { mutableStateOf(0) }
 
@@ -66,7 +67,7 @@ fun CouponBottomSheet(
                         .clickable {
                             if (index != selectedOption.value)
                                 selectedOption.value = index
-                            onSettingCouponInfo(0, "", 0)
+                            onSettingCouponInfo(0, COUPON_NOT_EMPTY, "", 0)
                         },
                     verticalAlignment = Alignment.CenterVertically){
 
@@ -74,7 +75,7 @@ fun CouponBottomSheet(
                         onClick = {
                             if(index != selectedOption.value)
                                 selectedOption.value = index
-                            onSettingCouponInfo(0, "", 0)
+                            onSettingCouponInfo(0, COUPON_NOT_EMPTY, "", 0)
                         },
                         modifier = Modifier.padding(start = 10.dp))
 
@@ -89,7 +90,7 @@ fun CouponBottomSheet(
                         .clickable {
                             if (index != selectedOption.value)
                                 selectedOption.value = index
-                            onSettingCouponInfo(coupon.id, coupon.type, coupon.discount)
+                            onSettingCouponInfo(coupon.id, coupon.name, coupon.type, coupon.discount)
                         },
                     verticalAlignment = Alignment.CenterVertically){
 
@@ -97,7 +98,7 @@ fun CouponBottomSheet(
                         onClick = {
                             if(index != selectedOption.value)
                                 selectedOption.value = index
-                            onSettingCouponInfo(coupon.id, coupon.type, coupon.discount)
+                            onSettingCouponInfo(coupon.id, coupon.name, coupon.type, coupon.discount)
                         },
                         modifier = Modifier.padding(start = 10.dp))
 
