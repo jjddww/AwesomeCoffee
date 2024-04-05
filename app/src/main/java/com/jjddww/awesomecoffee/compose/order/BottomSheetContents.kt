@@ -308,11 +308,19 @@ fun OrderButtonView(mainCategory: String,
             }
         }
         Box(
-            Modifier.fillMaxSize().padding(bottom = 40.dp), contentAlignment = Alignment.BottomCenter
+            Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
         ) {
-            SnackbarHost(
-                hostState = snackbarHostState
-            )
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .align(Alignment.BottomCenter)) {
+                SnackbarHost(
+                    hostState = snackbarHostState
+                )
+                
+                Spacer(modifier = Modifier.height(80.dp))
+            }
+
         }
     }
 }

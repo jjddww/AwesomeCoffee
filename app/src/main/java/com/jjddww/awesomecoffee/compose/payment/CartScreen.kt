@@ -158,7 +158,9 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
                 Spacer(Modifier.height(50.dp))
 
-                CheckAllItemsView(initTotalPrice = initTotalPrice, checkAllBoxState = checkAllBoxState,
+                CheckAllItemsView(initTotalPrice = initTotalPrice,
+                    onChangeTotalPrice = onChangeTotalPrice,
+                    checkAllBoxState = checkAllBoxState,
                     onChangeItemChecked = onChangeItemChecked, deleteAllItems = deleteAllItems,
                     deleteCheckedItems = deleteCheckedItems, cartList= cartList)
 
@@ -239,6 +241,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 @Composable
 fun CheckAllItemsView(
     initTotalPrice:() -> Unit,
+    onChangeTotalPrice: (Cart, Boolean) -> Unit,
     checkAllBoxState: MutableState<Boolean>,
     onChangeItemChecked: (Boolean, String, String, Boolean) -> Unit,
     deleteAllItems: ()-> Unit,
@@ -256,8 +259,7 @@ fun CheckAllItemsView(
                 onCheckedChange = {
                     checkAllBoxState.value = !checkAllBoxState.value
 
-                    if(!checkAllBoxState.value)
-                        initTotalPrice()
+                    initTotalPrice()
 
                     cartList.forEach { item ->
                         onChangeItemChecked(
@@ -266,6 +268,9 @@ fun CheckAllItemsView(
                             item.option,
                             item.shot
                         )
+
+                        if(checkAllBoxState.value)
+                            onChangeTotalPrice(item, true)
                     }
                 },
                 modifier = Modifier.padding(start = 20.dp),
@@ -276,8 +281,7 @@ fun CheckAllItemsView(
                     .clickable {
                         checkAllBoxState.value = !checkAllBoxState.value
 
-                        if(!checkAllBoxState.value)
-                            initTotalPrice()
+                        initTotalPrice()
 
                         cartList.forEach { item ->
                             onChangeItemChecked(
@@ -286,6 +290,9 @@ fun CheckAllItemsView(
                                 item.option,
                                 item.shot
                             )
+
+                            if(checkAllBoxState.value)
+                                onChangeTotalPrice(item, true)
                         }
                     }
                     .align(Alignment.CenterVertically),
@@ -301,6 +308,7 @@ fun CheckAllItemsView(
                                  if(item.checked)
                                     deleteCheckedItems(item.menuName, item.option, item.shot)
                              }
+                                initTotalPrice()
                          }
                             checkAllBoxState.value = false },
             modifier = Modifier
