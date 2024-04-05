@@ -4,9 +4,11 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,10 +26,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -257,6 +262,11 @@ fun OrderButtonView(mainCategory: String,
                     onAddCartItem:(Menu, String) -> Unit,
                     onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit){
 
+    var showSnackbar by remember {
+        mutableStateOf(false)
+    }
+    val snackbarHostState = remember { SnackbarHostState() }
+
 
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -268,6 +278,7 @@ fun OrderButtonView(mainCategory: String,
 
         OrderButton(onClick = {
             onAddCartItem(menu, mainCategory)
+            showSnackbar = true
         },
             color = surfaceVariant,
             text = stringResource(id = R.string.add_cart)
@@ -278,7 +289,34 @@ fun OrderButtonView(mainCategory: String,
         )
         )
     }
+
+    if(showSnackbar){
+        LaunchedEffect(snackbarHostState) {
+            snackbarHostState.showSnackbar(
+                "상품이 장바구니에 담겼습니다.",
+                "확인",
+                duration = SnackbarDuration.Short).let {
+                showSnackbar = when(it){
+                    SnackbarResult.ActionPerformed -> {
+                        false
+                    }
+
+                    SnackbarResult.Dismissed -> {
+                        false
+                    }
+                }
+            }
+        }
+        Box(
+            Modifier.fillMaxSize().padding(bottom = 40.dp), contentAlignment = Alignment.BottomCenter
+        ) {
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
+        }
+    }
 }
+
 
 @Composable
 fun OrderButton(onClick: () -> Unit, color: Color, text: String) {

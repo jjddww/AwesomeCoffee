@@ -98,8 +98,6 @@ class DetailViewModel(application: Application, var id: Int): ViewModel() {
 
             repository.addCartItem(item)
         }
-
-        changeBottomSheetState()
     }
 
 

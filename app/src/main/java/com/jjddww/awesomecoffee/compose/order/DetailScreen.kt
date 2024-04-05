@@ -85,8 +85,6 @@ fun DetailScreen(
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { Pages.entries.size})
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val showBottomSheet by viewModel.showBottomSheet.observeAsState(initial = false)
@@ -105,22 +103,6 @@ fun DetailScreen(
 
     val onAddCartItem = { menu: Menu, mainCategory: String ->
         viewModel.addCartItem(menu, mainCategory)
-//        coroutineScope.launch {
-//            snackbarHostState.showSnackbar("상품이 장바구니에 담겼습니다.",
-//                "장바구니로 이동",
-//                true,
-//                SnackbarDuration.Short).let {
-//                when(it){
-//                    SnackbarResult.ActionPerformed -> {
-//                        onCartScreen()
-//                    }
-//
-//                    SnackbarResult.Dismissed -> {
-//
-//                    }
-//                }
-//            }
-//        }
     }
 
     val settingBeverageOptions = { optionType: Any -> viewModel.settingBeverageOptions(optionType)}
