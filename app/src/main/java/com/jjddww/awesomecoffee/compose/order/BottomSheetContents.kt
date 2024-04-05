@@ -18,11 +18,16 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +51,8 @@ import com.jjddww.awesomecoffee.utilities.BEVERAGE
 import com.jjddww.awesomecoffee.utilities.DESSERT
 import com.jjddww.awesomecoffee.utilities.HOT
 import com.jjddww.awesomecoffee.utilities.ICED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.lang.String.format
 import java.text.DecimalFormat
 
@@ -249,6 +256,8 @@ fun OrderButtonView(mainCategory: String,
                     isShot: Boolean,
                     onAddCartItem:(Menu, String) -> Unit,
                     onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit){
+
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
@@ -257,9 +266,11 @@ fun OrderButtonView(mainCategory: String,
 
         var menuJson = Uri.encode(Gson().toJson(menu))
 
-        OrderButton(onClick = { onAddCartItem(menu, mainCategory) }, color = surfaceVariant, text = stringResource(
-            id = R.string.add_cart
-        )
+        OrderButton(onClick = {
+            onAddCartItem(menu, mainCategory)
+        },
+            color = surfaceVariant,
+            text = stringResource(id = R.string.add_cart)
         )
 
         OrderButton(onClick = { onPaymentSingleScreen(menuJson, amount, option, isShot) }, color = onSurfaceVariantLight, text = stringResource(

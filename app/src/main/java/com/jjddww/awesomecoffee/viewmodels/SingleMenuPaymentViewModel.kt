@@ -39,7 +39,7 @@ class SingleMenuPaymentViewModel(
     init {
         val db = AppDatabase.getInstance(application)
         val cartDao = db.cartDao()
-        repository = PaymentRepository(cartDao, application, ApiServiceHelperImpl(RetrofitClient.retrofit))
+        repository = PaymentRepository(false, cartDao, application, ApiServiceHelperImpl(RetrofitClient.retrofit))
     }
 
     val isSuccessPayment = repository.isSuccessPayment.asLiveData()

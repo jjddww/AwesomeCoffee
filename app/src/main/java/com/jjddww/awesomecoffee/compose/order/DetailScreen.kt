@@ -23,6 +23,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -49,6 +52,7 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
 import com.jjddww.awesomecoffee.ui.theme.onSurfaceVariantLight
@@ -57,6 +61,7 @@ import com.jjddww.awesomecoffee.utilities.ApplyDecimalFormat
 import com.jjddww.awesomecoffee.utilities.BEVERAGE
 import com.jjddww.awesomecoffee.utilities.COFFEE
 import com.jjddww.awesomecoffee.utilities.DESSERT
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.lang.String.format
 
@@ -73,12 +78,15 @@ enum class Pages(
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel,
+    onCartScreen:() -> Unit,
     onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit
 ){
 
     val menuDescriptionResult by viewModel.description.observeAsState(initial = emptyList())
     val desc = if (menuDescriptionResult.isNotEmpty()) menuDescriptionResult[0] else Menu()
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { Pages.entries.size})
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val showBottomSheet by viewModel.showBottomSheet.observeAsState(initial = false)
@@ -97,6 +105,22 @@ fun DetailScreen(
 
     val onAddCartItem = { menu: Menu, mainCategory: String ->
         viewModel.addCartItem(menu, mainCategory)
+//        coroutineScope.launch {
+//            snackbarHostState.showSnackbar("상품이 장바구니에 담겼습니다.",
+//                "장바구니로 이동",
+//                true,
+//                SnackbarDuration.Short).let {
+//                when(it){
+//                    SnackbarResult.ActionPerformed -> {
+//                        onCartScreen()
+//                    }
+//
+//                    SnackbarResult.Dismissed -> {
+//
+//                    }
+//                }
+//            }
+//        }
     }
 
     val settingBeverageOptions = { optionType: Any -> viewModel.settingBeverageOptions(optionType)}
@@ -178,11 +202,10 @@ fun DetailScreen(
                         getOption = beverageOption,
                         onShotChange = onShotChange,
                         onAmountChange = onAmountChange,
-                        onAddCartItem = onAddCartItem,
                         onSettingOptions = settingBeverageOptions,
+                        onAddCartItem = onAddCartItem,
                         onPaymentSingleScreen = onPaymentSingleScreen,
-                        amount = amount,
-                        )
+                        amount = amount)
 
                 else if(desc.mainCategory == DESSERT)
                     DessertContent(price = totalPrice,

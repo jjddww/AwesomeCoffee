@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.jjddww.awesomecoffee.MemberInfo
@@ -12,11 +13,16 @@ import com.jjddww.awesomecoffee.data.dao.CartDao
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.utilities.EXTRA_SHOT_PRICE
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kr.co.bootpay.android.Bootpay
 import kr.co.bootpay.android.events.BootpayEventListener
 import kr.co.bootpay.android.models.BootExtra
@@ -26,7 +32,8 @@ import kr.co.bootpay.android.models.Payload
 
 const val BOOTPAY = "boot pay"
 
-class PaymentRepository(private val cartDao: CartDao,
+class PaymentRepository(private val fromCart: Boolean,
+                        private val cartDao: CartDao,
                         private val application: Application,
                         private val apiHelper: ApiServiceHelper) {
 
@@ -113,6 +120,12 @@ class PaymentRepository(private val cartDao: CartDao,
                         useCoupon()
                     else
                         updateStamp() //쿠폰 사용안할 경우 스탬프 적립o
+
+                    if(fromCart){
+                        CoroutineScope(Dispatchers.IO).launch {
+                            cartDao.deleteCheckedCartItems()
+                        }
+                    }
                 }
             }).requestPayment()
     }
@@ -145,5 +158,4 @@ class PaymentRepository(private val cartDao: CartDao,
             .catch { e ->
                 Log.e("get coupon Api Error", e.toString())
             }
-
 }

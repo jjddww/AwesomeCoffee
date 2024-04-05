@@ -60,6 +60,11 @@ class AppNavController(
         }
     }
 
+    fun navigateToCart(from: NavBackStackEntry){
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(Sections.CART.route)
+        }
+    }
 
     fun navigateToSuccessPayment(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){

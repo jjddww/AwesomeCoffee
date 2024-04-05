@@ -28,6 +28,9 @@ interface CartDao {
     @Query("DELETE FROM cart WHERE menu_name = :menuName AND option = :option AND extra_shot = :extraShot") //체크한 아이템 삭제
     suspend fun deleteCheckedItems(menuName: String, option: String, extraShot: Boolean)
 
+    @Query("DELETE FROM cart WHERE checked = true")
+    suspend fun deleteCheckedCartItems()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCartItem(item: Cart)
 

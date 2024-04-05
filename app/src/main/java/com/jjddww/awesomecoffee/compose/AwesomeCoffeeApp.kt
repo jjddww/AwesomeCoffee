@@ -50,6 +50,7 @@ fun AwesomeCoffeeApp() {
             couponViewModel = couponViewModel,
             orderViewModel = orderViewModel,
             navController = awesomeCoffeeNavController,
+            onCartScreen = awesomeCoffeeNavController::navigateToCart,
             onMenuSelected = awesomeCoffeeNavController::navigateToDetail,
             onSearchScreen = awesomeCoffeeNavController::navigateToSearch,
             onPaymentScreen = awesomeCoffeeNavController::navigateToPayment,
@@ -66,6 +67,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     couponViewModel: CouponViewModel,
     orderViewModel: OrderViewModel,
     navController: AppNavController,
+    onCartScreen: (NavBackStackEntry) -> Unit,
     onMenuSelected: (Int, NavBackStackEntry) -> Unit,
     onSearchScreen: (NavBackStackEntry) -> Unit,
     onPaymentScreen: (NavBackStackEntry) -> Unit,
@@ -110,7 +112,8 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 "DetailViewModel",
                 DetailViewModelFactory(LocalContext.current.applicationContext as Application, menuId)
             )
-            DetailScreen(viewModel){menu, amount, isShot, option ->
+            DetailScreen(viewModel, { onCartScreen(navBackStackEntry) })
+            { menu, amount, isShot, option ->
                 onPaymentSingleScreen(menu, amount, isShot, option, navBackStackEntry)}
         }
     }

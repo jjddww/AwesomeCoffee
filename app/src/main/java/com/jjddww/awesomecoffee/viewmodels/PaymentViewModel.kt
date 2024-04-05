@@ -26,7 +26,7 @@ class PaymentViewModel(application: Application): ViewModel() {
     init {
         val db = AppDatabase.getInstance(application)
         val cartDao = db.cartDao()
-        repository = PaymentRepository(cartDao, application, ApiServiceHelperImpl(RetrofitClient.retrofit))
+        repository = PaymentRepository(true, cartDao, application, ApiServiceHelperImpl(RetrofitClient.retrofit))
         items = repository.getCartList.asLiveData()
     }
 
