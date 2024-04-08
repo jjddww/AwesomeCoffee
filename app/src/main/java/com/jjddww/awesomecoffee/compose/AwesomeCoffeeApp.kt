@@ -139,7 +139,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 PaymentViewModelFactory(LocalContext.current.applicationContext as Application)
             )
 
-            PaymentScreen(viewModel) { onPaymentSuccessScreen(navBackStackEntry) }
+            PaymentScreen(viewModel, { navController.navigateUp() }) { onPaymentSuccessScreen(navBackStackEntry) }
         }
     }
 
@@ -174,6 +174,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 )
             )
             SingleMenuPaymentScreen(viewModel =viewModel,
+                onBackButtonPressed = { navController.navigateUp() },
                 onPaymentSuccessScreen = { onPaymentSuccessScreen(navBackStackEntry) })
         }
 

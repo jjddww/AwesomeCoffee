@@ -83,7 +83,12 @@ class PaymentViewModel(application: Application): ViewModel() {
     }
 
     fun addItems(item: Cart){
-        var price = (if(item.shot) EXTRA_SHOT_PRICE else 0) + item.price
+        var extraPrice =
+            if(item.option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+            else if (item.option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+            else 0
+
+        var price = (if(item.shot) EXTRA_SHOT_PRICE else 0) + item.price + extraPrice
         if(couponId.value != 0 && !checkApplyDiscount.value!!){
             if(item.amount > 1)
             {

@@ -1,12 +1,15 @@
 package com.jjddww.awesomecoffee.data.api
 
+import androidx.room.Index
 import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
+import com.jjddww.awesomecoffee.data.model.Order
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.Date
 
 interface ApiService {
     @GET("/api/advertisement/all")
@@ -43,4 +46,15 @@ interface ApiService {
     @GET("/api/coupon/delete_coupon")
     suspend fun deleteUsedCoupon(@Query("coupon_id") couponId: Int,
                                  @Query("member_id") memberId: Long): Response<CommonResponse>
+
+    @GET("/api/order/list")
+    suspend fun sendOrderList(@Query("member_id") id: Long,
+                              @Query("menuName") menuName: String,
+                              @Query("option") option: String,
+                              @Query("qty") qty: Int,
+                              @Query("date") date: String)
+
+    @GET("/api/order/history")
+    suspend fun getOrderHistory(@Query("member_id") id: Long): List<Order>
+
 }

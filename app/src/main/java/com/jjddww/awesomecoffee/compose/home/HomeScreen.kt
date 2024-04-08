@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,8 +53,11 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.utilities.delayTime
 import com.jjddww.awesomecoffee.utilities.stampCount
 import com.jjddww.awesomecoffee.viewmodels.HomeViewModel
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -70,6 +75,7 @@ fun HomeScreen(
     val stamp by viewModel.stampCount.observeAsState(initial = 0)
     val emptyImageUrl = stringResource(id = R.string.empty_ads_image_url)
     val pagerState = rememberPagerState (pageCount = {imageUrlList.size})
+    val isDragged = pagerState.interactionSource.collectIsDraggedAsState()
     val scrollState = rememberScrollState()
 
     val settingMemberInfo = { viewModel.settingMemberInfo() }
@@ -121,18 +127,19 @@ fun HomeScreen(
         }
 
         LaunchedEffect(key1 = pagerState.currentPage){
-            launch {
-                delay(delayTime)
-                with(pagerState){
-                    val target = if(currentPage < imageUrlList.count() - 1) currentPage + 1 else 0
+            snapshotFlow { isDragged.value }
+                .collectLatest {checkDragged ->
+                    if(checkDragged) return@collectLatest
 
-                    animateScrollToPage(
-                        page = target, animationSpec = tween(
-                            durationMillis = 0, easing = FastOutLinearInEasing
-                        )
-                    )
+                    launch {
+                        withContext(NonCancellable){
+                            delay(delayTime)
+                            val target = if(pagerState.currentPage < imageUrlList.count() - 1) pagerState.currentPage.inc() else 0
+
+                            pagerState.animateScrollToPage(page = target)
+                        }
+                    }
                 }
-            }
         }
     }
 }

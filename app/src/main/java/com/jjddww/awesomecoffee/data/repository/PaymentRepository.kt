@@ -29,6 +29,8 @@ import kr.co.bootpay.android.models.BootExtra
 import kr.co.bootpay.android.models.BootItem
 import kr.co.bootpay.android.models.BootUser
 import kr.co.bootpay.android.models.Payload
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 const val BOOTPAY = "boot pay"
 
@@ -126,20 +128,35 @@ class PaymentRepository(private val fromCart: Boolean,
                             cartDao.deleteCheckedCartItems()
                         }
                     }
+
+                    CoroutineScope(Dispatchers.IO).launch{
+                        items.forEach{
+                            val formatted = LocalDateTime.now()
+                                .format(DateTimeFormatter
+                                    .ofPattern("yyyy년 MM월 dd일 HH:mm:ss"))
+
+                            apiHelper.sendOrderList(
+                                MemberInfo.memberId?: 0,
+                                it.name,
+                                it.id,
+                                it.qty,
+                                formatted)
+                        }
+                    }
                 }
             }).requestPayment()
     }
 
 
-    fun getBootUser(): BootUser? { //TODO 로그인 기능 추가되면 유저 정보 입력
+    fun getBootUser(): BootUser? {
         val user = BootUser()
         user.id = MemberInfo.memberId.toString()
         user.area = "서울"
         user.gender = 1 //1: 남자, 0: 여자
         user.email = "ekdns0817@gmail.com"
-        user.phone = "010-1234-4567"
-        user.birth = "1988-06-10"
-        user.username = "홍길동"
+        user.phone = ""
+        user.birth = ""
+        user.username = MemberInfo.memberId.toString()
         return user
     }
 

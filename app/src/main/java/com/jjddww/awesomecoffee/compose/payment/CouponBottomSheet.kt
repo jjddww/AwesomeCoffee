@@ -33,6 +33,7 @@ import com.jjddww.awesomecoffee.utilities.COUPON_NOT_EMPTY
 
 @Composable
 fun CouponBottomSheet(
+    onChangeShowBottomSheet: () -> Unit,
     couponList: List<Coupon>,
     onSettingCouponInfo: (Int, String, String ,Int) -> Unit){
 
@@ -117,7 +118,7 @@ fun CouponBottomSheet(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(onClick = {},
+        Button(onClick = { onChangeShowBottomSheet() },
             modifier = Modifier
                 .width(240.dp)
                 .height(40.dp),

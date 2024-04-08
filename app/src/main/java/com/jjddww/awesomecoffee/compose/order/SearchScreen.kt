@@ -42,7 +42,8 @@ import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(viewModel: SearchViewModel, onMenuSelected: (Int) -> Unit,
+fun SearchScreen(viewModel: SearchViewModel,
+                 onMenuSelected: (Int) -> Unit,
                  onBackButtonPressed : () -> Unit){
 
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {

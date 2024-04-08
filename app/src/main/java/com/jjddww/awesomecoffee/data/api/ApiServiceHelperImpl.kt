@@ -4,6 +4,7 @@ import android.util.Log
 import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
+import com.jjddww.awesomecoffee.data.model.Order
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.util.Date
 
 class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper {
     override fun getAdvertisementList() = flow{
@@ -61,6 +63,22 @@ class ApiServiceHelperImpl(private val apiService: ApiService): ApiServiceHelper
         CoroutineScope(Dispatchers.IO).launch {
             apiService.deleteUsedCoupon(couponId, memberId)
         }
+    }
+
+    override fun sendOrderList(
+        memberId: Long,
+        menuName: String,
+        option: String,
+        qty: Int,
+        date: String
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            apiService.sendOrderList(memberId, menuName, option, qty, date)
+        }
+    }
+
+    override fun getOrderList(memberId: Long): Flow<List<Order>> = flow {
+        emit(apiService.getOrderHistory(memberId))
     }
 
 }

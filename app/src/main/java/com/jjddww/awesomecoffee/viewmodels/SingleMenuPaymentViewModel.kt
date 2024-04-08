@@ -80,8 +80,13 @@ class SingleMenuPaymentViewModel(
 
 
     fun addItems(){
+        var extraPrice =
+            if(optionData.value!!.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+            else if (optionData.value!!.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+            else 0
+
         val price = (if(extraShot.value == true) EXTRA_SHOT_PRICE else 0) +
-                (menuData.value?.price ?: 0)
+                (menuData.value?.price ?: 0) + extraPrice
 
         if(couponType.value == "deduction"){
             if(couponId.value != 0){ //쿠폰이 적용됐을 때

@@ -67,6 +67,7 @@ import okhttp3.internal.format
 @Composable
 fun PaymentScreen(
     viewModel: PaymentViewModel,
+    onBackButtonPressed : () -> Unit,
     onPaymentSuccessScreen:() -> Unit
 ) {
 
@@ -113,6 +114,9 @@ fun PaymentScreen(
         viewModel.paymentTest(totalPrice, activity)
     }
 
+    val onChangeShowBottomSheet = {
+        showBottomSheet = false
+    }
 
     if(isSuccessPayment) {
         onPaymentSuccessScreen()
@@ -230,7 +234,7 @@ fun PaymentScreen(
                 else
                     onRequestPayment(totalPrice, activity)},
                 color = onSurfaceVariantLight, text = stringResource(id = R.string.payment))
-            PaymentButton(onClick = { /*TODO*/ }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
+            PaymentButton(onClick = { onBackButtonPressed() }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
         }
 
 
@@ -243,6 +247,7 @@ fun PaymentScreen(
                     .fillMaxHeight(0.6f)) {
 
                 CouponBottomSheet(
+                    onChangeShowBottomSheet = onChangeShowBottomSheet,
                     onSettingCouponInfo = onSettingCouponInfo,
                     couponList = couponList)
             }

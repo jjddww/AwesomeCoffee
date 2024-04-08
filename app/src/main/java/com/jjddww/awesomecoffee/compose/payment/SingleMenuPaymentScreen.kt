@@ -64,6 +64,7 @@ import okhttp3.internal.format
 @Composable
 fun SingleMenuPaymentScreen(
     viewModel: SingleMenuPaymentViewModel,
+    onBackButtonPressed : () -> Unit,
     onPaymentSuccessScreen:() -> Unit){
 
     val scrollState = rememberScrollState()
@@ -100,6 +101,10 @@ fun SingleMenuPaymentScreen(
 
     val onSettingCouponInfo = { id: Int, name: String, type: String, amount: Int ->
         viewModel.setCouponInfo(id, name, type, amount)
+    }
+
+    val onChangeShowBottomSheet = {
+        showBottomSheet = false
     }
 
     val onRequestUseCoupon = {
@@ -230,7 +235,7 @@ fun SingleMenuPaymentScreen(
             },
                 color = onSurfaceVariantLight, text = stringResource(id = R.string.payment)
             )
-            PaymentButton(onClick = { /*TODO*/ }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
+            PaymentButton(onClick = { onBackButtonPressed() }, color = surfaceVariant, text = stringResource(id = R.string.cancel))
         }
 
         if(showBottomSheet){
@@ -242,6 +247,7 @@ fun SingleMenuPaymentScreen(
                     .fillMaxHeight(0.6f)) {
 
                 CouponBottomSheet(
+                    onChangeShowBottomSheet = onChangeShowBottomSheet,
                     onSettingCouponInfo = onSettingCouponInfo,
                     couponList = couponList)
             }

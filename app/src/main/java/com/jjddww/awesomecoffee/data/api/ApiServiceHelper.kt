@@ -4,8 +4,10 @@ import com.jjddww.awesomecoffee.data.model.BannerAd
 import com.jjddww.awesomecoffee.data.model.CommonResponse
 import com.jjddww.awesomecoffee.data.model.Coupon
 import com.jjddww.awesomecoffee.data.model.Menu
+import com.jjddww.awesomecoffee.data.model.Order
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
+import java.util.Date
 
 interface ApiServiceHelper {
     fun getAdvertisementList(): Flow<List<BannerAd>>
@@ -29,4 +31,8 @@ interface ApiServiceHelper {
     fun updateStamp(id: Long, qty: Int)
 
     fun deleteUsedCoupon(couponId: Int, memberId: Long)
+
+    fun sendOrderList(memberId: Long, menuName: String, option: String, qty: Int, date: String)
+
+    fun getOrderList(memberId: Long): Flow<List<Order>>
 }

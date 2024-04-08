@@ -1,6 +1,10 @@
 package com.jjddww.awesomecoffee.compose.login
 
+import android.app.Activity
+import android.widget.ImageButton
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,64 +86,26 @@ fun LoginScreen(viewModel: LoginViewModel,
             style = MaterialTheme.typography.titleMedium,
             color = tertiaryLight)
 
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(100.dp))
 
-        LoginTextField(stringResource(id = R.string.id_placeholder))
-        LoginTextField(stringResource(id = R.string.password_placeholder))
+        Image(
+            painter = painterResource(id = R.drawable.kakao_login_button),
+            contentDescription = "",
+            modifier = Modifier
+                .width(300.dp)
+                .height(100.dp)
+                .clickable {
+                requestLogin() })
 
-        Spacer(modifier = Modifier.height(56.dp))
-
-        Button(
-            modifier = Modifier.size(213.dp, 40.dp),
-            onClick = { requestLogin() },
-            colors = ButtonDefaults.buttonColors(
-                primaryLight
-            )) {
-            Text(
-                stringResource(id = R.string.login),
-                style = MaterialTheme.typography.labelMedium)
-        }
-
-//        Row(Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.Center){
-//            TextButton(string = stringResource(id = R.string.join))
-//            TextButton(string = stringResource(id = R.string.find_id))
-//            TextButton(string = stringResource(id = R.string.find_password))
-//        }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun TextButton(string: String){
-
-    Button(onClick = { /*TODO*/ },
-        colors = ButtonDefaults.buttonColors(
-            Color.Transparent
-        )) {
-        Text(text = string,
-            style = MaterialTheme.typography.labelSmall,
-            color = primaryLight)
+fun LoginPreview(){
+    LoginScreen(viewModel = LoginViewModel(LocalContext.current as Activity)) {
+        
     }
-
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginTextField(placeholder: String){
-    var textFieldState by remember { mutableStateOf("") }
-    val onTextChange = { text: String ->
-        textFieldState = text
-    }
-
-    TextField(value = textFieldState,
-        onValueChange = onTextChange,
-        placeholder = {Text(placeholder,
-            style = MaterialTheme.typography.labelSmall)},
-        colors = TextFieldDefaults.textFieldColors
-            (containerColor = Color.Transparent,
-            unfocusedPlaceholderColor = surfaceVariant,
-            unfocusedIndicatorColor = surfaceVariant,
-            focusedIndicatorColor = onSurfaceVariantLight,
-            focusedTextColor = onSurfaceVariantLight))
-}
