@@ -118,6 +118,7 @@ fun CartScreen(viewModel: CartViewModel, navController: NavController,
 
     LaunchedEffect(cartList.isNotEmpty()){
         viewModel.initCheckBoxState()
+        viewModel.initialTotalPrice()
     }
 
 

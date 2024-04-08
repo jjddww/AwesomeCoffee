@@ -243,7 +243,7 @@ fun SetAmountButtonView(onIncreaseAmount: (Boolean) -> Unit,
                 contentDescription = null)
         }
 
-        Text(text = format(stringResource(id = R.string.price_format), ApplyDecimalFormat(amount * price)),
+        Text(text = format(stringResource(id = R.string.price_format), ApplyDecimalFormat(price)),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 20.dp),

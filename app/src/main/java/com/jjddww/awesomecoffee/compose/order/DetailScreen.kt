@@ -52,6 +52,7 @@ import com.jjddww.awesomecoffee.ui.theme.tertiaryLight
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
@@ -78,7 +79,6 @@ enum class Pages(
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel,
-    onCartScreen:() -> Unit,
     onPaymentSingleScreen: (String, Int, String, Boolean) -> Unit
 ){
 
@@ -109,8 +109,10 @@ fun DetailScreen(
     val settingDessertOptions = { option: String -> viewModel.settingDessertOptions(option)}
 
 
-    viewModel.setAmount()
-    viewModel.setPrice(desc.price)
+    LaunchedEffect(menuDescriptionResult.isNotEmpty()){
+        viewModel.setAmount()
+        viewModel.setPrice(desc.price)
+    }
 
 
     Column(modifier = Modifier

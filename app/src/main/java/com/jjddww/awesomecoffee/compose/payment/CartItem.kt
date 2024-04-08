@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.compose.order.Sizes
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.outlineDarkHighContrast
@@ -133,6 +134,10 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
                         increaseTotalPrice:(Cart) -> Unit,
                         item: Cart){
     var cnt = mutableStateOf(item.amount)
+    var extraPrice =
+        if(item.option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+        else if (item.option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+        else 0
 
     Row(modifier = Modifier
         .wrapContentWidth()
@@ -171,8 +176,8 @@ fun SetAmountButtonView(onIncreaseAmount: (Cart) -> Unit,
 
         Text(text = String.format(
             stringResource(id = R.string.price_format),
-            ApplyDecimalFormat(if(item.shot) {item.amount * item.price + EXTRA_SHOT_PRICE * item.amount}
-            else {item.amount * item.price})
+            ApplyDecimalFormat(if(item.shot) {(item.price + EXTRA_SHOT_PRICE + extraPrice) * item.amount}
+            else {item.amount * (item.price + extraPrice)})
         ),
             modifier = Modifier
                 .fillMaxWidth()

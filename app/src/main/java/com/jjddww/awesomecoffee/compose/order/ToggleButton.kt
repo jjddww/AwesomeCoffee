@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,21 +52,25 @@ import com.jjddww.awesomecoffee.ui.theme.primaryContainerDarkMediumContrast
 import com.jjddww.awesomecoffee.ui.theme.primaryLight
 import com.jjddww.awesomecoffee.ui.theme.secondaryContainerLight
 import com.jjddww.awesomecoffee.ui.theme.secondaryDarkMediumContrast
+import com.jjddww.awesomecoffee.utilities.EXTRA_TEXT
 import com.jjddww.awesomecoffee.utilities.HOT
 import com.jjddww.awesomecoffee.utilities.ICED
+import com.jjddww.awesomecoffee.utilities.LARGE_TEXT
+import com.jjddww.awesomecoffee.utilities.REGULAR_TEXT
 import okhttp3.internal.format
 
 const val FIRST_INDEX = 0
 const val SECOND_INDEX = 1
 
 enum class Sizes(
-    @StringRes val text: Int,
+    val text: String,
     @DrawableRes val drawable: Int,
-    var milliliter: Int
+    var milliliter: Int,
+    var extraPrice: Int,
 ) {
-    REGULAR(R.string.regular, R.drawable.outline_coffee_24, 355),
-    LARGE(R.string.Large, R.drawable.outline_coffee_30, 470),
-    EXTRA(R.string.Extra, R.drawable.outline_coffee_35, 590)
+    REGULAR(REGULAR_TEXT, R.drawable.outline_coffee_24, 355, 0),
+    LARGE(LARGE_TEXT, R.drawable.outline_coffee_30, 470, 500),
+    EXTRA(EXTRA_TEXT, R.drawable.outline_coffee_35, 590, 1000)
 }
 
 enum class Cups(
@@ -105,7 +110,7 @@ fun SizeToggleButton(onSettingOptions:(Any) -> Unit){
 
         SingleChoiceSegmentedButtonRow (modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp)
+            .height(140.dp)
             .padding(start = 15.dp, end = 15.dp, top = 12.dp)){
             items.forEachIndexed{ index, item ->
 
@@ -123,12 +128,12 @@ fun SizeToggleButton(onSettingOptions:(Any) -> Unit){
                     Column (
                         Modifier
                             .width(80.dp)
-                            .height(80.dp)
+                            .height(120.dp)
                             .padding(bottom = 3.dp), verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.CenterHorizontally){
                         Icon(painter = painterResource(id = item.drawable), contentDescription = null,)
 
-                        Text(text = stringResource(id = item.text),
+                        Text(text = item.text, textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.bodySmall)
 
                         Text(text = format(stringResource(id = R.string.milliliter), item.milliliter),

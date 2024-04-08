@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jjddww.awesomecoffee.compose.order.Sizes
 import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.repository.CartRepository
@@ -63,15 +64,24 @@ class CartViewModel(application: Application): ViewModel() {
         }
     }
 
+    fun getExtraPrice(item: Cart): Int {
+        var extraPrice =
+        if(item.option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+        else if (item.option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+        else 0
+
+        return extraPrice
+    }
+
     fun operateTotalPrice(item: Cart, checked: Boolean){
         if(checked){
-            totalPrice.value += item.price * item.amount
+            totalPrice.value += (item.price + getExtraPrice(item)) * item.amount
             if(item.shot)
                 totalPrice.value += EXTRA_SHOT_PRICE * item.amount
         }
 
         else{
-            totalPrice.value -= item.price * item.amount
+            totalPrice.value -= (item.price + getExtraPrice(item)) * item.amount
             if(item.shot)
                 totalPrice.value -= EXTRA_SHOT_PRICE * item.amount
         }
@@ -79,7 +89,7 @@ class CartViewModel(application: Application): ViewModel() {
 
     fun decreaseTotalPrice(item: Cart){
         if(item.checked){
-            totalPrice.value -= item.price
+            totalPrice.value -= (item.price + getExtraPrice(item))
             if(item.shot)
                 totalPrice.value -= EXTRA_SHOT_PRICE
         }
@@ -87,7 +97,7 @@ class CartViewModel(application: Application): ViewModel() {
 
     fun increaseTotalPrice(item: Cart){
         if(item.checked){
-            totalPrice.value += item.price
+            totalPrice.value += (item.price + getExtraPrice(item))
             if(item.shot)
                 totalPrice.value += EXTRA_SHOT_PRICE
         }

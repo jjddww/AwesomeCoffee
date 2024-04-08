@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.jjddww.awesomecoffee.compose.order.Sizes
 import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.api.ApiServiceHelperImpl
 import com.jjddww.awesomecoffee.data.api.RetrofitClient
@@ -39,12 +40,14 @@ class PaymentViewModel(application: Application): ViewModel() {
     var couponNotice = MutableLiveData(COUPON_NOT_EMPTY)
     var totalPrice = mutableStateOf(0)
 
-
-
     fun getTotalPriceValue(): Int {
         totalPrice.value = 0
         items.value?.forEach {
-            totalPrice.value += it.price * it.amount
+            var extraPrice =
+                if(it.option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+                else if (it.option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+                else 0
+            totalPrice.value += (it.price + extraPrice) * it.amount
             if(it.shot)
                 totalPrice.value += EXTRA_SHOT_PRICE * it.amount
         }

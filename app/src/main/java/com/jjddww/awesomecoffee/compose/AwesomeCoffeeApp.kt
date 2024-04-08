@@ -112,7 +112,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
                 "DetailViewModel",
                 DetailViewModelFactory(LocalContext.current.applicationContext as Application, menuId)
             )
-            DetailScreen(viewModel, { onCartScreen(navBackStackEntry) })
+            DetailScreen(viewModel)
             { menu, amount, isShot, option ->
                 onPaymentSingleScreen(menu, amount, isShot, option, navBackStackEntry)}
         }

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.jjddww.awesomecoffee.compose.order.Sizes
 import com.jjddww.awesomecoffee.data.AppDatabase
 import com.jjddww.awesomecoffee.data.api.ApiServiceHelperImpl
 import com.jjddww.awesomecoffee.data.api.RetrofitClient
@@ -33,8 +34,13 @@ class SingleMenuPaymentViewModel(
     var optionData = MutableLiveData(option)
     var qty = MutableLiveData(amount)
     var extraShot = MutableLiveData(isShot)
+    var extraPrice =
+        if(option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+        else if (option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+        else 0
+
     var totalPrice: MutableState<Int> =
-        mutableStateOf(menu?.price!! * qty.value!! + if(isShot) EXTRA_SHOT_PRICE * qty.value!! else 0)
+        mutableStateOf((menu?.price!! + extraPrice + if(isShot) EXTRA_SHOT_PRICE else 0) * qty.value!!)
 
     init {
         val db = AppDatabase.getInstance(application)

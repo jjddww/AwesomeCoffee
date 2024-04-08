@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.jjddww.awesomecoffee.MemberInfo
 import com.jjddww.awesomecoffee.R
+import com.jjddww.awesomecoffee.compose.order.Sizes
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.ui.theme.neutralVariant70
 import com.jjddww.awesomecoffee.ui.theme.onSecondaryLight
@@ -266,10 +267,15 @@ fun PaymentButton(onClick: () -> Unit, color: Color, text: String) {
 
 @Composable
 fun PaymentListItem(item: Cart){
+    var extraPrice =
+        if(item.option.contains(Sizes.LARGE.text)) Sizes.LARGE.extraPrice
+        else if (item.option.contains(Sizes.EXTRA.text)) Sizes.EXTRA.extraPrice
+        else 0
+
     Column(
         Modifier
             .fillMaxWidth()
-            .height(120.dp)) {
+            .height(180.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -296,7 +302,7 @@ fun PaymentListItem(item: Cart){
                 Text(text = item.menuName, fontFamily = FontFamily(Font(R.font.spoqahansansneo_medium)),
                     fontSize = 14.sp, color = Color.Black)
                 Text(
-                    text = item.option, modifier = Modifier.padding(top = 5.dp),
+                    text = item.option, modifier = Modifier.padding(top = 5.dp).fillMaxWidth(),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = neutralVariant70, fontSize = 12.sp
                 )
@@ -335,7 +341,7 @@ fun PaymentListItem(item: Cart){
 
                 Text(
                     text = format(stringResource(id = R.string.total_price_format),
-                        ApplyDecimalFormat((item.price + if(item.shot) EXTRA_SHOT_PRICE else 0) * item.amount)),
+                        ApplyDecimalFormat((item.price + extraPrice + if(item.shot) EXTRA_SHOT_PRICE else 0) * item.amount)),
                     modifier = Modifier.padding(end = 10.dp),
                     fontFamily = FontFamily(Font(R.font.spoqahansansneo_regular)),
                     color = Color.Black, fontSize = 12.sp
