@@ -229,3 +229,4 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF36352C)
 
 val neutralVariant70 = Color(0xFFAEABA6)
 val black60 = Color(0x99000000)
+val lightGray = Color(0xFFD9D9D9)
