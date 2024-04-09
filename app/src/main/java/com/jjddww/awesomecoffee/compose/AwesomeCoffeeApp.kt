@@ -23,6 +23,7 @@ import com.jjddww.awesomecoffee.compose.order.DetailScreen
 import com.jjddww.awesomecoffee.compose.payment.PaymentScreen
 import com.jjddww.awesomecoffee.compose.payment.PaymentSuccessScreen
 import com.jjddww.awesomecoffee.compose.order.SearchScreen
+import com.jjddww.awesomecoffee.compose.other.OrderHistoryScreen
 import com.jjddww.awesomecoffee.compose.payment.SingleMenuPaymentScreen
 import com.jjddww.awesomecoffee.data.model.Cart
 import com.jjddww.awesomecoffee.data.model.Menu
@@ -30,6 +31,7 @@ import com.jjddww.awesomecoffee.rememberAppNavController
 import com.jjddww.awesomecoffee.viewmodels.CouponViewModel
 import com.jjddww.awesomecoffee.viewmodels.DetailViewModel
 import com.jjddww.awesomecoffee.viewmodels.LoginViewModel
+import com.jjddww.awesomecoffee.viewmodels.OrderHistoryViewModel
 import com.jjddww.awesomecoffee.viewmodels.OrderViewModel
 import com.jjddww.awesomecoffee.viewmodels.PaymentViewModel
 import com.jjddww.awesomecoffee.viewmodels.SearchViewModel
@@ -58,6 +60,7 @@ fun AwesomeCoffeeApp() {
             onPaymentSingleScreen = awesomeCoffeeNavController::navigateToPaymentSingle,
             onHomeScreen = awesomeCoffeeNavController::navigateToHome,
             onLoginScreen = awesomeCoffeeNavController::navigateToLogin,
+            onOrderHistoryScreen = awesomeCoffeeNavController::navigateToHistory,
             onNavigateRoute = awesomeCoffeeNavController::navigateToBottomBarRoute)
     }
 }
@@ -75,6 +78,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
     onPaymentSuccessScreen: (NavBackStackEntry)-> Unit,
     onHomeScreen: (NavBackStackEntry) -> Unit,
     onLoginScreen: (NavBackStackEntry) -> Unit,
+    onOrderHistoryScreen:(NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit
 ){
 
@@ -94,6 +98,7 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
             onPaymentScreen,
             onHomeScreen,
             onLoginScreen,
+            onOrderHistoryScreen,
             onNavigateRoute)
     }
 
@@ -182,6 +187,11 @@ private fun NavGraphBuilder.awesomeCoffeeNavGraph(
 
     composable(route = MainDestinations.PAYMENT_SUCCESS_ROUTE){navBackStackEntry ->
         PaymentSuccessScreen{ onHomeScreen(navBackStackEntry) }
+    }
+
+    composable(route = MainDestinations.ORDER_HISTORY_ROUTE) {
+        val viewModel = OrderHistoryViewModel()
+        OrderHistoryScreen(viewModel)
     }
 }
 

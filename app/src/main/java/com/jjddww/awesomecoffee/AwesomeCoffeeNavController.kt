@@ -60,6 +60,12 @@ class AppNavController(
         }
     }
 
+    fun navigateToHistory(from: NavBackStackEntry) {
+        if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
+            navController.navigate(MainDestinations.ORDER_HISTORY_ROUTE)
+        }
+    }
+
     fun navigateToCart(from: NavBackStackEntry){
         if(from.lifecycle.currentState == Lifecycle.State.RESUMED){
             navController.navigate(Sections.CART.route)

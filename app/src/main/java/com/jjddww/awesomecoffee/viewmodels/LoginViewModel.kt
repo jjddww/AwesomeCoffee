@@ -21,4 +21,8 @@ class LoginViewModel(private val activity: Activity): ViewModel() {
     fun checkLoginToken(){
         repository.checkLoginToken()
     }
+
+    fun logoutKakao(){
+        repository.requestLogout()
+    }
 }

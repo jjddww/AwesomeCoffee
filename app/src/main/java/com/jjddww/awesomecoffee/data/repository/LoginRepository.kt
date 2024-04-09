@@ -3,6 +3,7 @@ package com.jjddww.awesomecoffee.data.repository
 import android.app.Activity
 import android.app.Application
 import android.util.Log
+import com.jjddww.awesomecoffee.MemberInfo
 import com.jjddww.awesomecoffee.data.api.ApiServiceHelper
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
@@ -81,5 +82,19 @@ class LoginRepository(private val apiHelper: ApiServiceHelper) {
             Log.e("로그인 - 토큰 유효성 체크", "토큰 없음.")
         }
 
+    }
+
+    fun requestLogout(){
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+            }
+            else {
+                Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+                isSuccessLogin.value = false
+                MemberInfo.initialMemberInfo()
+            }
+
+        }
     }
 }

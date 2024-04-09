@@ -35,6 +35,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navigation
 import com.jjddww.awesomecoffee.AppNavController
 import com.jjddww.awesomecoffee.R
 import com.jjddww.awesomecoffee.compose.coupon.CouponScreen
@@ -77,6 +78,7 @@ object MainDestinations {
     const val PAYMENT_ROUTE = "payment"
     const val PAYMENT_SINGLE_ROUTE = "payment_single"
     const val PAYMENT_SUCCESS_ROUTE = "payment_success"
+    const val ORDER_HISTORY_ROUTE = "order_history"
     const val MENU_ID_KEY = "menuId"
 }
 
@@ -96,6 +98,7 @@ fun NavGraphBuilder.AppNavGraph(
     onPaymentScreen: (NavBackStackEntry) -> Unit,
     onHomeScreen: (NavBackStackEntry) -> Unit,
     onLoginScreen: (NavBackStackEntry) -> Unit,
+    onOrderHistoryScreen:(NavBackStackEntry) -> Unit,
     onNavigateRoute: (String) -> Unit)
 {
         composable(Sections.CART.route){navBackStackEntry ->
@@ -129,8 +132,21 @@ fun NavGraphBuilder.AppNavGraph(
         composable(Sections.COUPON.route){
             CouponScreen(couponViewModel, appNavController.navController, onNavigateRoute)
         }
-        composable(Sections.OTHER.route){
-            OtherScreen(appNavController.navController, onNavigateRoute)
+        composable(Sections.OTHER.route){navBackStackEntry ->
+            val owner = LocalViewModelStoreOwner.current
+            owner?.let {
+                val viewModel: LoginViewModel = viewModel(
+                    it,
+                    "LoginViewModel",
+                    LoginViewModelFactory(LocalContext.current as Activity)
+                )
+
+                OtherScreen(appNavController.navController, onNavigateRoute, viewModel, { onLoginScreen(navBackStackEntry) }) {
+                    onOrderHistoryScreen(
+                        navBackStackEntry
+                    )
+                }
+            }
         }
 
         composable(route = Login.LOGIN_ROUTE){ navBackStackEntry ->

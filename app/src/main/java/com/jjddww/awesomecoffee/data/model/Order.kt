@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.util.Date
 
 data class Order(
-    @SerializedName("menuName") val menuName: String = "",
+    @SerializedName("menu_name") val menuName: String = "",
     @SerializedName("quantity") val quantity: Int = 0,
-    @SerializedName("option") val option: String = "",
-    @SerializedName("date") val date: Date
+    @SerializedName("p_option") val option: String = "",
+    @SerializedName("date") val date: String
 )
