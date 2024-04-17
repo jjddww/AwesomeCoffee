@@ -2,7 +2,6 @@
 
 ## 💡 기술 스택
 ---
-
 * Jetpack
   - Compose
   - ViewModel
