@@ -49,7 +49,7 @@
 ## 💡 기능 소개
 </br>
 
-[기능.md](https://github.com/jjddww/AwesomeCoffee/blob/main/%EA%B8%B0%EB%8A%A5.md)
+[기능 소개 링크](https://github.com/jjddww/AwesomeCoffee/blob/main/%EA%B8%B0%EB%8A%A5.md)
 
 </br></br>
 
