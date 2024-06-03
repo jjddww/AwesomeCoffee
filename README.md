@@ -1,12 +1,5 @@
 # ☕ Awesome Coffee
 
-실행을 위한 apk 다운로드 
-(awesome coffee는 구글플레이에 출시된 앱이 아니므로 카카오 로그인 기능은 현재 디버그 키 사용 중입니다.
-디버그 키를 사용할 경우 PC 기기마다 해시키를 구해서 카카오 Developer 프로젝트에 추가시켜야 로그인 API가 동작하므로 
-프로젝트를 clone하여 실행시키실 경우 로그인 기능이 동작하지 않을 수 있습니다.
-awesome coffee를 실행하실 분들은 apk를 다운로드 해주세요.)
-
-[Awesome Coffee apk](https://github.com/jjddww/AwesomeCoffee/blob/main/awesome_coffee.apk)
 </br>
 
 개발기간: 2024.02.20 ~ 2024.04.09
@@ -26,6 +19,17 @@ awesome coffee를 실행하실 분들은 apk를 다운로드 해주세요.)
 
 
 </br></br>
+
+## 추가) 실행을 위한 apk 다운로드 </br></br>
+Awesome coffee는 구글플레이에 출시된 앱이 아닌 개인 프로젝트이므로 카카오 로그인 기능은 현재 디버그 키 사용 중입니다.</br></br>
+디버그 키를 사용할 경우 PC 기기마다 해시키를 구해서 카카오 Developer 프로젝트에 추가시켜야 로그인 API가 동작하므로 </br>
+프로젝트를 clone하여 실행시키실 경우 로그인 기능이 동작하지 않을 수 있습니다.</br></br>
+Awesome coffee를 실행하실 분들은 apk를 다운로드 해주세요.
+
+[Awesome Coffee apk](https://github.com/jjddww/AwesomeCoffee/blob/main/awesome_coffee.apk)
+
+</br></br>
+
 
 ## 🔨 기술 스택 & 라이브러리
 
