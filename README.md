@@ -24,7 +24,8 @@
 Awesome coffee는 구글플레이에 출시된 앱이 아닌 개인 프로젝트이므로 카카오 로그인 기능은 현재 디버그 키 사용 중입니다.</br></br>
 디버그 키를 사용할 경우 PC 기기마다 해시키를 구해서 카카오 Developer 프로젝트에 추가시켜야 로그인 API가 동작하므로 </br>
 프로젝트를 clone하여 실행시키실 경우 로그인 기능이 동작하지 않을 수 있습니다.</br></br>
-Awesome coffee를 실행하실 분들은 apk를 다운로드 해주세요.
+Awesome coffee를 실행하실 분들은 하단 링크에서 apk 다운로드를 부탁드립니다! </br>
+(링크 누르신 뒤 오른쪽 상단 쪽 다운로드 버튼(download raw file) 클릭하시면 됩니다.)
 
 [Awesome Coffee apk](https://github.com/jjddww/AwesomeCoffee/blob/main/awesome_coffee.apk)
 
